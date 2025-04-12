@@ -1,0 +1,4 @@
+/* CSS */
+#dropdownDelayButton:hover + #dropdownDelay {
+    display: block;
+}
