@@ -28,7 +28,7 @@ export default function FooterHome() {
 
                 {/* Bộ giáo dục và Mạng xã hội */}
                 <div>
-                    <h3 className="text-lg font-bold mb-2">BỘ GIÁO DỤC VÀ ĐÀO TẠO</h3>
+                    <h3 className="text-lg font-bold mb-2">Học viện Hậu Cần</h3>
                     <h4 className="mt-4 mb-2 font-semibold">MẠNG XÃ HỘI</h4>
                     <div className="flex space-x-4">
                         <a href="#"><Facebook className="w-5 h-5" /></a>
@@ -43,9 +43,10 @@ export default function FooterHome() {
                 <div>
                     <h3 className="text-lg font-bold mb-4">ĐƠN VỊ TRỰC THUỘC</h3>
                     <ul className="space-y-2">
-                        <li>VIỆN - KHOA ĐÀO TẠO</li>
-                        <li>VIỆN - TRUNG TÂM NGHIÊN CỨU</li>
-                        <li>PHÒNG - BAN - TRUNG TÂM</li>
+                        <li>Bộ môn Bảo đảm</li>
+                        <li>Bộ môn Kỹ thuật</li>
+                        <li>Bộ môn Sản xuất</li>
+                        <li>Bộ môn Thương phẩm</li>
                     </ul>
                 </div>
 

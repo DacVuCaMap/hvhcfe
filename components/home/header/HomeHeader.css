@@ -1,4 +1,9 @@
 /* CSS */
-#dropdownDelayButton:hover + #dropdownDelay {
+#dropdownDelayButton:hover+#dropdownDelay {
     display: block;
+}
+
+.bg-custom {
+    background: #ffffff;
+    background: linear-gradient(0deg, rgba(255, 255, 255, 0) 10%, rgba(42, 153, 42, 0.81) 46%, rgba(0, 133, 0, 1) 71%);
 }
