@@ -46,7 +46,7 @@ export default function HomeHeader() {
     const firstSegment = `/${pathname.split('/')[1]}`;
     const secondSegment = `${pathname.split('/')[2]}`;
     return (
-        <div className="fixed top-0 left-0 flex flex-row items-center justify-between w-screen bg-custom px-20 pb-10">
+        <div className="fixed z-50 top-0 left-0 flex flex-row items-center justify-between w-screen bg-custom px-20 pb-10">
             {/* Top header */}
             <div className="flex flex-row items-center justify-between h-32 px-4 py-2">
                 {/* Logo + Tên */}
@@ -61,7 +61,7 @@ export default function HomeHeader() {
                     </div>
                     <div className="flex flex-col justify-center h-full px-2 py-2">
                         <span className="text-xl font-semibold text-yellow-300">
-                            Khoa Quân Nhu Học Viện Hậu Cần
+                            Khoa Quân Nhu - Học Viện Hậu Cần
                         </span>
                         <span className='text-xs text-white'>
                             Logistics and Quartermaster Department
