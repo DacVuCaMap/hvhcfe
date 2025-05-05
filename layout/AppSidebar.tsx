@@ -18,7 +18,7 @@ import {
   UserCircleIcon,
 } from "../icons/index";
 import SidebarWidget from "./SidebarWidget";
-import { AlignJustify, AlignLeft, ChartColumnIncreasing, ChevronRight, CircleUserRound, SquareMenu } from "lucide-react";
+import { AlignJustify, AlignLeft, Apple, ChartColumnIncreasing, ChevronRight, CircleUserRound, SquareMenu } from "lucide-react";
 
 type NavItem = {
   name: string;
@@ -33,55 +33,6 @@ const navItems: NavItem[] = [
     name: "Chung",
     subItems: [{ name: "Ecommerce", path: "/", pro: false }],
   },
-  // {
-  //   icon: <img
-  //     src={GridIcon.src || GridIcon}
-  //     alt="Box Icon"
-  //     className="text-gray-800 dark:text-white/90 h-6 w-6"
-  //   />,
-  //   name: "Calendar",
-  //   path: "/calendar",
-  // },
-  // {
-  //   icon: <img
-  //     src={GridIcon.src || GridIcon}
-  //     alt="Box Icon"
-  //     className="text-gray-800 dark:text-white/90 h-6 w-6"
-  //   />,
-  //   name: "User Profile",
-  //   path: "/profile",
-  // },
-
-  // {
-  //   name: "Forms",
-  //   icon: <img
-  //     src={GridIcon.src || GridIcon}
-  //     alt="Box Icon"
-  //     className="text-gray-800 dark:text-white/90 h-6 w-6"
-  //   />,
-  //   subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
-  // },
-  // {
-  //   name: "Tables",
-  //   icon: <img
-  //     src={GridIcon.src || GridIcon}
-  //     alt="Box Icon"
-  //     className="text-gray-800 dark:text-white/90 h-6 w-6"
-  //   />,
-  //   subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
-  // },
-  // {
-  //   name: "Pages",
-  //   icon: <img
-  //     src={GridIcon.src || GridIcon}
-  //     alt="Box Icon"
-  //     className="text-gray-800 dark:text-white/90 h-6 w-6"
-  //   />,
-  //   subItems: [
-  //     { name: "Blank Page", path: "/blank", pro: false },
-  //     { name: "404 Error", path: "/error-404", pro: false },
-  //   ],
-  // },
 ];
 
 const othersItems: NavItem[] = [
@@ -97,9 +48,9 @@ const othersItems: NavItem[] = [
     ],
   },
   {
-    icon: <ChartColumnIncreasing />,
-    name: "Doanh thu",
-    path: "/profile",
+    icon: <Apple />,
+    name: "Thực phẩm",
+    path: "/admin/thucpham",
   }
 ];
 

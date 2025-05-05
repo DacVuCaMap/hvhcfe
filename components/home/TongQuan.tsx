@@ -117,7 +117,47 @@ export default function TongQuan() {
                     />
                 </div>
             </div>
+            <div className='px-6'>
+                <h1 className='font-bold text-3xl text-gray-600 pb-10'>Video giới thiệu</h1>
+            </div>
+            <div className="container mx-auto px-4">
 
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className=" overflow-hidden shadow-xl transition-transform hover:scale-[1.02] bg-green-500">
+                        <div className="aspect-video">
+                            <iframe
+                                className="w-full h-full"
+                                src="https://www.youtube.com/embed/aYU_InzSDss"
+                                title="CHUYÊN NGÀNH QUÂN NHU và trải nghiệm của học viên CHUYÊN NGÀNH CHỈ HUY THAM MƯU HẬU CẦN"
+                                frameBorder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                referrerPolicy="strict-origin-when-cross-origin"
+                                allowFullScreen
+                            ></iframe>
+                        </div>
+                        <div className="p-4 text-center text-sm text-gray-600 font-bold">
+                            CHUYÊN NGÀNH QUÂN NHU và trải nghiệm của học viên CHỈ HUY THAM MƯU HẬU CẦN
+                        </div>
+                    </div>
+
+                    <div className=" overflow-hidden shadow-xl transition-transform hover:scale-[1.02] bg-green-500">
+                        <div className="aspect-video">
+                            <iframe
+                                className="w-full h-full"
+                                src="https://www.youtube.com/embed/FaTEI1X0NN0"
+                                title="HỌC VIỆN HẬU CẦN MÁI TRƯỜNG CỦA TẦM CAO TRÍ TUỆ"
+                                frameBorder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                referrerPolicy="strict-origin-when-cross-origin"
+                                allowFullScreen
+                            ></iframe>
+                        </div>
+                        <div className="p-4 text-center text-sm text-gray-600 font-bold">
+                            HỌC VIỆN HẬU CẦN - MÁI TRƯỜNG CỦA TẦM CAO TRÍ TUỆ
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     )
 }

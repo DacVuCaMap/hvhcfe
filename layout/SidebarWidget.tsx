@@ -10,7 +10,7 @@ export default function SidebarWidget() {
         #Đang trong quá trình phát triển
       </h3>
       <p className="mb-4 text-gray-500 text-theme-sm dark:text-gray-400">
-        Quản lí shipper, đối tác, người dùng và đơn hàng
+        Quản lí thuc pham
       </p>
       <a
         href="https://github.com/DacVuCaMap"
