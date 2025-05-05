@@ -18,7 +18,7 @@ export function middleware(request: NextRequest) {
     }
 
     // Nếu là route admin
-    if (pathname.startsWith('/admin')) {
+    if (pathname.startsWith('/admins')) {
         // Kiểm tra token
         if (!token) {
             // Nếu không có token, redirect về signin
