@@ -8,12 +8,14 @@ export const getRandomFoods = async (size: number): Promise<Food[]> => {
   try {
     const response = await axios.get<Food[]>(`${API_BASE_URL}/random/${size}`);
     const data = response.data;
-
     // Ensure image URLs are complete if necessary
-    return data.map(food => ({
-      ...food,
-      image: food.image.startsWith('http') ? food.image : `${API_BASE_URL}/images/${food.image}`
-    }));
+    return data.map(food => {
+      const imgUrl = food.image ? "http://localhost:8080" + food.image : ""
+      return {
+        ...food,
+        image: imgUrl
+      }
+    });
   } catch (error) {
     console.error("Error fetching foods:", error);
     return [];
@@ -36,6 +38,7 @@ export const saveFood = async (foodData: FoodRequestDto, imageFile: File | null)
     const response = await axios.post<Food>(`${API_BASE_URL}/admin/save`, formData);
 
     const savedFood = response.data;
+    console.log(savedFood);
     savedFood.image = savedFood.image.startsWith('http') ? savedFood.image : `${API_BASE_URL}/images/${savedFood.image}`;
     return savedFood;
   } catch (error: any) {
@@ -60,3 +63,18 @@ export const deleteFood = async (id: number): Promise<boolean> => {
     return false;
   }
 };
+
+export const apiShowPdf = async (num: number, group: string) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/pdfs?foodOrdinalNumbers=${num}&foodGroup=${group}`, {
+      responseType: 'blob', // Chìa khóa để nhận PDF đúng cách
+    });
+    return response.data;
+  } catch (error: any) {
+    if (error.response) {
+      console.error("show pdf error response:", error.response.data);
+    }
+    console.error("Error saving food:", error);
+    return null;
+  }
+}

@@ -7,6 +7,7 @@ export interface Food {
     carbohydrate: number;
     image: string; // URL or path to the image
     groupObj?:any;
+    ordinalNumbers:number;
   }
   
   // Type for the data part when saving (excluding id for creation)
@@ -17,5 +18,6 @@ export interface Food {
     protein: number;
     lipid: number;
     carbohydrate: number;
+    ordinalNumbers:number;
     // Image is handled separately as MultipartFile
   }

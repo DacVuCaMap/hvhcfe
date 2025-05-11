@@ -22,13 +22,13 @@ const FoodCard: React.FC<FoodCardProps> = ({ food, onEdit, onDelete }) => {
     <div className="bg-white rounded-lg shadow-md overflow-hidden transition-shadow duration-300 hover:shadow-xl border border-gray-200">
       <div className="relative w-full h-48">
         <Image
-          src={food.image || '/placeholder-image.png'} // Provide a fallback image
+          src={food.image ?food.image : '/images/placeholder.png'} // Provide a fallback image
           alt={food.name}
           layout="fill"
           objectFit="cover"
           onError={(e) => {
             // Handle image loading errors, e.g., show a placeholder
-            e.currentTarget.src = '/placeholder-image.png'; // Make sure you have this image in your public folder
+            e.currentTarget.src = '/images/placeholder.png'; // Make sure you have this image in your public folder
           }}
         />
       </div>

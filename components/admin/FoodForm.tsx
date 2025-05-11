@@ -18,6 +18,7 @@ const FoodForm: React.FC<FoodFormProps> = ({ initialFood, onSubmit, onCancel }) 
         protein: 0,
         lipid: 0,
         carbohydrate: 0,
+        ordinalNumbers: 0,
     });
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -33,6 +34,7 @@ const FoodForm: React.FC<FoodFormProps> = ({ initialFood, onSubmit, onCancel }) 
                 protein: initialFood.protein,
                 lipid: initialFood.lipid,
                 carbohydrate: initialFood.carbohydrate,
+                ordinalNumbers: initialFood.ordinalNumbers
             });
             setImagePreview(initialFood.image); // Show existing image
             setImageFile(null); // Clear any previously selected new file
@@ -45,6 +47,7 @@ const FoodForm: React.FC<FoodFormProps> = ({ initialFood, onSubmit, onCancel }) 
                 protein: 0,
                 lipid: 0,
                 carbohydrate: 0,
+                ordinalNumbers: 0
             });
             setImagePreview(null);
             setImageFile(null);
@@ -54,6 +57,7 @@ const FoodForm: React.FC<FoodFormProps> = ({ initialFood, onSubmit, onCancel }) 
 
     const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         let { name, value, type } = e.target;
+
         setFormData(prev => ({
             ...prev,
             [name]: type === 'number' ? parseFloat(value) || 0 : value,
@@ -108,7 +112,7 @@ const FoodForm: React.FC<FoodFormProps> = ({ initialFood, onSubmit, onCancel }) 
 
     return (
         <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center z-50 p-4">
-            <div className="bg-white p-6 md:p-8 rounded-lg shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div className="bg-white p-6 md:p-8 rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
                 <h2 className="text-2xl font-semibold mb-6 text-gray-800">
                     {initialFood ? 'Sửa thực phẩm' : 'Thêm thực phẩm mới'}
                 </h2>
@@ -142,7 +146,7 @@ const FoodForm: React.FC<FoodFormProps> = ({ initialFood, onSubmit, onCancel }) 
                             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                         >
                             <option value="">-- Chọn nhóm thực phẩm --</option>
-                            {listGroup.map((group:any) => (
+                            {listGroup.map((group: any) => (
                                 <option key={group.value} value={group.value}>
                                     {group.name}
                                 </option>
@@ -151,7 +155,21 @@ const FoodForm: React.FC<FoodFormProps> = ({ initialFood, onSubmit, onCancel }) 
                     </div>
 
                     {/* Nutritional Info */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div>
+                            <label htmlFor="ordinalNumbers" className="block text-sm font-medium text-gray-700 mb-1">STT</label>
+                            <input
+                                type="number"
+                                id="ordinalNumbers"
+                                name="ordinalNumbers"
+                                value={formData.ordinalNumbers}
+                                onChange={handleChange}
+                                step="0.1"
+                                min="0"
+                                required
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                            />
+                        </div>
                         <div>
                             <label htmlFor="protein" className="block text-sm font-medium text-gray-700 mb-1">Protein (g)</label>
                             <input
