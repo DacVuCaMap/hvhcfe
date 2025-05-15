@@ -7,6 +7,10 @@ interface ImageEntry {
     preview: string;
     content: string;
 }
+type Story = {
+    url: string,
+    content: string
+}
 
 const MAX_IMAGES = 10;
 
@@ -16,8 +20,9 @@ export default function AiTestForm() {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
+    const [result, setResult] = useState<Story[]>([])
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const url = 'https://edb3-222-252-127-165.ngrok-free.app' 
+    const url = 'https://edb3-222-252-127-165.ngrok-free.app'
     // http://localhost:8000
     // Dọn dẹp URL đối tượng khi thành phần bị unmount hoặc imageEntries thay đổi
     useEffect(() => {
@@ -105,40 +110,54 @@ export default function AiTestForm() {
 
         // Để gỡ lỗi: xem các mục FormData
         for (let pair of formData.entries()) {
-          console.log(pair[0]+ ': ' + (pair[1] instanceof File ? pair[1].name : pair[1]));
+            console.log(pair[0] + ': ' + (pair[1] instanceof File ? pair[1].name : pair[1]));
         }
+
         // Log FormData để kiểm tra
         try {
-          const response = await fetch(url+'/upload', {
-            method: 'POST',
-            body: formData,
-          });
+            const response = await fetch(url + '/upload', {
+                method: 'POST',
+                body: formData,
+            });
 
-          if (!response.ok) {
-            let errorData;
-            try {
-                errorData = await response.json();
-            } catch (e) {
-                errorData = { message: `Lỗi HTTP! Trạng thái: ${response.status}` };
+            if (!response.ok) {
+                let errorData;
+                try {
+                    errorData = await response.json();
+                } catch (e) {
+                    errorData = { message: `Lỗi HTTP! Trạng thái: ${response.status}` };
+                }
+                throw new Error(errorData.message || `Lỗi HTTP! Trạng thái: ${response.status}`);
             }
-            throw new Error(errorData.message || `Lỗi HTTP! Trạng thái: ${response.status}`);
-          }
 
-          const result = await response.json();
-          console.log(result);
-          setSuccessMessage(result.response);
+            const result = await response.json();
+            console.log(result);
+            setSuccessMessage(result.response);
+            if (result.response && Array.isArray(result.response) && result.response.length === imageEntries.length) {
+                console.log(imageEntries)
+                const newStory: Story[] = result.response.map((res: string, index: number) => {
+                    const urlImg = imageEntries[index] ? URL.createObjectURL(imageEntries[index].file) : "";
+                    const rs: Story = {
+                        url: urlImg,
+                        content: res
+                    }
+                    return rs;
+                })
+                console.log(newStory);
+                setResult(newStory);
+            }
 
-          // Dọn dẹp URL đối tượng của các ảnh đã tải lên thành công
-          imageEntries.forEach(entry => URL.revokeObjectURL(entry.preview));
+            // Dọn dẹp URL đối tượng của các ảnh đã tải lên thành công
+            // imageEntries.forEach(entry => URL.revokeObjectURL(entry.preview));
 
-          setImageEntries([]);
-          setSummary('');
+            setImageEntries([]);
+            setSummary('');
 
         } catch (err: any) {
-          setError(err.message || 'Không thể tải lên. Vui lòng thử lại.');
-          console.error('Lỗi tải lên:', err);
+            setError(err.message || 'Không thể tải lên. Vui lòng thử lại.');
+            console.error('Lỗi tải lên:', err);
         } finally {
-          setIsLoading(false);
+            setIsLoading(false);
         }
     };
 
@@ -229,12 +248,12 @@ export default function AiTestForm() {
                                             />
                                             <div>
                                                 <label htmlFor={`content-${entry.id}`} className="block text-sm font-medium text-sky-400 mb-1">
-                                                    Nội dung cho Ảnh {index + 1}
+                                                    Ảnh {index + 1}
                                                 </label>
                                                 <textarea
                                                     id={`content-${entry.id}`}
                                                     rows={3}
-                                                    className="shadow-sm appearance-none block w-full p-3 border border-slate-600 rounded-md placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 sm:text-sm bg-slate-700 text-gray-100 caret-sky-400 transition-colors"
+                                                    className="shadow-sm hidden appearance-none w-full p-3 border border-slate-600 rounded-md placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 sm:text-sm bg-slate-700 text-gray-100 caret-sky-400 transition-colors"
                                                     placeholder="Mô tả về ảnh này..."
                                                     value={entry.content}
                                                     onChange={(e) => handleContentChange(entry.id, e.target.value)}
@@ -301,6 +320,67 @@ export default function AiTestForm() {
                             </div>
                         </div>
                     )}
+
+
+
+                    {
+                        successMessage && (
+                            <div className="max-w-2xl mx-auto p-6 bg-green-50 border border-green-200 text-green-800 rounded-xl shadow-lg transition-all duration-300 ease-in-out animate-fade-in">
+                                <div className="flex items-start gap-5">
+                                    <div className="flex-shrink-0 mt-0.5">
+                                        {/* Refined SVG for a slightly cleaner look if desired, or keep the original */}
+                                        <svg
+                                            className="h-7 w-7 text-green-500"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 20 20"
+                                            fill="currentColor"
+                                            aria-hidden="true"
+                                        >
+                                            <path
+                                                fillRule="evenodd"
+                                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L10 8.586 7.707 6.293a1 1 0 00-1.414 1.414L8.586 10l-2.293 2.293a1 1 0 001.414 1.414L10 11.414l2.293 2.293a1 1 0 001.414-1.414L11.414 10l2.293-2.293z"
+                                                clipRule="evenodd"
+                                            />
+                                        </svg>
+                                        {/* Or a checkmark icon for success */}
+                                        {/* <svg
+            className="h-7 w-7 text-green-500"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg> */}
+                                    </div>
+                                    <div className="flex-1">
+                                        <h3 className="text-lg font-bold text-green-700">Thành công!</h3>
+                                        <div className="mt-3 space-y-4">
+                                            {result.map((story, idx) => (
+                                                <div
+                                                    key={idx}
+                                                    className="flex items-start gap-4 bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition duration-200 ease-in-out cursor-pointer"
+                                                >
+                                                    <img
+                                                        src={story.url}
+                                                        alt={`Ảnh ${idx + 1}`}
+                                                        className="w-24 h-24 rounded-lg object-cover border border-gray-200 flex-shrink-0"
+                                                    />
+                                                    <p className="text-sm text-gray-700 leading-relaxed">
+                                                        {story.content}
+                                                    </p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    }
 
                     {/* Nút gửi */}
                     <div className="pt-5">
