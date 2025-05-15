@@ -22,7 +22,9 @@ export default function AiTestForm() {
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [result, setResult] = useState<Story[]>([])
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const url = 'https://edb3-222-252-127-165.ngrok-free.app'
+    const [typePrompt, setTypePrompt] = useState('0');
+    const url = 'https://7b78-222-252-127-165.ngrok-free.app'
+    // const url = 'http://localhost:8000'
     // http://localhost:8000
     // Dọn dẹp URL đối tượng khi thành phần bị unmount hoặc imageEntries thay đổi
     useEffect(() => {
@@ -107,7 +109,7 @@ export default function AiTestForm() {
             formData.append('contents', entry.content || '');
         });
         formData.append('summary', summary);
-
+        formData.append('typePrompt', typePrompt)
         // Để gỡ lỗi: xem các mục FormData
         for (let pair of formData.entries()) {
             console.log(pair[0] + ': ' + (pair[1] instanceof File ? pair[1].name : pair[1]));
@@ -167,7 +169,7 @@ export default function AiTestForm() {
                 <header className="mb-12 text-center">
                     <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight">
                         <span className="bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-cyan-300">
-                            Trình Tải Ảnh AI
+                            Trình Tạo Nội Dung Bằng Ảnh
                         </span>
                     </h1>
                     <p className="mt-4 text-lg text-slate-400">
@@ -253,7 +255,7 @@ export default function AiTestForm() {
                                                 <textarea
                                                     id={`content-${entry.id}`}
                                                     rows={3}
-                                                    className="shadow-sm hidden appearance-none w-full p-3 border border-slate-600 rounded-md placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 sm:text-sm bg-slate-700 text-gray-100 caret-sky-400 transition-colors"
+                                                    className="shadow-sm appearance-none w-full p-3 border border-slate-600 rounded-md placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 sm:text-sm bg-slate-700 text-gray-100 caret-sky-400 transition-colors"
                                                     placeholder="Mô tả về ảnh này..."
                                                     value={entry.content}
                                                     onChange={(e) => handleContentChange(entry.id, e.target.value)}
@@ -266,7 +268,23 @@ export default function AiTestForm() {
                             </div>
                         </div>
                     )}
-
+                    <div className="relative inline-block w-full md:w-64">
+                        <select
+                            className="block appearance-none w-full bg-gray-700 border border-gray-300 hover:border-gray-400 px-4 py-2 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline text-gray-200"
+                            name=""
+                            id=""
+                            value={typePrompt}
+                            onChange={(e) => setTypePrompt(e.target.value)}
+                        >
+                            <option value="0">Kể chuyện</option>
+                            <option value="1">Review</option>
+                        </select>
+                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-200">
+                            <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                            </svg>
+                        </div>
+                    </div>
                     {/* Trường tóm tắt */}
                     <div>
                         <label htmlFor="summary" className="block text-sm font-semibold text-sky-300 mb-1">
@@ -321,66 +339,34 @@ export default function AiTestForm() {
                         </div>
                     )}
 
+                    {successMessage && (
+                        <div className="max-w-4xl mx-auto p-4 sm:p-8 bg-gray-950 text-white rounded-xl shadow-2xl transition-all duration-300 ease-in-out animate-fade-in">
+                            <div className="space-y-10"> {/* Khoảng cách giữa các card */}
+                                {result.map((story, idx) => (
+                                    <div
+                                        key={idx}
+                                        className="flex flex-col bg-gray-900 rounded-lg shadow-xl hover:shadow-2xl transition duration-200 ease-in-out cursor-pointer overflow-hidden"
+                                    >
+                                        <img
+                                            src={story.url}
+                                            alt={`Ảnh ${idx + 1}`}
+                                            className="w-full h-auto object-contain rounded-t-lg mb-5"
+                                        />
 
-
-                    {
-                        successMessage && (
-                            <div className="max-w-2xl mx-auto p-6 bg-green-50 border border-green-200 text-green-800 rounded-xl shadow-lg transition-all duration-300 ease-in-out animate-fade-in">
-                                <div className="flex items-start gap-5">
-                                    <div className="flex-shrink-0 mt-0.5">
-                                        {/* Refined SVG for a slightly cleaner look if desired, or keep the original */}
-                                        <svg
-                                            className="h-7 w-7 text-green-500"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 20 20"
-                                            fill="currentColor"
-                                            aria-hidden="true"
-                                        >
-                                            <path
-                                                fillRule="evenodd"
-                                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L10 8.586 7.707 6.293a1 1 0 00-1.414 1.414L8.586 10l-2.293 2.293a1 1 0 001.414 1.414L10 11.414l2.293 2.293a1 1 0 001.414-1.414L11.414 10l2.293-2.293z"
-                                                clipRule="evenodd"
-                                            />
-                                        </svg>
-                                        {/* Or a checkmark icon for success */}
-                                        {/* <svg
-            className="h-7 w-7 text-green-500"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-          </svg> */}
-                                    </div>
-                                    <div className="flex-1">
-                                        <h3 className="text-lg font-bold text-green-700">Thành công!</h3>
-                                        <div className="mt-3 space-y-4">
-                                            {result.map((story, idx) => (
-                                                <div
-                                                    key={idx}
-                                                    className="flex items-start gap-4 bg-white p-4 rounded-lg shadow-sm hover:shadow-md transition duration-200 ease-in-out cursor-pointer"
-                                                >
-                                                    <img
-                                                        src={story.url}
-                                                        alt={`Ảnh ${idx + 1}`}
-                                                        className="w-24 h-24 rounded-lg object-cover border border-gray-200 flex-shrink-0"
-                                                    />
-                                                    <p className="text-sm text-gray-700 leading-relaxed">
-                                                        {story.content}
-                                                    </p>
-                                                </div>
-                                            ))}
+                                        <div className="p-5 pt-0"> {/* Padding, pt-0 để không double padding dưới ảnh */}
+                                            {/* Mô phỏng style text tương tự ảnh mẫu (Tiêu đề/Nội dung) */}
+                                            <p className="text-xl sm:text-2xl font-bold text-pink-400 mb-3">
+                                                Story #{idx + 1} {/* Giả Tiêu đề */}
+                                            </p>
+                                            <p className="text-base sm:text-lg text-gray-300 leading-relaxed">
+                                                {story.content} {/* Nội dung chính */}
+                                            </p>
                                         </div>
                                     </div>
-                                </div>
+                                ))}
                             </div>
-                        )
-                    }
+                        </div>
+                    )}
 
                     {/* Nút gửi */}
                     <div className="pt-5">
