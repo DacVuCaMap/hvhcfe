@@ -33,7 +33,7 @@ const headNav: NavItem[] = [
             { name: 'Tính toán năng lượng', path: '/services/support' },
         ]
     },
-    { name: 'Quản lí sản phẩm', path: '/admin' },
+    { name: 'Quản lí', path: '/admin' },
     { name: 'Liên hệ', path: '/lien-he' }
 ];
 

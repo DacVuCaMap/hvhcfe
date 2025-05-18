@@ -9,7 +9,7 @@ interface ImageEntry {
 }
 type Story = {
     url: string,
-    content: string
+    content: string,
 }
 
 const MAX_IMAGES = 10;
@@ -19,11 +19,12 @@ export default function AiTestForm() {
     const [summary, setSummary] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
-    const [successMessage, setSuccessMessage] = useState<string | null>(null);
+    const [successMessage, setSuccessMessage] = useState<Story | null>(null);
     const [result, setResult] = useState<Story[]>([])
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [typePrompt, setTypePrompt] = useState('0');
-    const url = 'https://7b78-222-252-127-165.ngrok-free.app'
+    const [isLoadingVideo, setIsLoadingVideo] = useState<boolean>(false)
+    const url = 'http://localhost:8000'
     // const url = 'http://localhost:8000'
     // http://localhost:8000
     // Dọn dẹp URL đối tượng khi thành phần bị unmount hoặc imageEntries thay đổi
@@ -75,6 +76,14 @@ export default function AiTestForm() {
         );
     };
 
+    const handleResultChange = (ind: number, newContent: string) => {
+        setResult(prevResult =>
+            prevResult.map((item, index) =>
+                index === ind ? { ...item, content: newContent } : item
+            )
+        );
+    }
+
     const handleRemoveImage = (id: string) => {
         setError(null);
         const entryToRemove = imageEntries.find(entry => entry.id === id);
@@ -89,13 +98,6 @@ export default function AiTestForm() {
         setIsLoading(true);
         setError(null);
         setSuccessMessage(null);
-
-        if (imageEntries.length === 0) {
-            setError("Vui lòng tải lên ít nhất một ảnh.");
-            setIsLoading(false);
-            return;
-        }
-
         if (!summary.trim()) {
             setError("Vui lòng nhập nội dung tóm tắt chung.");
             setIsLoading(false);
@@ -114,7 +116,7 @@ export default function AiTestForm() {
         for (let pair of formData.entries()) {
             console.log(pair[0] + ': ' + (pair[1] instanceof File ? pair[1].name : pair[1]));
         }
-
+        console.log(formData)
         // Log FormData để kiểm tra
         try {
             const response = await fetch(url + '/upload', {
@@ -135,13 +137,19 @@ export default function AiTestForm() {
             const result = await response.json();
             console.log(result);
             setSuccessMessage(result.response);
-            if (result.response && Array.isArray(result.response) && result.response.length === imageEntries.length) {
+            if (result.response && Array.isArray(result.response)) {
                 console.log(imageEntries)
-                const newStory: Story[] = result.response.map((res: string, index: number) => {
-                    const urlImg = imageEntries[index] ? URL.createObjectURL(imageEntries[index].file) : "";
+                const newStory: Story[] = result.response.map((res: any, index: number) => {
+                    let urlImg = "";
+                    if (res.image) {
+                        urlImg = url + res.image
+                    }
+                    else {
+                        urlImg = imageEntries[index] ? URL.createObjectURL(imageEntries[index].file) : "";
+                    }
                     const rs: Story = {
                         url: urlImg,
-                        content: res
+                        content: res.content
                     }
                     return rs;
                 })
@@ -181,7 +189,7 @@ export default function AiTestForm() {
                     {/* Phần chọn File */}
                     <div>
                         <label htmlFor="file-upload" className="block text-sm font-semibold text-sky-300 mb-2">
-                            Chọn Ảnh ({imageEntries.length}/{MAX_IMAGES})
+                            Chọn Ảnh ({imageEntries.length}/{MAX_IMAGES}) <span className='text-gray-500 text-xs ml-1'>(Không có AI sẽ tự tạo)</span>
                         </label>
                         <div className={`mt-1 flex justify-center items-center px-6 pt-8 pb-8 border-2 ${error ? 'border-red-500' : 'border-slate-600'} border-dashed rounded-md hover:border-sky-500 transition-colors duration-300 ease-in-out`}>
                             <div className="space-y-2 text-center">
@@ -278,6 +286,7 @@ export default function AiTestForm() {
                         >
                             <option value="0">Kể chuyện</option>
                             <option value="1">Review</option>
+                            <option value="2">Giả định</option>
                         </select>
                         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-200">
                             <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -321,6 +330,24 @@ export default function AiTestForm() {
                             </div>
                         </div>
                     )}
+                    {/* Nút gửi */}
+                    <div className="pt-5">
+                        <button
+                            type="submit"
+                            disabled={isLoading}
+                            className="w-full flex justify-center items-center py-3.5 px-4 border border-transparent rounded-lg shadow-lg text-base font-medium text-white bg-gradient-to-r from-sky-500 to-cyan-500 hover:from-sky-600 hover:to-cyan-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-cyan-500 disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95"
+                        >
+                            {isLoading ? (
+                                <>
+                                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                    Đang tải lên...
+                                </>
+                            ) : 'Gửi Dữ Liệu'}
+                        </button>
+                    </div>
                     {successMessage && (
                         <div className="p-4 bg-green-900/50 border border-green-700 text-green-300 rounded-md shadow-md animate-pulseOnce">
                             <div className="flex">
@@ -332,7 +359,7 @@ export default function AiTestForm() {
                                 <div className="ml-3">
                                     <h3 className="text-sm font-medium text-green-300">Thành công!</h3>
                                     <div className="mt-2 text-sm text-green-400">
-                                        <p>{successMessage}</p>
+                                        <p>{successMessage.content}</p>
                                     </div>
                                 </div>
                             </div>
@@ -358,40 +385,46 @@ export default function AiTestForm() {
                                             <p className="text-xl sm:text-2xl font-bold text-pink-400 mb-3">
                                                 Story #{idx + 1} {/* Giả Tiêu đề */}
                                             </p>
-                                            <p className="text-base sm:text-lg text-gray-300 leading-relaxed">
-                                                {story.content} {/* Nội dung chính */}
-                                            </p>
+                                            <textarea
+                                                rows={3}
+                                                className="shadow-sm text-lg appearance-none w-full p-3 border border-slate-600 rounded-md placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 sm:text-sm bg-gray-700 text-gray-100 caret-sky-400 transition-colors"
+                                                placeholder="Sửa lại edit"
+                                                value={story.content}
+                                                onChange={(e) => handleResultChange(idx, e.target.value)}
+                                                disabled={isLoadingVideo}
+                                            />
                                         </div>
                                     </div>
                                 ))}
                             </div>
                         </div>
                     )}
+                    {result.length > 0 &&
+                        <div className="pt-5">
+                            <button
+                                type="button"
+                                disabled={isLoadingVideo}
+                                className="w-full flex justify-center items-center py-3.5 px-4 border border-transparent rounded-lg shadow-lg text-base font-medium text-white bg-gradient-to-r from-sky-500 to-cyan-500 hover:from-sky-600 hover:to-cyan-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-cyan-500 disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95"
+                            >
+                                {isLoadingVideo ? (
+                                    <>
+                                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                        Đang tạo video lên...
+                                    </>
+                                ) : 'Tạo video'}
+                            </button>
+                        </div>
+                    }
 
-                    {/* Nút gửi */}
-                    <div className="pt-5">
-                        <button
-                            type="submit"
-                            disabled={isLoading || imageEntries.length === 0}
-                            className="w-full flex justify-center items-center py-3.5 px-4 border border-transparent rounded-lg shadow-lg text-base font-medium text-white bg-gradient-to-r from-sky-500 to-cyan-500 hover:from-sky-600 hover:to-cyan-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-cyan-500 disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95"
-                        >
-                            {isLoading ? (
-                                <>
-                                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                    </svg>
-                                    Đang tải lên...
-                                </>
-                            ) : 'Gửi Dữ Liệu'}
-                        </button>
-                    </div>
                 </form>
 
                 <footer className="mt-16 text-center text-sm text-slate-500">
                     <p>&copy; {new Date().getFullYear()} Công ty AI của bạn. Bảo lưu mọi quyền.</p>
                 </footer>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 }

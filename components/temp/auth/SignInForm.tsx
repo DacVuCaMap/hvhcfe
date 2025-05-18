@@ -4,6 +4,7 @@ import Input from "@/components/temp/form/input/InputField";
 import Label from "@/components/temp/form/Label";
 import Button from "@/components/temp/ui/button/Button";
 import { loginUser } from "@/utils/api";
+import Cookies from 'js-cookie';
 import { ChevronLeft, Eye, EyeClosed } from "lucide-react";
 // import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "@/icons";
 import Link from "next/link";
@@ -26,20 +27,24 @@ export default function SignInForm() {
     setIsLoading(true);
     try {
       const response = await loginUser(email, password);
-      if (response.success) {
+      console.log(response);
+      if (response.message && response.message==="Login successful") {
+
+        // const { role, name, avt } = response.value || {};
+        // const userRole = role || 'USER';
+        // const userInfo = {
+        //   name: name || 'Unknown',
+        //   avt: avt || '/default-avatar.png',
+        //   role: userRole,
+        // };
+
+        // setUser(userInfo); // Context
+        // localStorage.setItem('userInfo', JSON.stringify(userInfo)); // localStorage
+
+        // router.push(userRole === 'ADMIN' || userRole === 'EMP' ? '/admin' : '/');
+        Cookies.set("exp", response.token, { expires: 1 / 24 }); // 1 giờ = 1/24 ngày
         toast.success("Đăng nhập thành công");
-        const { role, name, avt } = response.value || {};
-        const userRole = role || 'USER';
-        const userInfo = {
-          name: name || 'Unknown',
-          avt: avt || '/default-avatar.png',
-          role: userRole,
-        };
-
-        setUser(userInfo); // Context
-        localStorage.setItem('userInfo', JSON.stringify(userInfo)); // localStorage
-
-        router.push(userRole === 'ADMIN' || userRole === 'EMP' ? '/admin' : '/');
+        router.push("/admin")
       } else {
         toast.error(response.message);
       }
@@ -53,7 +58,7 @@ export default function SignInForm() {
     <div className="flex flex-col flex-1 lg:w-1/2 w-full">
       <div className="w-full max-w-md sm:pt-10 mx-auto mb-5">
         <Link
-          href="/admin"
+          href="/"
           className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
         >
           {/* <ChevronLeftIcon /> */}
@@ -68,12 +73,12 @@ export default function SignInForm() {
               ĐĂNG NHẬP
             </h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              Đăng nhập bằng email và mật khẩu của bạn
+              Đăng nhập bằng tài khoản và mật khẩu của bạn
             </p>
           </div>
           <div>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-1 sm:gap-5">
-              <button className="inline-flex items-center justify-center gap-3 py-3 text-sm font-normal text-gray-700 transition-colors bg-gray-100 rounded-lg px-7 hover:bg-gray-200 hover:text-gray-800 dark:bg-white/5 dark:text-white/90 dark:hover:bg-white/10">
+              {/* <button className="inline-flex items-center justify-center gap-3 py-3 text-sm font-normal text-gray-700 transition-colors bg-gray-100 rounded-lg px-7 hover:bg-gray-200 hover:text-gray-800 dark:bg-white/5 dark:text-white/90 dark:hover:bg-white/10">
                 <svg
                   width="40"
                   height="20"
@@ -99,7 +104,7 @@ export default function SignInForm() {
                   />
                 </svg>
                 Đăng nhập bằng Google
-              </button>
+              </button> */}
               {/* <button className="inline-flex items-center justify-center gap-3 py-3 text-sm font-normal text-gray-700 transition-colors bg-gray-100 rounded-lg px-7 hover:bg-gray-200 hover:text-gray-800 dark:bg-white/5 dark:text-white/90 dark:hover:bg-white/10">
                 <svg
                   width="21"
@@ -128,13 +133,13 @@ export default function SignInForm() {
               <div className="space-y-6">
                 <div>
                   <Label>
-                    Email <span className="text-error-500">*</span>{" "}
+                    Tài khoản đăng nhập <span className="text-error-500">*</span>{" "}
                   </Label>
-                  <Input required onChange={e => setEmail(e.target.value)} value={email} placeholder="info@gmail.com" type="email" />
+                  <Input required onChange={e => setEmail(e.target.value)} value={email} placeholder="Nhập tài khoản" type="text" />
                 </div>
                 <div>
                   <Label>
-                    Password <span className="text-error-500">*</span>{" "}
+                    Mật khẩu <span className="text-error-500">*</span>{" "}
                   </Label>
                   <div className="relative">
                     <Input
@@ -142,7 +147,7 @@ export default function SignInForm() {
                       onChange={(e) => setPassword(e.target.value)}
                       value={password}
                       type={showPassword ? "text" : "password"}
-                      placeholder="Enter your password"
+                      placeholder="Nhập mật khẩu"
                     />
                     <span
                       onClick={() => setShowPassword(!showPassword)}
@@ -158,7 +163,7 @@ export default function SignInForm() {
                     </span>
                   </div>
                 </div>
-                <div className="flex items-center justify-between">
+                {/* <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <Checkbox checked={isChecked} onChange={setIsChecked} />
                     <span className="block font-normal text-gray-700 text-theme-sm dark:text-gray-400">
@@ -171,7 +176,7 @@ export default function SignInForm() {
                   >
                     Quên mật khẩu?
                   </Link>
-                </div>
+                </div> */}
                 <div>
                   <Button className="w-full" size="sm">
                     Đăng nhập
@@ -180,7 +185,7 @@ export default function SignInForm() {
               </div>
             </form>
 
-            <div className="mt-5">
+            {/* <div className="mt-5">
               <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
                 Không có tài khoản? {""}
                 <Link
@@ -190,7 +195,7 @@ export default function SignInForm() {
                   Đăng ký
                 </Link>
               </p>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

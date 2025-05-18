@@ -22,8 +22,8 @@ export const registerUser = async (formData: any) => {
 
 export const loginUser = async (email: string, password: string) => {
     try {
-        const postData = { email: email, password: password }
-        const response = await api.post("api/auth/login", postData);
+        const postData = { username: email, password: password }
+        const response = await api.post("api/khoaquannhu/auth/login", postData);
         return response.data;
     } catch (error: any) {
         console.error("Lỗi khi đăng nhập:", error);

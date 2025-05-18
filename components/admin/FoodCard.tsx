@@ -1,7 +1,7 @@
 // --- 3. components/FoodCard.tsx ---
 // Displays a single food item with Edit and Delete buttons
 
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image'; // Use Next.js Image for optimization
 import { Food } from '@/type/food';
 
@@ -12,24 +12,22 @@ interface FoodCardProps {
 }
 
 const FoodCard: React.FC<FoodCardProps> = ({ food, onEdit, onDelete }) => {
+    const [isError, setIsError] = useState(false);
+
   const handleDeleteClick = () => {
     if (window.confirm(`Bạn có chắc chắn muốn xóa "${food.name}" không?`)) {
       onDelete(food.id);
     }
   };
-
+  console.log(food)
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden transition-shadow duration-300 hover:shadow-xl border border-gray-200">
       <div className="relative w-full h-48">
         <Image
-          src={food.image ?food.image : '/images/placeholder.png'} // Provide a fallback image
+          src={food.image} // Provide a fallback image
           alt={food.name}
           layout="fill"
           objectFit="cover"
-          onError={(e) => {
-            // Handle image loading errors, e.g., show a placeholder
-            e.currentTarget.src = '/images/placeholder.png'; // Make sure you have this image in your public folder
-          }}
         />
       </div>
       <div className="p-4">

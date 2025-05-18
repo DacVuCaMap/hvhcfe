@@ -30,7 +30,7 @@ export default function AuthLayout({
                   />
                 </Link>
                 <p className="text-center text-gray-400 dark:text-white/60">
-                  DELLIVERY MANAGERMENT
+                  FOOD MANAGERMENT
                 </p>
               </div>
             </div>

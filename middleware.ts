@@ -4,7 +4,7 @@ import type { NextRequest } from 'next/server'
 // This function can be marked `async` if using `await` inside
 export function middleware(request: NextRequest) {
     // Lấy JWT token từ cookie
-    const token = request.cookies.get('jwt')?.value
+    const token = request.cookies.get('exp')?.value
 
     // Đường dẫn hiện tại
     const pathname = request.nextUrl.pathname
@@ -12,13 +12,13 @@ export function middleware(request: NextRequest) {
     // Các route public không cần token
     const publicRoutes = ['/signin', '/signup']
 
-    // Nếu là route public, cho phép truy cập không cần kiểm tra token
-    if (publicRoutes.includes(pathname)) {
-        return NextResponse.next()
-    }
+    // // Nếu là route public, cho phép truy cập không cần kiểm tra token
+    // if (publicRoutes.includes(pathname)) {
+    //     return NextResponse.next()
+    // }
 
     // Nếu là route admin
-    if (pathname.startsWith('/admins')) {
+    if (pathname.startsWith('/admin')) {
         // Kiểm tra token
         if (!token) {
             // Nếu không có token, redirect về signin
