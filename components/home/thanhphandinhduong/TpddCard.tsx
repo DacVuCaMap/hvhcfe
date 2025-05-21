@@ -4,12 +4,13 @@ import { Food } from '@/type/food';
 import React from 'react';
 // Sử dụng icons chung cho dinh dưỡng từ lucide-react
 // npm install lucide-react (nếu chưa có)
-import { Flame, Droplet, Zap, Info, Tag, Image as ImageIcon } from 'lucide-react';
+import { Flame, Droplet, Zap, Info, Tag, Image as ImageIcon, PlusCircle } from 'lucide-react';
 import { apiShowPdf } from '@/lib/api';
 
 interface FoodCardProps {
     food: Food;
     style?: React.CSSProperties; // Cho phép truyền style để làm animation delay
+    onClick?: (food: Food) => void;
 }
 
 const NutrientDisplay: React.FC<{ icon: React.ReactNode, label: string, value: number, unit: string, colorClass: string }> = ({ icon, label, value, unit, colorClass }) => (
@@ -22,9 +23,9 @@ const NutrientDisplay: React.FC<{ icon: React.ReactNode, label: string, value: n
     </div>
 );
 
-const TpddCard: React.FC<FoodCardProps> = ({ food, style }) => {
+const TpddCard: React.FC<FoodCardProps> = ({ food, style, onClick }) => {
     const handleShowPdf = async () => {
-        const response : any = await apiShowPdf(food.ordinalNumbers, food.group);
+        const response: any = await apiShowPdf(food.ordinalNumbers, food.group);
         console.log(response)
         if (!response) {
             console.error("Không nhận được dữ liệu PDF");
@@ -35,6 +36,12 @@ const TpddCard: React.FC<FoodCardProps> = ({ food, style }) => {
         const pdfUrl = URL.createObjectURL(pdfBlob);
 
         window.open(pdfUrl, '_blank');
+    };
+    const handleAddClick = (e: React.MouseEvent) => {
+        e.stopPropagation(); // Ngăn chặn sự kiện click lan truyền lên div cha (card)
+        if (onClick) {
+            onClick(food);
+        }
     };
     return (
         <div
@@ -74,11 +81,24 @@ const TpddCard: React.FC<FoodCardProps> = ({ food, style }) => {
                 <div className="flex items-center justify-between pt-2 mt-2 border-t border-gray-200 border-opacity-50">
                     <p className="text-xs text-gray-500 flex items-center">
                         <Info size={14} className="mr-1 text-gray-400" />
-                        Mã số: {food.ordinalNumbers}
+                        STT: {food.ordinalNumbers}
                     </p>
-                    <button onClick={handleShowPdf} className="px-4 py-2 text-xs font-semibold text-white bg-gradient-to-r from-green-500 to-teal-600 rounded-lg shadow-md hover:from-green-600 hover:to-teal-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75 transform hover:scale-105 transition-all duration-300">
-                        Xem pdf
-                    </button>
+                    {onClick ? (
+                        <button
+                            onClick={handleAddClick} // Sử dụng handleAddClick
+                            className="px-4 py-2 text-xs font-semibold text-white bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg shadow-md hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 transform hover:scale-105 transition-all duration-300 flex items-center space-x-1"
+                        >
+                            <PlusCircle size={14} />
+                            <span>Thêm</span>
+                        </button>
+                    ) : (
+                        <button
+                            onClick={handleShowPdf} // Sử dụng handleShowPdf
+                            className="px-4 py-2 text-xs font-semibold text-white bg-gradient-to-r from-green-500 to-teal-600 rounded-lg shadow-md hover:from-green-600 hover:to-teal-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75 transform hover:scale-105 transition-all duration-300"
+                        >
+                            Xem pdf
+                        </button>
+                    )}
                 </div>
             </div>
             {/* Hiệu ứng "shine" khi hover */}

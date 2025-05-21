@@ -1,6 +1,6 @@
 "use client"
 import React, { useState, ChangeEvent, FormEvent, useRef, useEffect } from 'react';
-
+import './AiTest.css'
 interface ImageEntry {
     id: string; // Để theo dõi duy nhất, hữu ích cho key trong React
     file: File;
@@ -234,15 +234,19 @@ export default function AiTestForm() {
 
                     {/* Xem trước ảnh và trường nội dung */}
                     {imageEntries.length > 0 && (
-                        <div className="space-y-8">
-                            <h2 className="text-2xl font-semibold text-sky-300 border-b border-slate-700 pb-3">Chi tiết Ảnh</h2>
+                        <div className="space-y-8 animate-fade-in">
+                            <h2 className="text-2xl font-semibold text-sky-300 border-b border-slate-700 pb-3 transition-all duration-500 animate-slide-down">Chi tiết Ảnh</h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {imageEntries.map((entry, index) => (
-                                    <div key={entry.id} className="p-5 bg-slate-700/60 rounded-lg border border-slate-600 shadow-lg relative group transition-all duration-300 hover:shadow-sky-500/30">
+                                    <div
+                                        key={entry.id}
+                                        className="p-5 bg-slate-700/60 rounded-lg border border-slate-600 shadow-lg relative group transition-all duration-300 hover:shadow-sky-500/30 animate-fade-in-up"
+                                        style={{ animationDelay: `${index * 80}ms` }}
+                                    >
                                         <button
                                             type="button"
                                             onClick={() => handleRemoveImage(entry.id)}
-                                            className="absolute -top-3 -right-3 z-10 p-1.5 bg-red-600 text-white rounded-full hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-slate-700 transition-transform duration-200 ease-in-out transform group-hover:scale-110"
+                                            className="absolute -top-3 -right-3 z-10 p-1.5 bg-red-600 text-white rounded-full hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-slate-700 transition-transform duration-200 ease-in-out transform group-hover:scale-110 animate-pop"
                                             disabled={isLoading}
                                             aria-label={`Xóa ảnh ${index + 1}`}
                                         >
@@ -254,16 +258,16 @@ export default function AiTestForm() {
                                             <img
                                                 src={entry.preview}
                                                 alt={`Xem trước ${index + 1}`}
-                                                className="h-48 w-full rounded-md object-cover border border-slate-500"
+                                                className="h-48 w-full rounded-md object-cover border border-slate-500 transition-transform duration-500 group-hover:scale-105 animate-fade-in"
                                             />
                                             <div>
-                                                <label htmlFor={`content-${entry.id}`} className="block text-sm font-medium text-sky-400 mb-1">
+                                                <label htmlFor={`content-${entry.id}`} className="block text-sm font-medium text-sky-400 mb-1 transition-colors duration-300">
                                                     Ảnh {index + 1}
                                                 </label>
                                                 <textarea
                                                     id={`content-${entry.id}`}
                                                     rows={3}
-                                                    className="shadow-sm appearance-none w-full p-3 border border-slate-600 rounded-md placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 sm:text-sm bg-slate-700 text-gray-100 caret-sky-400 transition-colors"
+                                                    className="shadow-sm appearance-none w-full p-3 border border-slate-600 rounded-md placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 sm:text-sm bg-slate-700 text-gray-100 caret-sky-400 transition-all duration-300 animate-fade-in"
                                                     placeholder="Mô tả về ảnh này..."
                                                     value={entry.content}
                                                     onChange={(e) => handleContentChange(entry.id, e.target.value)}
@@ -276,9 +280,9 @@ export default function AiTestForm() {
                             </div>
                         </div>
                     )}
-                    <div className="relative inline-block w-full md:w-64">
+                    <div className="relative inline-block w-full md:w-64 animate-fade-in">
                         <select
-                            className="block appearance-none w-full bg-gray-700 border border-gray-300 hover:border-gray-400 px-4 py-2 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline text-gray-200"
+                            className="block appearance-none w-full bg-gray-700 border border-gray-300 hover:border-gray-400 px-4 py-2 pr-8 rounded leading-tight focus:outline-none focus:shadow-outline text-gray-200 transition-all duration-300 focus:ring-2 focus:ring-sky-500"
                             name=""
                             id=""
                             value={typePrompt}
@@ -303,7 +307,7 @@ export default function AiTestForm() {
                             id="summary"
                             name="summary"
                             rows={5}
-                            className="shadow-sm appearance-none block w-full p-3 border border-slate-600 rounded-md placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 sm:text-sm bg-slate-700 text-gray-100 caret-sky-400 transition-colors"
+                            className="shadow-sm appearance-none block w-full p-3 border border-slate-600 rounded-md placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 sm:text-sm bg-slate-700 text-gray-100 caret-sky-400 transition-all duration-300 animate-fade-in"
                             placeholder="Cung cấp bản tóm tắt chung cho tất cả các ảnh..."
                             value={summary}
                             onChange={(e) => setSummary(e.target.value)}
@@ -314,7 +318,7 @@ export default function AiTestForm() {
 
                     {/* Thông báo lỗi và thành công */}
                     {error && (
-                        <div className="p-4 bg-red-900/50 border border-red-700 text-red-300 rounded-md shadow-md animate-pulseOnce">
+                        <div className="p-4 bg-red-900/50 border border-red-700 text-red-300 rounded-md shadow-md animate-slide-in-down">
                             <div className="flex">
                                 <div className="flex-shrink-0">
                                     <svg className="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -335,7 +339,7 @@ export default function AiTestForm() {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full flex justify-center items-center py-3.5 px-4 border border-transparent rounded-lg shadow-lg text-base font-medium text-white bg-gradient-to-r from-sky-500 to-cyan-500 hover:from-sky-600 hover:to-cyan-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-cyan-500 disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95"
+                            className="w-full flex justify-center items-center py-3.5 px-4 border border-transparent rounded-lg shadow-lg text-base font-medium text-white bg-gradient-to-r from-sky-500 to-cyan-500 hover:from-sky-600 hover:to-cyan-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-cyan-500 disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 animate-pop"
                         >
                             {isLoading ? (
                                 <>
@@ -349,7 +353,7 @@ export default function AiTestForm() {
                         </button>
                     </div>
                     {successMessage && (
-                        <div className="p-4 bg-green-900/50 border border-green-700 text-green-300 rounded-md shadow-md animate-pulseOnce">
+                        <div className="p-4 bg-green-900/50 border border-green-700 text-green-300 rounded-md shadow-md animate-slide-in-up">
                             <div className="flex">
                                 <div className="flex-shrink-0">
                                     <svg className="h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -367,27 +371,27 @@ export default function AiTestForm() {
                     )}
 
                     {successMessage && (
-                        <div className="max-w-4xl mx-auto p-4 sm:p-8 bg-gray-950 text-white rounded-xl shadow-2xl transition-all duration-300 ease-in-out animate-fade-in">
-                            <div className="space-y-10"> {/* Khoảng cách giữa các card */}
+                        <div className="max-w-4xl mx-auto p-4 sm:p-8 bg-gray-950 text-white rounded-xl shadow-2xl transition-all duration-300 ease-in-out animate-fade-in-up">
+                            <div className="space-y-10">
                                 {result.map((story, idx) => (
                                     <div
                                         key={idx}
-                                        className="flex flex-col bg-gray-900 rounded-lg shadow-xl hover:shadow-2xl transition duration-200 ease-in-out cursor-pointer overflow-hidden"
+                                        className="flex flex-col bg-gray-900 rounded-lg shadow-xl hover:shadow-2xl transition duration-200 ease-in-out cursor-pointer overflow-hidden animate-fade-in-up"
+                                        style={{ animationDelay: `${idx * 100}ms` }}
                                     >
                                         <img
                                             src={story.url}
                                             alt={`Ảnh ${idx + 1}`}
-                                            className="w-full h-auto object-contain rounded-t-lg mb-5"
+                                            className="w-full h-auto object-contain rounded-t-lg mb-5 transition-transform duration-500 hover:scale-105 animate-fade-in"
                                         />
 
-                                        <div className="p-5 pt-0"> {/* Padding, pt-0 để không double padding dưới ảnh */}
-                                            {/* Mô phỏng style text tương tự ảnh mẫu (Tiêu đề/Nội dung) */}
-                                            <p className="text-xl sm:text-2xl font-bold text-pink-400 mb-3">
-                                                Story #{idx + 1} {/* Giả Tiêu đề */}
+                                        <div className="p-5 pt-0">
+                                            <p className="text-xl sm:text-2xl font-bold text-pink-400 mb-3 animate-slide-down">
+                                                Story #{idx + 1}
                                             </p>
                                             <textarea
                                                 rows={3}
-                                                className="shadow-sm text-lg appearance-none w-full p-3 border border-slate-600 rounded-md placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 sm:text-sm bg-gray-700 text-gray-100 caret-sky-400 transition-colors"
+                                                className="shadow-sm text-lg appearance-none w-full p-3 border border-slate-600 rounded-md placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 sm:text-sm bg-gray-700 text-gray-100 caret-sky-400 transition-colors animate-fade-in"
                                                 placeholder="Sửa lại edit"
                                                 value={story.content}
                                                 onChange={(e) => handleResultChange(idx, e.target.value)}
@@ -400,11 +404,11 @@ export default function AiTestForm() {
                         </div>
                     )}
                     {result.length > 0 &&
-                        <div className="pt-5">
+                        <div className="pt-5 animate-fade-in">
                             <button
                                 type="button"
                                 disabled={isLoadingVideo}
-                                className="w-full flex justify-center items-center py-3.5 px-4 border border-transparent rounded-lg shadow-lg text-base font-medium text-white bg-gradient-to-r from-sky-500 to-cyan-500 hover:from-sky-600 hover:to-cyan-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-cyan-500 disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95"
+                                className="w-full flex justify-center items-center py-3.5 px-4 border border-transparent rounded-lg shadow-lg text-base font-medium text-white bg-gradient-to-r from-sky-500 to-cyan-500 hover:from-sky-600 hover:to-cyan-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-cyan-500 disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-300 ease-in-out transform hover:scale-105 active:scale-95 animate-pop"
                             >
                                 {isLoadingVideo ? (
                                     <>
@@ -421,7 +425,7 @@ export default function AiTestForm() {
 
                 </form>
 
-                <footer className="mt-16 text-center text-sm text-slate-500">
+                <footer className="mt-16 text-center text-sm text-slate-500 animate-fade-in">
                     <p>&copy; {new Date().getFullYear()} Công ty AI của bạn. Bảo lưu mọi quyền.</p>
                 </footer>
             </div >

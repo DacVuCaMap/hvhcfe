@@ -1,0 +1,27 @@
+
+@media print {
+    .print-table {
+        width: 100%;
+        font-size: 12px;
+    }
+    .print-table th, .print-table td {
+        padding: 8px;
+        border: 1px solid #ddd;
+    }
+    .print-table thead {
+        background-color: #f4f4f4;
+    }
+    .print-table input {
+        display: none; /* Hide input fields in print */
+    }
+    .print-only {
+        display: block !important; /* Show plain text values in print */
+    }
+    .no-print {
+        display: none; /* Hide action column in print */
+    }
+}
+    
+.print-only {
+    display: none; /* Hide plain text values in normal view */
+}

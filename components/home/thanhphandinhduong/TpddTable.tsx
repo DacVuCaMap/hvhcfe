@@ -6,17 +6,6 @@ import TpddCard from './TpddCard';
 import './TpddTable.css'
 import { getRandomFoods } from '@/lib/api';
 
-// Dữ liệu foodData (như đã định nghĩa ở trên)
-//  const foodData: Food[] = [
-//      { id: 1, name: 'Gạo tẻ máy loại ngon', group: 'Ngũ cốc', protein: 7.9, lipid: 0.7, carbohydrate: 76.1, image: 'https://images.unsplash.com/photo-1586201374902-6d1a31df6445?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cmljZXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60', ordinalNumbers: 112 },
-//      { id: 2, name: 'Thịt lợn ba chỉ loại 1', group: 'Thịt gia súc', protein: 16.5, lipid: 21.5, carbohydrate: 0, image: 'https://images.unsplash.com/photo-1606843049200-55a0ac331909?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cG9yayUyMGJlbGx5fGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60', ordinalNumbers: 205 },
-//      { id: 3, name: 'Cải bó xôi Đà Lạt', group: 'Rau xanh', protein: 2.9, lipid: 0.4, carbohydrate: 3.6, image: 'https://images.unsplash.com/photo-1576045057193-a45b41805369?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c3BpbmFjaHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60', ordinalNumbers: 312 },
-//      { id: 4, name: 'Táo Fuji nhập khẩu', group: 'Trái cây', protein: 0.3, lipid: 0.2, carbohydrate: 14, image: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8YXBwbGV8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=500&q=60', ordinalNumbers: 401 },
-//      { id: 5, name: 'Cá hồi Nauy phi lê', group: 'Thủy hải sản', protein: 20, lipid: 13, carbohydrate: 0, image: 'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c2FsbW9uJTIwZmlsbGV0fGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60', ordinalNumbers: 220 },
-//      { id: 6, name: 'Sữa tươi không đường', group: 'Sản phẩm sữa', protein: 3.2, lipid: 3.3, carbohydrate: 4.8, image: 'https://images.unsplash.com/photo-1550583724-b2692b85b190?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8bWlsa3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60', ordinalNumbers: 501 }
-//  ];
-
-
 export default function FoodSearch() {
   const [foodData, setFoodData] = useState<Food[]>([]);
   const [searchTerm, setSearchTerm] = useState('');

@@ -30,7 +30,7 @@ const headNav: NavItem[] = [
         name: 'Dinh dưỡng', path: '/dinhduong',
         items: [
             { name: 'Bảng thành phần dinh dưỡng', path: '/dinhduong/thanhphandinhduong' },
-            { name: 'Tính toán năng lượng', path: '/services/support' },
+            { name: 'Tính toán năng lượng', path: '/dinhduong/tinhtoannangluong' },
         ]
     },
     { name: 'Quản lí', path: '/admin' },
