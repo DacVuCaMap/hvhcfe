@@ -1,7 +1,7 @@
 "use client";
 import React, { useState} from 'react'; // Đảm bảo đường dẫn đúng
 import { Search } from 'lucide-react';
-import './TpddTable.css'
+import './BuildFood.css'
 import Image from 'next/image';
 
 export default function FoodSearch() {
