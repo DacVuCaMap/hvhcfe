@@ -1,10 +1,7 @@
 "use client";
-import { Food } from '@/type/food';
-import React, { useState, useMemo, useEffect, useCallback, use } from 'react'; // Đảm bảo đường dẫn đúng
-import { Search, AlertTriangle } from 'lucide-react';
-import TpddCard from './TpddCard';
+import React, { useState} from 'react'; // Đảm bảo đường dẫn đúng
+import { Search } from 'lucide-react';
 import './TpddTable.css'
-import { getRandomFoods } from '@/lib/api';
 import Image from 'next/image';
 
 export default function FoodSearch() {
