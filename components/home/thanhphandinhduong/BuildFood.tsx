@@ -1,7 +1,6 @@
 "use client";
 import React, { useState} from 'react'; // Đảm bảo đường dẫn đúng
 import { Search } from 'lucide-react';
-import './BuildFood.css'
 import Image from 'next/image';
 
 export default function FoodSearch() {
@@ -50,7 +49,7 @@ export default function FoodSearch() {
                     <div className=''>
                         <Image
                             // Use actual logo path
-                            src="/images/BuildFood.jpg"
+                            src="/images/buildfood.jpg"
                             alt="Logo Học Viện Hậu Cần"
                             width={2000} // Slightly smaller logo
                             height={90}
