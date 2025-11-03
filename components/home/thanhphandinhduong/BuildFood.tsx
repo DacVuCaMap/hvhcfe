@@ -40,7 +40,7 @@ export default function FoodSearch() {
 
     };
     return (
-        <div className="min-h-screen bg-gradient-to-r from-green-200 to-blue-300 flex flex-col items-center p-8 pt-32">
+        <div className="min-h-screen bg-gradient-to-r from-green-200 to-blue-300 flex flex-col items-center p-8">
             {/* Hiệu ứng hạt nổi (optional) */}
             {/* <div id="particles-js" className="absolute inset-0 z-0"></div> */}
             <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20 overflow-hidden pb-32 border-b border-gray-400">
@@ -87,7 +87,7 @@ export default function FoodSearch() {
                                 onClick={handleClick}
                                 className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-full shadow-lg transition-all duration-300 ease-in-out"
                             >
-                                Xác nhận
+                                Xây dựng khẩu phần ăn
                             </button>
                         </div>
                         <span className="text-xl text-red-700">

@@ -29,7 +29,7 @@ export default function FoodSearch() {
       food.group.toLowerCase().includes(searchTerm.toLowerCase())
     ), [searchTerm, foodData]);
   return (
-    <div className="min-h-screen bg-gradient-to-r from-green-200 to-blue-300 flex flex-col items-center p-8 pt-32">
+    <div className="min-h-screen bg-gradient-to-r from-green-200 to-blue-300 flex flex-col items-center p-8">
       {/* Hiệu ứng hạt nổi (optional) */}
       {/* <div id="particles-js" className="absolute inset-0 z-0"></div> */}
       <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20 overflow-hidden pb-32 border-b border-gray-400 mb-32">
@@ -47,7 +47,7 @@ export default function FoodSearch() {
           </div>
 
           {/* Introductory Text & Image Container */}
-          <div className=' text-gray-600 leading-relaxed space-y-4 animate-fade-in-right delay-100 text-xs w-[2000px]'>
+          <div className=' text-gray-600 leading-relaxed space-y-4 animate-fade-in-right delay-100 text-sm w-[2000px]'>
             <p>
               Bảng thành phần thực phẩm (Food Composition Table) là một trong những đầu ra nghiên cứu quan trọng trong lĩnh vực
               Khoa học về thực phẩm (Food science). Bảng thành phần thực phẩm là một công cụ không thể thiếu trong nghiên cứu

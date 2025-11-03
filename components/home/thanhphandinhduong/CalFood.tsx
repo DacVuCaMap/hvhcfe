@@ -125,7 +125,7 @@ export default function CalFood() {
         onAfterPrint: () => console.log('Print completed.'),
     });
     return (
-        <div className="min-h-screen bg-gradient-to-r from-green-200 to-blue-300 flex flex-col items-center p-8 pt-50">
+        <div className="min-h-screen bg-gradient-to-r from-green-200 to-blue-300 flex flex-col items-center p-8">
 
             <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20 overflow-hidden pb-32 border-b border-gray-400 mb-32">
                 <div className='flex flex-col lg:flex-row items-center justify-between gap-32'>
