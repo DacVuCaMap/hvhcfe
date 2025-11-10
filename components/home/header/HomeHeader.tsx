@@ -99,6 +99,7 @@ export default function ElegantHeader() {
               </li>
             ))}
           </ul>
+          <div></div>
         </nav>
       </div>
       {/* Spacer */}
