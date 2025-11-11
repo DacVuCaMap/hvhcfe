@@ -1,5 +1,5 @@
 "use client";
-import React, { useState} from 'react'; // Đảm bảo đường dẫn đúng
+import React, { useState } from 'react'; // Đảm bảo đường dẫn đúng
 import { Search } from 'lucide-react';
 import Image from 'next/image';
 
@@ -34,7 +34,7 @@ export default function FoodSearch() {
             setTempValue(value);
             setError('');
         }
-        else{
+        else {
             setError('Vui lòng nhập giá trị từ 2500 đến 4860');
         }
 
@@ -95,6 +95,85 @@ export default function FoodSearch() {
                         </span>
                     </div>
                 </div>
+
+                <div className="bg-white mt-10 p-6 rounded-lg">
+                    <h2 className="text-xl font-bold text-gray-800 mb-4 print-only">Bảng Xây dựng định lượng khẩu phần ăn</h2>
+                    <table className="min-w-full bg-white border border-gray-200 rounded-lg">
+                        <thead>
+                            <tr className="bg-gray-100 text-gray-600 uppercase text-xs sm:text-sm leading-normal">
+                                <th rowSpan={2} className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">TT</th>
+                                <th rowSpan={2} className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Tên LTTP</th>
+                                <th rowSpan={2} className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Số lượng</th>
+                                <th rowSpan={2} className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Đơn vị</th>
+
+                                <th colSpan={2} className="py-3 px-4 sm:px-6 text-center border-gray-300">Protein</th>
+
+                                <th colSpan={2} className="py-3 px-4 sm:px-6 text-center border-gray-300">Lipid</th>
+
+                                <th rowSpan={2} className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Gluxit</th>
+                                <th rowSpan={2} className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300 no-print">Năng lượng</th>
+                            </tr>
+                            <tr className="bg-gray-100 text-gray-600 text-xs sm:text-sm leading-normal">
+                                <th className="py-2 px-4 text-center border-b-2 border-r-2 border-gray-300">P(đv)</th>
+                                <th className="py-2 px-4 text-center border-b-2 border-gray-300">P(tv)</th>
+                                <th className="py-2 px-4 text-center border-b-2 border-r-2 border-gray-300">L(đv)</th>
+                                <th className="py-2 px-4 text-center border-b-2 border-gray-300">L(tv)</th>
+                            </tr>
+                        </thead>
+
+                        {/* <tbody className="text-gray-700 text-sm font-light">
+                            {addedFoods.map((item, index) => (
+                                <tr key={`${item.food.id}-${index}`} className="border-b border-gray-200 hover:bg-gray-50 transition-colors duration-150">
+                                    <td className="py-3 px-4 sm:px-6 text-center whitespace-nowrap">{item.food.name}</td>
+                                    <td className="py-3 px-4 sm:px-6 text-center no-print">
+                                        <input
+                                            type="number"
+                                            value={item.input === 0 ? '' : item.input} // Hiển thị rỗng nếu giá trị là 0 để người dùng dễ nhập
+                                            onChange={(e) => handleUpdateFoodQuantity(index, Number(e.target.value))}
+                                            onBlur={(e) => { // Khi blur, nếu rỗng hoặc NaN thì đặt lại về 0
+                                                if (e.target.value === '' || isNaN(Number(e.target.value))) {
+                                                    handleUpdateFoodQuantity(index, 0);
+                                                }
+                                            }}
+                                            min="0"
+                                            className="w-20 p-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-400 text-center"
+                                        />
+                                    </td>
+                                    <td className="py-3 px-4 sm:px-6 text-center print-only">{item.input === 0 ? '' : item.input}</td>
+                                    <td className="py-3 px-4 sm:px-6 text-center">{item.calculatedProtein.toFixed(2)}</td>
+                                    <td className="py-3 px-4 sm:px-6 text-center">{item.calculatedGluxit.toFixed(2)}</td>
+                                    <td className="py-3 px-4 sm:px-6 text-center">{item.calculatedLipid.toFixed(2)}</td>
+                                    <td className="py-3 px-4 sm:px-6 text-center">{item.totalEnergy.toFixed(2)}</td>
+                                    <td className="py-3 px-4 sm:px-6 text-center no-print">
+                                        <button
+                                            onClick={() => handleRemoveFood(index)}
+                                            className="text-red-500 hover:text-red-700 transition-colors duration-200"
+                                            title="Xóa món ăn này"
+                                        >
+                                            <Trash2 size={20} />
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                            {addedFoods.length === 0 && (
+                                <tr>
+                                    <td colSpan={7} className="py-6 text-center text-gray-500 italic">
+                                        Chưa có món ăn nào được thêm vào bảng. Hãy tìm kiếm và chọn món ăn từ danh sách trên!
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                        <tfoot>
+                            <tr className="bg-gray-100 text-gray-800 font-semibold text-sm sm:text-base leading-normal border-t-2 border-gray-400">
+                                <td className="py-3 px-4 sm:px-6 text-left" colSpan={5}>Tổng cộng</td>
+                                <td className="py-3 px-4 sm:px-6 text-center">{totalEnergyOverall.toFixed(2)}</td>
+                                <td className="py-3 px-4 sm:px-6 text-left no-print"></td>
+                            </tr>
+                        </tfoot> */}
+                    </table>
+                </div>
+
+
             </section>
         </div>
     );
