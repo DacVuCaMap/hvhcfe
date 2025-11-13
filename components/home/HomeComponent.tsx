@@ -1,6 +1,7 @@
 "use client"
 import Image from 'next/image'
 import React from 'react'
+import FeedbackCard from './FeedbackCard'
 export default function TongQuan() {
     return (
         <div className='flex flex-col py-10'>
@@ -178,7 +179,10 @@ export default function TongQuan() {
                         </div>
                     </div>
                 </section>
-
+                {/* Section 6: feedback */}
+                <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20">
+                    <FeedbackCard />
+                </section>
             </div>
         </div>
     )

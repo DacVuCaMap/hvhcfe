@@ -40,10 +40,8 @@ export default function FoodSearch() {
 
     };
     return (
-        <div className="min-h-screen bg-gradient-to-r from-green-200 to-blue-300 flex flex-col items-center p-8">
-            {/* Hiệu ứng hạt nổi (optional) */}
-            {/* <div id="particles-js" className="absolute inset-0 z-0"></div> */}
-            <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20 overflow-hidden pb-32 border-b border-gray-400">
+        <div className="min-h-screen bg-gradient-to-r from-green-200 to-blue-300 flex flex-col items-center">
+            <section className="container lg:px-8 py-16 md:py-20 pb-32 border-b border-gray-400">
                 <div className='flex flex-col lg:flex-row items-center justify-between gap-4'>
                     {/* Logo and Department Info - Adjusted width and centering */}
                     <div className=''>
@@ -58,7 +56,7 @@ export default function FoodSearch() {
                     </div>
 
                     {/* Introductory Text & Image Container */}
-                    <div className=' text-gray-600 leading-relaxed space-y-4 animate-fade-in-right delay-100 text-sm w-[2000px]'>
+                    <div className=' text-gray-600 leading-relaxed space-y-4 animate-fade-in-right delay-100 text-sm lg:w-[2000px]'>
                         <p>
                             Khẩu phần ăn là lượng thực phẩm và đồ uống mà một người tiêu thụ trong một ngày, được tính toán và sắp xếp sao cho cung cấp đầy đủ năng lượng và các chất dinh dưỡng cần thiết cho cơ thể, phù hợp với độ tuổi, giới tính, mức độ lao động và tình trạng sức khỏe.
                             Để thuận tiện trong việc xây dựng khẩu phần ăn cho bộ đội, trang web được thiết kế nhằm tính toán và đề xuất khẩu phần dựa trên mức lao động của quân nhân. Cụ thể, việc xác định khẩu phần được thực hiện theo nhu cầu năng lượng tương ứng với từng cường độ lao động (lao động nhẹ, vừa và nặng). Cách tiếp cận này giúp đảm bảo tính khoa học, đơn giản và phù hợp với thực tế huấn luyện, công tác của bộ đội, đồng thời giúp người sử dụng dễ dàng lựa chọn và điều chỉnh khẩu phần sao cho đáp ứng đúng nhu cầu dinh dưỡng và sức khỏe của từng đối tượng.
@@ -96,7 +94,7 @@ export default function FoodSearch() {
                     </div>
                 </div>
 
-                <div className="bg-white mt-10 p-6 rounded-lg">
+                <div className="bg-white mt-10 p-6 rounded-lg overflow-auto">
                     <h2 className="text-xl font-bold text-gray-800 mb-4 print-only">Bảng Xây dựng định lượng khẩu phần ăn</h2>
                     <table className="min-w-full bg-white border border-gray-200 rounded-lg">
                         <thead>

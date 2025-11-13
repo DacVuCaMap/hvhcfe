@@ -127,8 +127,8 @@ export default function CalFood() {
     return (
         <div className="min-h-screen bg-gradient-to-r from-green-200 to-blue-300 flex flex-col items-center p-8">
 
-            <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20 overflow-hidden pb-32 border-b border-gray-400 mb-32">
-                <div className='flex flex-col lg:flex-row items-center justify-between gap-32'>
+            <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20 pb-32 border-b border-gray-400 mb-32">
+                <div className='flex flex-col lg:flex-row items-center justify-between gap-12'>
                     {/* Logo and Department Info - Adjusted width and centering */}
                     <div className=''>
                         <Image
@@ -142,7 +142,7 @@ export default function CalFood() {
                     </div>
 
                     {/* Introductory Text & Image Container */}
-                    <div className=' text-gray-600 leading-relaxed space-y-4 animate-fade-in-right delay-100 text-sm w-[2000px]'>
+                    <div className=' text-gray-600 leading-relaxed space-y-4 animate-fade-in-right delay-100 text-sm lg:w-[2000px]'>
                         <p>
                             Năng lượng của thực phẩm là tổng năng lượng do các chất sinh năng lượng cung cấp, bao gồm: protein, lipid và glucid. Mỗi chất dinh dưỡng có hệ số năng lượng riêng: 1 gam protein hoặc glucid cung cấp 4 kcal, 1 gam lipid cung cấp 9 kcal. Vì vậy, năng lượng của một loại thực phẩm được tính theo công thức:Năng lượng (kcal) = 4 × (Protein) + 9 × (Lipid) + 4 × (Glucid).
                             Để tính năng lượng, ta xác định hàm lượng các chất dinh dưỡng (tính bằng gam) trong 100 gam thực phẩm, sau đó nhân với hệ số tương ứng. Ví dụ, 100 gam cơm trắng chứa trung bình 2,6 gam protein, 0,3 gam lipid và 28 gam glucid. Khi đó, năng lượng của cơm trắng được tính như sau:N = (4 × 2,6) + (9 × 0,3) + (4 × 28) = 115,1 kcal.

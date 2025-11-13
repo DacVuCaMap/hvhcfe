@@ -92,11 +92,11 @@ const FoodForm: React.FC<FoodFormProps> = ({ initialFood, onSubmit, onCancel }) 
             setIsSubmitting(false);
             return;
         }
-        if (!imageFile && !initialFood) {
-            setError("Vui lòng chọn hình ảnh cho món ăn mới.");
-            setIsSubmitting(false);
-            return;
-        }
+        // if (!imageFile && !initialFood) {
+        //     setError("Vui lòng chọn hình ảnh cho món ăn mới.");
+        //     setIsSubmitting(false);
+        //     return;
+        // }
 
 
         try {

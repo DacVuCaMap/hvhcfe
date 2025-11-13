@@ -39,9 +39,15 @@ export function middleware(request: NextRequest) {
 
 // See "Matching Paths" below to learn more
 export const config = {
-    matcher: [
-        '/admin/:path*',  // Bảo vệ tất cả route bắt đầu bằng /admin
+    matcher: [ 
         '/signin',        // Route signin
         '/signup'         // Route signup
     ],
 }
+// export const config = {
+//     matcher: [
+//         '/admin/:path*',  // Bảo vệ tất cả route bắt đầu bằng /admin
+//         '/signin',        // Route signin
+//         '/signup'         // Route signup
+//     ],
+// }
