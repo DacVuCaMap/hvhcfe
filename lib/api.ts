@@ -1,20 +1,47 @@
 import axios from "axios";
 import { Food, FoodRequestDto } from "@/type/food";
 
-const API_BASE_URL = 'http://localhost:8080/api/khoaquannhu/foods'; // Ví dụ: 'http://localhost:8080/api'
+// const API_BASE_URL = 'http://localhost:8080/api/khoaquannhu/foods'; // Ví dụ: 'http://localhost:8080/api'
+
+// // Fetches a random list of foods
+// export const getRandomFoods = async (size: number): Promise<Food[]> => {
+//   try {
+//     const response = await axios.get<Food[]>(`${API_BASE_URL}/random/${size}`);
+//     const data = response.data;
+//     // Ensure image URLs are complete if necessary
+//     return data.map(food => {
+//       const imgUrl = food.image ? "http://localhost:8080" + food.image : ""
+//       return {
+//         ...food,
+//         image: imgUrl
+//       }
+//     });
+//   } catch (error) {
+//     console.error("Error fetching foods:", error);
+//     return [];
+//   }
+// };
+
+// Lấy base URL từ biến môi trường
+const API_BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/khoaquannhu/foods`;
 
 // Fetches a random list of foods
 export const getRandomFoods = async (size: number): Promise<Food[]> => {
   try {
-    const response = await axios.get<Food[]>(`${API_BASE_URL}/random/${size}`);
+    const response = await axios.get<Food[]>(`${API_BASE_URL}/random/${size}`, {
+      headers: {
+        'ngrok-skip-browser-warning': 'true'
+      }
+    });
     const data = response.data;
+    console.log("Fetched foods:", data);
     // Ensure image URLs are complete if necessary
     return data.map(food => {
-      const imgUrl = food.image ? "http://localhost:8080" + food.image : ""
+      const imgUrl = food.image ? process.env.NEXT_PUBLIC_API_URL + food.image : "";
       return {
         ...food,
         image: imgUrl
-      }
+      };
     });
   } catch (error) {
     console.error("Error fetching foods:", error);
