@@ -39,7 +39,7 @@ export default function FeedbackCard() {
       <div className="relative rounded-2xl bg-white/70 dark:bg-neutral-900/70 backdrop-blur-xl shadow-xl ring-1 ring-black/5 overflow-hidden">
         {/* Header */}
         <div className="px-6 py-5 flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-fuchsia-500 to-violet-500 text-white grid place-items-center">
+          <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-green-500 to-teal-500 text-white grid place-items-center">
             ✨
           </div>
           <div>
@@ -134,7 +134,7 @@ export default function FeedbackCard() {
           {/* Actions */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-xs text-neutral-500 dark:text-neutral-400">
-              <span className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-gradient-to-br from-violet-500 to-sky-500 text-white">
+              <span className="inline-flex h-6 w-6 items-center justify-center rounded-md bg-gradient-to-br from-green-500 to-teal-500 text-white">
                 💬
               </span>
               <span>Phản hồi của bạn giúp sản phẩm tốt hơn mỗi ngày.</span>

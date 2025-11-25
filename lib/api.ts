@@ -62,11 +62,12 @@ export const saveFood = async (foodData: FoodRequestDto, imageFile: File | null)
   }
 
   try {
+    console.log("Saving food with data:", formData.get('data'));
+    console.log("Saving food with image:", formData.get('image'));
     const response = await axios.post<Food>(`${API_BASE_URL}/admin/save`, formData);
 
     const savedFood = response.data;
     console.log(savedFood);
-    savedFood.image = savedFood.image.startsWith('http') ? savedFood.image : `${API_BASE_URL}/images/${savedFood.image}`;
     return savedFood;
   } catch (error: any) {
     if (error.response) {

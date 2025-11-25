@@ -6,6 +6,7 @@ import React from 'react';
 // npm install lucide-react (nếu chưa có)
 import { Flame, Droplet, Zap, Info, Tag, Image as ImageIcon, PlusCircle } from 'lucide-react';
 import { apiShowPdf } from '@/lib/api';
+import Image from 'next/image';
 
 interface FoodCardProps {
     food: Food;
@@ -24,6 +25,8 @@ const NutrientDisplay: React.FC<{ icon: React.ReactNode, label: string, value: n
 );
 
 const TpddCard: React.FC<FoodCardProps> = ({ food, style, onClick }) => {
+    const urlAPI = process.env.NEXT_PUBLIC_API_URL;
+    console.log("API URL in TpddCard:", urlAPI);
     const handleShowPdf = async () => {
         const response: any = await apiShowPdf(food.ordinalNumbers, food.group);
         console.log(response)
@@ -50,9 +53,11 @@ const TpddCard: React.FC<FoodCardProps> = ({ food, style, onClick }) => {
         >
             <div className="relative h-56 w-full overflow-hidden">
                 {food.image ? (
-                    <img
+                    <Image
                         src={food.image}
                         alt={food.name}
+                        height={500}
+                        width={500}
                         className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-out"
                     />
                 ) : (

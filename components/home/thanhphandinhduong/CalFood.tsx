@@ -164,7 +164,7 @@ export default function CalFood() {
 
 
             {/* Search và Tiêu đề */}
-            <div className="w-full max-w-4xl text-center mb-10 md:mb-12 relative z-10">
+            <div className="w-full text-center mb-10 md:mb-12 relative z-10">
                 <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-4">
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 via-teal-400 to-sky-400">
                         Tra Cứu & Tính Toán Dinh Dưỡng
@@ -173,7 +173,7 @@ export default function CalFood() {
                 <p className="text-base sm:text-lg text-gray-500 mb-8 max-w-2xl mx-auto">
                     Khám phá thế giới ẩm thực và tạo bảng tính dinh dưỡng cá nhân của bạn.
                 </p>
-                <div className="relative w-full md:w-3/4 lg:w-2/3 mx-auto">
+                <div className="relative md:w-3/4 lg:w-[800px] mx-auto">
                     <Search className="absolute left-4 sm:left-6 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
                     <input
                         type="text"

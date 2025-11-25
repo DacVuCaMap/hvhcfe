@@ -164,8 +164,6 @@ const FoodForm: React.FC<FoodFormProps> = ({ initialFood, onSubmit, onCancel }) 
                                 name="ordinalNumbers"
                                 value={formData.ordinalNumbers}
                                 onChange={handleChange}
-                                step="0.1"
-                                min="0"
                                 required
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                             />
@@ -173,13 +171,13 @@ const FoodForm: React.FC<FoodFormProps> = ({ initialFood, onSubmit, onCancel }) 
                         <div>
                             <label htmlFor="protein" className="block text-sm font-medium text-gray-700 mb-1">Protein (g)</label>
                             <input
+                                step="0.01"
+                                min="0"
                                 type="number"
                                 id="protein"
                                 name="protein"
                                 value={formData.protein}
                                 onChange={handleChange}
-                                step="0.1"
-                                min="0"
                                 required
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                             />
@@ -187,13 +185,13 @@ const FoodForm: React.FC<FoodFormProps> = ({ initialFood, onSubmit, onCancel }) 
                         <div>
                             <label htmlFor="lipid" className="block text-sm font-medium text-gray-700 mb-1">Lipid (g)</label>
                             <input
+                                step="0.01"
+                                min="0"
                                 type="number"
                                 id="lipid"
                                 name="lipid"
                                 value={formData.lipid}
                                 onChange={handleChange}
-                                step="0.1"
-                                min="0"
                                 required
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                             />
@@ -201,13 +199,13 @@ const FoodForm: React.FC<FoodFormProps> = ({ initialFood, onSubmit, onCancel }) 
                         <div>
                             <label htmlFor="carbohydrate" className="block text-sm font-medium text-gray-700 mb-1">Carbohydrate (g)</label>
                             <input
+                                step="0.01"
+                                min="0"
                                 type="number"
                                 id="carbohydrate"
                                 name="carbohydrate"
                                 value={formData.carbohydrate}
                                 onChange={handleChange}
-                                step="0.1"
-                                min="0"
                                 required
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
                             />

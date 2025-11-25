@@ -40,17 +40,19 @@ export default function ElegantHeader() {
         {/* Top Section */}
         <div className="flex items-center justify-between py-4">
           {/* Logo + Title */}
-          <div className="flex items-center gap-4">
-            <div className="rounded-full overflow-hidden hover:scale-105 transition-transform duration-300">
-              <Image src="/images/logo-main.png" alt="Logo" width={60} height={60} />
+          <Link href="/" className="">
+            <div className="flex items-center gap-4">
+              <div className="rounded-full overflow-hidden hover:scale-105 transition-transform duration-300">
+                <Image src="/images/logo-main.png" alt="Logo" width={60} height={60} />
+              </div>
+              <div>
+                <h1 className="text-lg md:text-xl font-bold text-yellow-300">
+                  Khoa Quân Nhu - Học Viện Hậu Cần
+                </h1>
+                <p className="text-xs text-white">Department of Quartermaster Service</p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-lg md:text-xl font-bold text-yellow-300">
-                Khoa Quân Nhu - Học Viện Hậu Cần
-              </h1>
-              <p className="text-xs text-white">Department of Quartermaster Service</p>
-            </div>
-          </div>
+          </Link>
           {/* Slogan */}
           <div className="hidden md:block text-center text-white font-semibold text-sm max-w-md">
             TRANG WEB ĐIỆN TỬ TRA CỨU THÀNH PHẦN CƠ CẤU, ĐỊNH LƯỢNG CỦA KHẨU PHẦN ĂN
@@ -70,15 +72,13 @@ export default function ElegantHeader() {
             {navItems.map((item) => (
               <li
                 key={item.name}
-                className={`relative group w-full md:w-auto px-4 py-2 rounded-md transition-all duration-300 ${
-                  firstSegment === item.path ? 'bg-green-950' : 'hover:bg-green-800'
-                }`}
+                className={`relative group w-full md:w-auto px-4 py-2 rounded-md transition-all duration-300 ${firstSegment === item.path ? 'bg-green-950' : 'hover:bg-green-800'
+                  }`}
               >
                 <Link
                   href={item.path}
-                  className={`flex items-center justify-between md:justify-start gap-2 font-medium w-full ${
-                    firstSegment === item.path ? 'text-yellow-300' : 'hover:text-yellow-300'
-                  }`}
+                  className={`flex items-center justify-between md:justify-start gap-2 font-medium w-full ${firstSegment === item.path ? 'text-yellow-300' : 'hover:text-yellow-300'
+                    }`}
                   onClick={() => setIsOpen(false)} // Đóng menu sau khi click trên mobile
                 >
                   <div className="flex items-center gap-2">
@@ -97,11 +97,10 @@ export default function ElegantHeader() {
                       <li key={subItem.name}>
                         <Link
                           href={subItem.path}
-                          className={`block px-4 py-2 text-sm text-white hover:bg-green-700 hover:text-yellow-300 w-full ${
-                            secondSegment === (subItem.path.split('/')[2] || '')
+                          className={`block px-4 py-2 text-sm text-white hover:bg-green-700 hover:text-yellow-300 w-full ${secondSegment === (subItem.path.split('/')[2] || '')
                               ? 'text-yellow-300 font-semibold'
                               : ''
-                          }`}
+                            }`}
                           onClick={() => setIsOpen(false)} // Đóng menu sau khi click trên mobile
                         >
                           {subItem.name}
