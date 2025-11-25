@@ -99,7 +99,7 @@ const TpddCard: React.FC<FoodCardProps> = ({ food, style, onClick }) => {
                             onClick={handleShowPdf} // Sử dụng handleShowPdf
                             className="px-4 py-2 text-xs font-semibold text-white bg-gradient-to-r from-green-500 to-teal-600 rounded-lg shadow-md hover:from-green-600 hover:to-teal-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75 transform hover:scale-105 transition-all duration-300"
                         >
-                            Xem pdf
+                            Xem chi tiết
                         </button>
                     )}
                 </div>

@@ -125,7 +125,7 @@ export default function FoodsPage() {
           placeholder="Nhập tên thực phẩm, ví dụ: Gạo, Thịt bò, Táo..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full p-4 pl-10 sm:pl-16 text-base sm:text-lg rounded shadow-2xl focus:outline-none focus:ring-4 focus:ring-green-500 focus:ring-opacity-60 transition-all duration-300 ease-in-out border border-slate-300 placeholder-gray-500"
+          className="w-full p-4 pl-16 text-sm rounded shadow-2xl focus:outline-none focus:ring-4 focus:ring-green-500 focus:ring-opacity-60 transition-all duration-300 ease-in-out border border-slate-300 placeholder-gray-500"
         />
       </div>
 

@@ -35,40 +35,45 @@ export default function ElegantHeader() {
   const toggleMenu = () => setIsOpen(!isOpen);
 
   return (
-    <header className="sticky top-0 z-50 bg-gradient-to-r from-green-800 via-green-700 to-green-900 shadow-lg pb-4">
-      <div className="mx-auto md:px-16 px-8">
-        {/* Top Section */}
-        <div className="flex items-center justify-between py-4">
-          {/* Logo + Title */}
-          <Link href="/" className="">
-            <div className="flex items-center gap-4">
-              <div className="rounded-full overflow-hidden hover:scale-105 transition-transform duration-300">
-                <Image src="/images/logo-main.png" alt="Logo" width={60} height={60} />
+    <>
+      {/* Static Header */}
+      <header className="bg-gradient-to-r from-green-800 via-green-700 to-green-900 shadow-lg lg:block lg:top-auto top-0 sticky">
+        <div className="mx-auto md:px-16 px-8">
+          {/* Top Section */}
+          <div className="flex items-center justify-between py-4">
+            {/* Logo + Title */}
+            <Link href="/" className="">
+              <div className="flex items-center gap-4">
+                <div className="rounded-full overflow-hidden hover:scale-105 transition-transform duration-300">
+                  <Image src="/images/logo-main.png" alt="Logo" width={60} height={60} />
+                </div>
+                <div>
+                  <h1 className="text-lg md:text-xl font-bold text-yellow-300">
+                    Khoa Quân Nhu - Học Viện Hậu Cần
+                  </h1>
+                  <p className="text-xs text-white">Department of Quartermaster Service</p>
+                </div>
               </div>
-              <div>
-                <h1 className="text-lg md:text-xl font-bold text-yellow-300">
-                  Khoa Quân Nhu - Học Viện Hậu Cần
-                </h1>
-                <p className="text-xs text-white">Department of Quartermaster Service</p>
-              </div>
+            </Link>
+            {/* Slogan */}
+            <div className="hidden md:block text-center text-white font-semibold text-sm max-w-md">
+              TRANG WEB ĐIỆN TỬ TRA CỨU THÀNH PHẦN CƠ CẤU, ĐỊNH LƯỢNG CỦA KHẨU PHẦN ĂN
             </div>
-          </Link>
-          {/* Slogan */}
-          <div className="hidden md:block text-center text-white font-semibold text-sm max-w-md">
-            TRANG WEB ĐIỆN TỬ TRA CỨU THÀNH PHẦN CƠ CẤU, ĐỊNH LƯỢNG CỦA KHẨU PHẦN ĂN
+            {/* Mobile Menu Button */}
+            <button
+              onClick={toggleMenu}
+              className="md:hidden text-white hover:text-yellow-300 transition-colors duration-300"
+            >
+              <Menu size={24} />
+            </button>
           </div>
-          {/* Mobile Menu Button */}
-          <button
-            onClick={toggleMenu}
-            className="md:hidden text-white hover:text-yellow-300 transition-colors duration-300"
-          >
-            <Menu size={24} />
-          </button>
         </div>
+      </header>
 
-        {/* Navigation */}
-        <nav className={`mt-2 ${isOpen ? 'block' : 'hidden'} md:block`}>
-          <ul className="flex lg:flex-row flex-col md:flex md:flex-wrap md:justify-center gap-2 md:gap-6 text-white md:items-center">
+      {/* Sticky Navigation */}
+      <nav className={`sticky top-0 z-50 bg-gradient-to-r from-green-800 via-green-700 to-green-900 shadow-lg pb-4 ${isOpen ? 'block' : 'hidden'} md:block`}>
+        <div className="mx-auto md:px-16 px-8">
+          <ul className="flex lg:flex-row flex-col md:flex md:flex-wrap md:justify-center gap-2 md:gap-6 text-white md:items-center pt-2">
             {navItems.map((item) => (
               <li
                 key={item.name}
@@ -79,11 +84,11 @@ export default function ElegantHeader() {
                   href={item.path}
                   className={`flex items-center justify-between md:justify-start gap-2 font-medium w-full ${firstSegment === item.path ? 'text-yellow-300' : 'hover:text-yellow-300'
                     }`}
-                  onClick={() => setIsOpen(false)} // Đóng menu sau khi click trên mobile
+                  onClick={() => setIsOpen(false)}
                 >
                   <div className="flex items-center gap-2">
                     {item.icon}
-                    <span className="md:inline block">{item.name}</span>
+                    <span className="md:inline block lg:text-base text-xs">{item.name}</span>
                   </div>
                   {item.items && (
                     <ChevronDown className="transition-transform group-hover:rotate-180 md:ml-auto" size={16} />
@@ -101,7 +106,7 @@ export default function ElegantHeader() {
                               ? 'text-yellow-300 font-semibold'
                               : ''
                             }`}
-                          onClick={() => setIsOpen(false)} // Đóng menu sau khi click trên mobile
+                          onClick={() => setIsOpen(false)}
                         >
                           {subItem.name}
                         </Link>
@@ -112,9 +117,8 @@ export default function ElegantHeader() {
               </li>
             ))}
           </ul>
-        </nav>
-      </div>
-      {/* Spacer */}
-    </header>
+        </div>
+      </nav>
+    </>
   );
 }
