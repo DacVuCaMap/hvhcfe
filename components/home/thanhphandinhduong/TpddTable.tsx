@@ -99,7 +99,7 @@ export default function FoodSearch() {
 
         {filteredFood.length > 0 ? (
           <div className="w-full max-w-7xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 px-2 sm:px-4 relative z-10">
-            {filteredFood.map((food, index) => (
+            {filteredFood.slice(0,20).map((food, index) => (
               <div
                 key={food.id}
                 className="food-card-item" // Class để target CSS animation

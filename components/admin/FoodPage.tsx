@@ -151,7 +151,7 @@ export default function FoodsPage() {
       {/* Food List */}
       {filteredFood.length> 0 && (
         <FoodList
-          foods={filteredFood}
+          foods={filteredFood.slice(0,20)}
           onEdit={handleEditClick}
           onDelete={handleDeleteFood}
           isLoading={isLoading && !isFormOpen} // Don't show loading text when form is open over it
