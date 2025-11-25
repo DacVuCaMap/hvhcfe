@@ -37,7 +37,7 @@ export default function ElegantHeader() {
   return (
     <>
       {/* Static Header */}
-      <header className="bg-gradient-to-r from-green-800 via-green-700 to-green-900 shadow-lg lg:block lg:top-auto top-0 sticky">
+      <header className="bg-gradient-to-r z-30 from-green-800 via-green-700 to-green-900 shadow-lg lg:block lg:top-auto top-0 sticky">
         <div className="mx-auto md:px-16 px-8">
           {/* Top Section */}
           <div className="flex items-center justify-between py-4">
@@ -71,7 +71,7 @@ export default function ElegantHeader() {
       </header>
 
       {/* Sticky Navigation */}
-      <nav className={`sticky top-0 z-50 bg-gradient-to-r from-green-800 via-green-700 to-green-900 shadow-lg pb-4 ${isOpen ? 'block' : 'hidden'} md:block`}>
+      <nav className={`sticky lg:top-0 top-[92px] z-50 bg-gradient-to-r from-green-800 via-green-700 to-green-900 shadow-lg pb-4 ${isOpen ? 'block' : 'hidden'} md:block`}>
         <div className="mx-auto md:px-16 px-8">
           <ul className="flex lg:flex-row flex-col md:flex md:flex-wrap md:justify-center gap-2 md:gap-6 text-white md:items-center pt-2">
             {navItems.map((item) => (
