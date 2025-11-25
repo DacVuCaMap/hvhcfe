@@ -96,7 +96,11 @@ export const apiShowPdf = async (num: number, group: string) => {
   try {
     const response = await axios.get(`${API_BASE_URL}/pdfs?foodOrdinalNumbers=${num}&foodGroup=${group}`, {
       responseType: 'blob', // Chìa khóa để nhận PDF đúng cách
+      headers: {
+        'ngrok-skip-browser-warning': 'true'
+      }
     });
+    console.log(`${API_BASE_URL}/pdfs?foodOrdinalNumbers=${num}&foodGroup=${group}`);
     return response.data;
   } catch (error: any) {
     if (error.response) {

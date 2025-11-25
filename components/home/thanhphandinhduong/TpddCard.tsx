@@ -25,8 +25,6 @@ const NutrientDisplay: React.FC<{ icon: React.ReactNode, label: string, value: n
 );
 
 const TpddCard: React.FC<FoodCardProps> = ({ food, style, onClick }) => {
-    const urlAPI = process.env.NEXT_PUBLIC_API_URL;
-    console.log("API URL in TpddCard:", urlAPI);
     const handleShowPdf = async () => {
         const response: any = await apiShowPdf(food.ordinalNumbers, food.group);
         console.log(response)
