@@ -138,7 +138,7 @@ export const getRandomFoods = async (size: number): Promise<Food[]> => {
   }
 };
 
-export const saveFood = async (foodData: FoodRequestDto, imageFile?: File): Promise<Food | null> => {
+export const saveFood = async (foodData: FoodRequestDto, imageFile?: File | null): Promise<Food | null> => {
   const formData = new FormData();
   formData.append("data", JSON.stringify(foodData));
   if (imageFile) formData.append("image", imageFile);

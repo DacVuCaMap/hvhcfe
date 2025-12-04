@@ -107,11 +107,11 @@ export default function BuildFood() {
         }
     }
     const totalPL = dataTest.reduce(
-        (acc, item,index) => {
+        (acc, item, index) => {
             let flag = handleTypeFood(item); // true la dong vat, false la thuc vat
             let protein = parseFloat((item.food.protein * item.value / 100).toFixed(2));
             let lipid = parseFloat((item.food.lipid * item.value / 100).toFixed(2));
-            let carb = parseFloat((item.food.carbohydrate * item.value/100).toFixed(2));
+            let carb = parseFloat((item.food.carbohydrate * item.value / 100).toFixed(2));
             if (flag) {
                 acc.pdv += protein;
                 acc.ldv += lipid;
@@ -124,11 +124,20 @@ export default function BuildFood() {
             let nl: number = carb * 4 + protein * 4 + lipid * 9;
 
             acc.energy += nl;
-            console.log(acc.energy,index,nl)
+            console.log(acc.energy, index, nl)
             return acc;
         },
         { pdv: 0, ptv: 0, ldv: 0, ltv: 0, gluxit: 0, energy: 0 }
     );
+
+    const demand = {
+        pdv: (totalPL.energy * 0.17 / 4) - ((totalPL.energy * 0.17 / 4) / 2),
+        ptv: (totalPL.energy * 0.17 / 4) / 2,
+        ldv: (totalPL.energy * 0.18 / 9) - ((totalPL.energy * 0.18 / 9) / 2),
+        ltv: (totalPL.energy * 0.18 / 9) / 2,
+        gluxit:0,
+        energy:parseFloat(energy.toFixed(2))*0.65
+    }
 
     console.log(dataRation)
     return (
