@@ -5,7 +5,7 @@ export interface Food {
   protein: number;
   lipid: number;
   carbohydrate: number;
-  image: string; // URL or path to the image
+  image: string | null; // URL or path to the image
   groupObj?: any;
   ordinalNumbers: number;
 }

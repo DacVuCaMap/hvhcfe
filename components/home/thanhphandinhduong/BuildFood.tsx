@@ -2,10 +2,59 @@
 import React, { useState } from 'react'; // Đảm bảo đường dẫn đúng
 import { Search } from 'lucide-react';
 import Image from 'next/image';
+import { Food } from '@/type/food';
+type FoodWithValue = {
+    food: Food;
+    value: number;
+};
 
-export default function FoodSearch() {
-    const [value, setValue] = useState(0);
-    const [tempValue, setTempValue] = useState(0);
+const dataTest: FoodWithValue[] = [
+    {
+        food: {
+            id: 10,
+            name: "Dầu thực vật",
+            ordinalNumbers: 266,
+            group: "cooking_oil",
+            protein: 0.0,
+            lipid: 99.7,
+            carbohydrate: 0.0,
+            image: "/api/images/food/1762847817562-dau_TV.jpg",
+        },
+        value: 3.031470558464384,
+    },
+    {
+        food: {
+            id: 347,
+            name: "Thịt lợn xô lọc",
+            ordinalNumbers: 296,
+            group: "meat",
+            protein: 16.5,
+            lipid: 21.5,
+            carbohydrate: 0.0,
+            image: null,
+        },
+        value: 0.0,
+    },
+    {
+        food: {
+            id: 399,
+            name: "Giò thủ lợn",
+            ordinalNumbers: 348,
+            group: "meat",
+            protein: 16.0,
+            lipid: 54.3,
+            carbohydrate: 0.0,
+            image: null,
+        },
+        value: 50.0,
+    },
+];
+
+
+export default function BuildFood() {
+    const [dataRation, setDataRation] = useState<FoodWithValue[]>(dataTest);
+    const [energyTemp, setEnergyTemp] = useState(0);
+    const [energy, setEnergy] = useState(0);
     const [error, setError] = useState('');
     const handleChange = (e: any) => {
         const val = e.target.value.trim();
@@ -14,24 +63,24 @@ export default function FoodSearch() {
         if (/^\d*$/.test(val)) {
             // Nếu rỗng thì cho phép
             if (val === "") {
-                setValue(val);
+                setEnergyTemp(val);
                 return;
             }
 
             // Chuyển sang số và kiểm tra giới hạn
             const num = parseInt(val, 10);
             if (num >= 2500 && num <= 4860) {
-                setValue(val);
+                setEnergyTemp(val);
             } else if (num < 2500) {
-                setValue(val); // Cho phép nhập tạm thời để người dùng gõ tiếp
+                setEnergyTemp(val); // Cho phép nhập tạm thời để người dùng gõ tiếp
             }
             // Nếu vượt 4860 thì bỏ qua
         }
     };
 
     const handleClick = () => {
-        if (value >= 2500 && value <= 4860) {
-            setTempValue(value);
+        if (energyTemp >= 2500 && energyTemp <= 4860) {
+            setEnergy(energy);
             setError('');
         }
         else {
@@ -39,9 +88,53 @@ export default function FoodSearch() {
         }
 
     };
+    const handleTypeFood = (food: FoodWithValue): boolean => {
+        let allowedGroups = ["meat", "seafood", "egg", "milk"]
+        if (allowedGroups.includes(food.food.group) || food.food.name === "mỡ lợn nước" || food.food.name === "nước mắm cá loại 1") {
+            return true;
+        }
+        else {
+            return false
+        }
+    }
+    const handleProtein = (food: FoodWithValue, type: boolean): number => {
+        let mp = energy * 0.17 / 4;
+        if (type) {
+            return mp / 2;
+        }
+        else {
+            return mp - (mp / 2);
+        }
+    }
+    const totalPL = dataTest.reduce(
+        (acc, item,index) => {
+            let flag = handleTypeFood(item); // true la dong vat, false la thuc vat
+            let protein = parseFloat((item.food.protein * item.value / 100).toFixed(2));
+            let lipid = parseFloat((item.food.lipid * item.value / 100).toFixed(2));
+            let carb = parseFloat((item.food.carbohydrate * item.value/100).toFixed(2));
+            if (flag) {
+                acc.pdv += protein;
+                acc.ldv += lipid;
+            }
+            else {
+                acc.ptv += protein;
+                acc.ltv += lipid;
+            }
+            acc.gluxit += carb;
+            let nl: number = carb * 4 + protein * 4 + lipid * 9;
+
+            acc.energy += nl;
+            console.log(acc.energy,index,nl)
+            return acc;
+        },
+        { pdv: 0, ptv: 0, ldv: 0, ltv: 0, gluxit: 0, energy: 0 }
+    );
+
+    console.log(dataRation)
     return (
-        <div className="min-h-screen bg-gradient-to-r from-green-200 to-blue-300 flex flex-col items-center">
-            <section className="container lg:px-8 py-16 md:py-20 pb-32 border-b border-gray-400">
+        <div className="min-h-screen w-full bg-gradient-to-r from-green-200 to-blue-300 flex flex-col items-center">
+
+            <section className="w-full lg:px-8 px-2 py-16 md:py-20 pb-32 border-b border-gray-400">
                 <div className='flex flex-col lg:flex-row items-center justify-between gap-4'>
                     {/* Logo and Department Info - Adjusted width and centering */}
                     <div className=''>
@@ -49,7 +142,7 @@ export default function FoodSearch() {
                             // Use actual logo path
                             src="/images/buildfood.jpg"
                             alt="Logo Học Viện Hậu Cần"
-                            width={2000} // Slightly smaller logo
+                            width={1500} // Slightly smaller logo
                             height={90}
                             className="rounded-lg shadow-xl"
                         />
@@ -74,7 +167,7 @@ export default function FoodSearch() {
                                 <input
                                     type="text"
                                     placeholder="Nhập giá trị từ 2500 đến 4860"
-                                    value={value == 0 ? '' : value}
+                                    value={energyTemp == 0 ? '' : energyTemp}
                                     onChange={handleChange}
                                     className="w-full p-2 pl-12 sm:pl-16 text-base sm:text-lg bg-slate-800 bg-opacity-70 text-gray-100 rounded-full shadow-2xl focus:outline-none focus:ring-4 focus:ring-green-500 focus:ring-opacity-60 transition-all duration-300 ease-in-out border border-slate-700 placeholder-gray-500"
                                 />
@@ -118,56 +211,74 @@ export default function FoodSearch() {
                                 <th className="py-2 px-4 text-center border-b-2 border-gray-300">L(tv)</th>
                             </tr>
                         </thead>
+                        <tbody>
+                            {dataRation.length > 0 &&
+                                dataRation.map((item, index) => {
+                                    let type = handleTypeFood(item);
+                                    let protein = (item.food.protein * item.value / 100).toFixed(2);
+                                    let lipid = (item.food.lipid * item.value / 100).toFixed(2);
+                                    let nl: number = item.food.carbohydrate * 4 + parseFloat(protein) * 4 + parseFloat(lipid) * 9;
 
-                        {/* <tbody className="text-gray-700 text-sm font-light">
-                            {addedFoods.map((item, index) => (
-                                <tr key={`${item.food.id}-${index}`} className="border-b border-gray-200 hover:bg-gray-50 transition-colors duration-150">
-                                    <td className="py-3 px-4 sm:px-6 text-center whitespace-nowrap">{item.food.name}</td>
-                                    <td className="py-3 px-4 sm:px-6 text-center no-print">
-                                        <input
-                                            type="number"
-                                            value={item.input === 0 ? '' : item.input} // Hiển thị rỗng nếu giá trị là 0 để người dùng dễ nhập
-                                            onChange={(e) => handleUpdateFoodQuantity(index, Number(e.target.value))}
-                                            onBlur={(e) => { // Khi blur, nếu rỗng hoặc NaN thì đặt lại về 0
-                                                if (e.target.value === '' || isNaN(Number(e.target.value))) {
-                                                    handleUpdateFoodQuantity(index, 0);
-                                                }
-                                            }}
-                                            min="0"
-                                            className="w-20 p-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-400 text-center"
-                                        />
-                                    </td>
-                                    <td className="py-3 px-4 sm:px-6 text-center print-only">{item.input === 0 ? '' : item.input}</td>
-                                    <td className="py-3 px-4 sm:px-6 text-center">{item.calculatedProtein.toFixed(2)}</td>
-                                    <td className="py-3 px-4 sm:px-6 text-center">{item.calculatedGluxit.toFixed(2)}</td>
-                                    <td className="py-3 px-4 sm:px-6 text-center">{item.calculatedLipid.toFixed(2)}</td>
-                                    <td className="py-3 px-4 sm:px-6 text-center">{item.totalEnergy.toFixed(2)}</td>
-                                    <td className="py-3 px-4 sm:px-6 text-center no-print">
-                                        <button
-                                            onClick={() => handleRemoveFood(index)}
-                                            className="text-red-500 hover:text-red-700 transition-colors duration-200"
-                                            title="Xóa món ăn này"
-                                        >
-                                            <Trash2 size={20} />
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                            {addedFoods.length === 0 && (
-                                <tr>
-                                    <td colSpan={7} className="py-6 text-center text-gray-500 italic">
-                                        Chưa có món ăn nào được thêm vào bảng. Hãy tìm kiếm và chọn món ăn từ danh sách trên!
-                                    </td>
-                                </tr>
-                            )}
+                                    return (
+                                        (
+                                            <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
+                                                <td className="py-3 px-4 sm:px-6 text-center">{index + 1}</td>
+                                                <td className="py-3 px-4 sm:px-6">{item.food.name}</td>
+                                                <td className="py-3 px-4 sm:px-6 text-center">{item.value.toFixed(2)}</td>
+                                                <td className="py-3 px-4 sm:px-6 text-center">g</td>
+                                                <td className="py-3 px-4 sm:px-6 text-center">{type && protein}</td>
+                                                <td className="py-3 px-4 sm:px-6 text-center">{!type && protein}</td>
+                                                <td className="py-3 px-4 sm:px-6 text-center">{type && lipid}</td>
+                                                <td className="py-3 px-4 sm:px-6 text-center">{!type && lipid}</td>
+                                                <td className="py-3 px-4 sm:px-6 text-center">{item.food.carbohydrate}</td>
+                                                <td className="py-3 px-4 sm:px-6 text-center">{nl}</td>
+                                            </tr>
+
+                                        )
+                                    )
+                                })
+
+                            }
                         </tbody>
                         <tfoot>
-                            <tr className="bg-gray-100 text-gray-800 font-semibold text-sm sm:text-base leading-normal border-t-2 border-gray-400">
-                                <td className="py-3 px-4 sm:px-6 text-left" colSpan={5}>Tổng cộng</td>
-                                <td className="py-3 px-4 sm:px-6 text-center">{totalEnergyOverall.toFixed(2)}</td>
-                                <td className="py-3 px-4 sm:px-6 text-left no-print"></td>
+                            <tr className="border-b border-gray-200 hover:bg-gray-50 font-bold">
+                                <td className="py-3 px-4 sm:px-6 text-center">{dataRation.length + 1}</td>
+                                <td className="py-3 px-4 sm:px-6">Cộng</td>
+                                <td className="py-3 px-4 sm:px-6 text-center"></td>
+                                <td className="py-3 px-4 sm:px-6 text-center"></td>
+                                <td className="py-3 px-4 sm:px-6 text-center">{totalPL.pdv}</td>
+                                <td className="py-3 px-4 sm:px-6 text-center">{totalPL.ptv}</td>
+                                <td className="py-3 px-4 sm:px-6 text-center">{totalPL.ldv}</td>
+                                <td className="py-3 px-4 sm:px-6 text-center">{totalPL.ltv}</td>
+                                <td className="py-3 px-4 sm:px-6 text-center">{totalPL.gluxit}</td>
+                                <td className="py-3 px-4 sm:px-6 text-center">{totalPL.energy.toFixed(2)}</td>
                             </tr>
-                        </tfoot> */}
+                            <tr className="border-b border-gray-200 hover:bg-gray-50 font-bold">
+                                <td className="py-3 px-4 sm:px-6 text-center">{dataRation.length + 2}</td>
+                                <td className="py-3 px-4 sm:px-6">Nhu cầu</td>
+                                <td className="py-3 px-4 sm:px-6 text-center"></td>
+                                <td className="py-3 px-4 sm:px-6 text-center"></td>
+                                <td className="py-3 px-4 sm:px-6 text-center"></td>
+                                <td className="py-3 px-4 sm:px-6 text-center"></td>
+                                <td className="py-3 px-4 sm:px-6 text-center"></td>
+                                <td className="py-3 px-4 sm:px-6 text-center"></td>
+                                <td className="py-3 px-4 sm:px-6 text-center"></td>
+                                <td className="py-3 px-4 sm:px-6 text-center"></td>
+                            </tr>
+                            <tr className="border-b border-gray-200 hover:bg-gray-50 font-bold">
+                                <td className="py-3 px-4 sm:px-6 text-center">{dataRation.length + 3}</td>
+                                <td className="py-3 px-4 sm:px-6">Sai số</td>
+                                <td className="py-3 px-4 sm:px-6 text-center"></td>
+                                <td className="py-3 px-4 sm:px-6 text-center"></td>
+                                <td className="py-3 px-4 sm:px-6 text-center"></td>
+                                <td className="py-3 px-4 sm:px-6 text-center"></td>
+                                <td className="py-3 px-4 sm:px-6 text-center"></td>
+                                <td className="py-3 px-4 sm:px-6 text-center"></td>
+                                <td className="py-3 px-4 sm:px-6 text-center"></td>
+                                <td className="py-3 px-4 sm:px-6 text-center"></td>
+                            </tr>
+                        </tfoot>
+
                     </table>
                 </div>
 
