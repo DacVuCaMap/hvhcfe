@@ -138,6 +138,17 @@ export const getRandomFoods = async (size: number): Promise<Food[]> => {
   }
 };
 
+export const searchFood = async (key: string): Promise<Food[]> => {
+  try {
+    const { data } = await api.get<Food[]>(`/search?name=${key}`);
+    return data.map(normalizeImage);
+  } catch (error) {
+    handleError(error, "Fetch foods");
+    return [];
+  }
+};
+
+
 export const saveFood = async (foodData: FoodRequestDto, imageFile?: File | null): Promise<Food | null> => {
   const formData = new FormData();
   formData.append("data", JSON.stringify(foodData));
@@ -176,7 +187,9 @@ export const apiShowPdf = async (num: number, group: string) => {
 
 export const getRation = async (energy: number) => {
   try {
-    const { data } = await api.get(`/build/ration/${energy}`);
+    const { data } = await api.get(`/build/ration/${energy}`, {
+      headers: { "ngrok-skip-browser-warning": "true" }
+    });
     return data;
   } catch (error) {
     handleError(error, "Get ration");

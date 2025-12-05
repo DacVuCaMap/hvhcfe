@@ -4,15 +4,17 @@ import React, { useState, useMemo, useEffect, useCallback } from 'react'; // Đ�
 import { Search, AlertTriangle } from 'lucide-react';
 import TpddCard from './TpddCard';
 import './TpddTable.css'
-import { getRandomFoods } from '@/lib/api';
+import { getRandomFoods, searchFood } from '@/lib/api';
 import Image from 'next/image';
 
 export default function FoodSearch() {
   const [foodData, setFoodData] = useState<Food[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [loading, setLoading] = useState(false);
   const fetchFoods = useCallback(async () => {
     try {
-      const fetchedFoods = await getRandomFoods(1000);
+      const fetchedFoods = await getRandomFoods(20);
+
       setFoodData(fetchedFoods);
     } catch (err) {
       console.error("Failed to fetch foods:", err);
@@ -22,13 +24,29 @@ export default function FoodSearch() {
     fetchFoods();
   }, [fetchFoods])
 
+  useEffect(() => {
+    if (!searchTerm) {
+      // 👉 thay vì clear, gọi lại fetchFoods
+      fetchFoods();
+      return;
+    }
 
-  const filteredFood = useMemo(() =>
-    foodData.filter(food =>
-      food.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      food.group.toLowerCase().includes(searchTerm.toLowerCase())
-    ), [searchTerm, foodData]);
-    
+    const delayDebounce = setTimeout(async () => {
+      setLoading(true);
+      try {
+        const results = await searchFood(searchTerm); // gọi API server
+        setFoodData(results);
+      } catch (err) {
+        console.error("Failed to search foods:", err);
+      } finally {
+        setLoading(false);
+      }
+    }, 500);
+
+    return () => clearTimeout(delayDebounce);
+  }, [searchTerm, fetchFoods]);
+
+
   return (
     <div className="min-h-screen bg-gradient-to-r from-green-200 to-blue-300 flex flex-col items-center p-8">
       {/* Hiệu ứng hạt nổi (optional) */}
@@ -96,20 +114,35 @@ export default function FoodSearch() {
             />
           </div>
         </div>
+        {loading && (
+          <div className="flex flex-col items-center justify-center py-12 md:py-16 relative z-10">
+            {/* Vòng xoay loading */}
+            <div className="w-16 h-16 border-4 border-t-4 border-green-400 border-opacity-50 rounded-full animate-spin mb-6"></div>
 
-        {filteredFood.length > 0 ? (
+            {/* Text */}
+            <p className="text-xl text-gray-100 font-semibold mb-2 animate-pulse">
+              Đang tải dữ liệu...
+            </p>
+            <p className="text-gray-400 text-sm">
+              Vui lòng chờ trong giây lát, chúng tôi đang tìm kiếm thực phẩm cho bạn.
+            </p>
+          </div>
+        )}
+
+        {foodData.length > 0 && !loading && (
           <div className="w-full max-w-7xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 px-2 sm:px-4 relative z-10">
-            {filteredFood.slice(0,20).map((food, index) => (
+            {foodData.map((food, index) => (
               <div
                 key={food.id}
                 className="food-card-item" // Class để target CSS animation
-                style={{ animationDelay: `${index * 100}ms` }} // Stagger animation
               >
                 <TpddCard food={food} />
               </div>
             ))}
           </div>
-        ) : (
+        )}
+
+        {foodData.length === 0 && !loading && (
           <div className="text-center py-12 md:py-16 relative z-10 bg-slate-800 bg-opacity-50 p-8 rounded-xl shadow-xl">
             <AlertTriangle className="w-20 h-20 text-yellow-400 mx-auto mb-6" />
             <p className="text-2xl text-gray-100 font-semibold mb-3">Không tìm thấy kết quả nào</p>

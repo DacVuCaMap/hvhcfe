@@ -5,7 +5,7 @@ import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react'
 import { Search, AlertTriangle, Trash2 } from 'lucide-react'; // Thêm Trash2 cho nút xóa
 import TpddCard from './TpddCard'; // Đảm bảo đường dẫn đúng
 import './CalFood.css'; // Giữ nguyên CSS của bạn
-import { getRandomFoods } from '@/lib/api'; // Đảm bảo đường dẫn đúng
+import { getRandomFoods, searchFood } from '@/lib/api'; // Đảm bảo đường dẫn đúng
 import { useReactToPrint } from 'react-to-print';
 import Image from 'next/image';
 
@@ -14,11 +14,11 @@ export default function CalFood() {
     const [searchTerm, setSearchTerm] = useState('');
     const [addedFoods, setAddedFoods] = useState<AddedFoodItem[]>([]); // Danh sách món ăn đã thêm vào bảng
     const componentRef = useRef<HTMLDivElement>(null);
-
+    const [loading, setLoading] = useState(false);
     const fetchFoods = useCallback(async () => {
         try {
             // Lấy số lượng lớn hơn nếu bạn muốn danh sách tìm kiếm phong phú hơn
-            const fetchedFoods = await getRandomFoods(100);
+            const fetchedFoods = await getRandomFoods(20);
             setFoodData(fetchedFoods);
         } catch (err) {
             console.error("Failed to fetch foods:", err);
@@ -29,11 +29,31 @@ export default function CalFood() {
         fetchFoods();
     }, [fetchFoods]);
 
-    const filteredFood = useMemo(() =>
-        foodData.filter(food =>
-            food.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            food.group.toLowerCase().includes(searchTerm.toLowerCase())
-        ), [searchTerm, foodData]);
+    useEffect(() => {
+        if (!searchTerm) {
+            // 👉 thay vì clear, gọi lại fetchFoods
+            fetchFoods();
+            return;
+        }
+
+        const delayDebounce = setTimeout(async () => {
+            setLoading(true);
+            try {
+                const results = await searchFood(searchTerm); // gọi API server
+                setFoodData(results);
+            } catch (err) {
+                console.error("Failed to search foods:", err);
+            } finally {
+                setLoading(false);
+            }
+        }, 500);
+
+        return () => clearTimeout(delayDebounce);
+    }, [searchTerm, fetchFoods]);
+
+
+
+
 
     // Hàm tính toán giá trị dinh dưỡng dựa trên Food và input weight
     const calculateNutrition = (food: Food, input: number) => {
@@ -186,13 +206,12 @@ export default function CalFood() {
             </div>
 
             {/* Kết quả tìm kiếm và hiển thị card */}
-            {filteredFood.length > 0 ? (
+            {foodData.length > 0 ? (
                 <div className="w-full max-w-7xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 px-2 sm:px-4 relative z-10 mb-10">
-                    {filteredFood.slice(0,20).map((food, index) => (
+                    {foodData.map((food, index) => (
                         <div
                             key={food.id}
                             className="food-card-item" // Class để target CSS animation
-                            style={{ animationDelay: `${index * 100}ms` }} // Stagger animation
                         >
                             {/* Truyền prop onClick để thêm vào bảng */}
                             <TpddCard food={food} onClick={handleAddToTable} />

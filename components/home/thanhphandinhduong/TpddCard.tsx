@@ -46,8 +46,7 @@ const TpddCard: React.FC<FoodCardProps> = ({ food, style, onClick }) => {
     };
     return (
         <div
-            style={style} // Áp dụng style cho animation (ví dụ: transitionDelay)
-            className="group relative bg-white bg-opacity-70 backdrop-filter backdrop-blur-lg shadow-xl hover:shadow-2xl rounded-2xl overflow-hidden transition-all duration-500 ease-in-out transform hover:-translate-y-2 border border-transparent hover:border-green-300"
+            className="group relative bg-green-200 min-w-72 bg-opacity-70 shadow-lg rounded-2xl overflow-hidden transition-all duration-500 ease-in-out transform hover:-translate-y-2 border border-transparent hover:border-green-300"
         >
             <div className="relative h-56 w-full overflow-hidden">
                 {food.image ? (
@@ -56,7 +55,8 @@ const TpddCard: React.FC<FoodCardProps> = ({ food, style, onClick }) => {
                         alt={food.name}
                         height={500}
                         width={500}
-                        className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-out"
+                        loading='lazy'
+                        className="w-full h-full object-cover group-hover:scale-110 duration-700 ease-out"
                     />
                 ) : (
                     <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300">

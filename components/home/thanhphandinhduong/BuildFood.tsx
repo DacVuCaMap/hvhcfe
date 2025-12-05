@@ -1,14 +1,15 @@
 "use client";
-import React, { useState } from 'react'; // Đảm bảo đường dẫn đúng
+import React, { useEffect, useMemo, useState } from 'react'; // Đảm bảo đường dẫn đúng
 import { Search } from 'lucide-react';
 import Image from 'next/image';
 import { Food } from '@/type/food';
+import { getRation } from '@/lib/api';
 type FoodWithValue = {
     food: Food;
     value: number;
 };
 
-const dataTest: FoodWithValue[] = [
+const dataTest1: FoodWithValue[] = [
     {
         food: {
             id: 10,
@@ -52,9 +53,10 @@ const dataTest: FoodWithValue[] = [
 
 
 export default function BuildFood() {
-    const [dataRation, setDataRation] = useState<FoodWithValue[]>(dataTest);
-    const [energyTemp, setEnergyTemp] = useState(0);
-    const [energy, setEnergy] = useState(0);
+    const [dataRation, setDataRation] = useState<FoodWithValue[]>([]);
+    const [energyTemp, setEnergyTemp] = useState<number>(0);
+    const [energy, setEnergy] = useState<number>(0);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const handleChange = (e: any) => {
         const val = e.target.value.trim();
@@ -63,31 +65,40 @@ export default function BuildFood() {
         if (/^\d*$/.test(val)) {
             // Nếu rỗng thì cho phép
             if (val === "") {
-                setEnergyTemp(val);
+                setEnergyTemp(0);
                 return;
             }
 
             // Chuyển sang số và kiểm tra giới hạn
             const num = parseInt(val, 10);
             if (num >= 2500 && num <= 4860) {
-                setEnergyTemp(val);
+                setEnergyTemp(parseFloat(val));
             } else if (num < 2500) {
-                setEnergyTemp(val); // Cho phép nhập tạm thời để người dùng gõ tiếp
+                setEnergyTemp(parseFloat(val)); // Cho phép nhập tạm thời để người dùng gõ tiếp
             }
             // Nếu vượt 4860 thì bỏ qua
         }
     };
 
-    const handleClick = () => {
+    const handleClick = async () => {
+        setLoading(true);
         if (energyTemp >= 2500 && energyTemp <= 4860) {
-            setEnergy(energy);
-            setError('');
-        }
-        else {
+            try {
+                const data = await getRation(energyTemp);
+                console.log("sss", data);
+                if (data) {
+                    setDataRation(data);
+                }
+                setError('');
+            } catch (err) {
+                setError('Có lỗi xảy ra khi lấy dữ liệu');
+            }
+        } else {
             setError('Vui lòng nhập giá trị từ 2500 đến 4860');
         }
-
+        setLoading(false);
     };
+
     const handleTypeFood = (food: FoodWithValue): boolean => {
         let allowedGroups = ["meat", "seafood", "egg", "milk"]
         if (allowedGroups.includes(food.food.group) || food.food.name === "mỡ lợn nước" || food.food.name === "nước mắm cá loại 1") {
@@ -97,49 +108,53 @@ export default function BuildFood() {
             return false
         }
     }
-    const handleProtein = (food: FoodWithValue, type: boolean): number => {
-        let mp = energy * 0.17 / 4;
-        if (type) {
-            return mp / 2;
-        }
-        else {
-            return mp - (mp / 2);
-        }
-    }
-    const totalPL = dataTest.reduce(
-        (acc, item, index) => {
-            let flag = handleTypeFood(item); // true la dong vat, false la thuc vat
-            let protein = parseFloat((item.food.protein * item.value / 100).toFixed(2));
-            let lipid = parseFloat((item.food.lipid * item.value / 100).toFixed(2));
-            let carb = parseFloat((item.food.carbohydrate * item.value / 100).toFixed(2));
-            if (flag) {
-                acc.pdv += protein;
-                acc.ldv += lipid;
-            }
-            else {
-                acc.ptv += protein;
-                acc.ltv += lipid;
-            }
-            acc.gluxit += carb;
-            let nl: number = carb * 4 + protein * 4 + lipid * 9;
+    const energyMain = useMemo(() => {
+        return (energyTemp + energyTemp) * 0.1;
+    }, [dataRation]);
 
-            acc.energy += nl;
-            console.log(acc.energy, index, nl)
-            return acc;
-        },
-        { pdv: 0, ptv: 0, ldv: 0, ltv: 0, gluxit: 0, energy: 0 }
-    );
+    // Tính totalPL chỉ khi dataRation thay đổi
+    const totalPL = useMemo(() => {
+        return dataRation.reduce(
+            (acc, item, index) => {
+                let flag = handleTypeFood(item); // true: động vật, false: thực vật
+                let protein = parseFloat((item.food.protein * item.value / 100).toFixed(2));
+                let lipid = parseFloat((item.food.lipid * item.value / 100).toFixed(2));
+                let carb = parseFloat((item.food.carbohydrate * item.value / 100).toFixed(2));
 
-    const demand = {
-        pdv: (totalPL.energy * 0.17 / 4) - ((totalPL.energy * 0.17 / 4) / 2),
-        ptv: (totalPL.energy * 0.17 / 4) / 2,
-        ldv: (totalPL.energy * 0.18 / 9) - ((totalPL.energy * 0.18 / 9) / 2),
-        ltv: (totalPL.energy * 0.18 / 9) / 2,
-        gluxit:0,
-        energy:parseFloat(energy.toFixed(2))*0.65
-    }
+                if (flag) {
+                    acc.pdv += protein;
+                    acc.ldv += lipid;
+                } else {
+                    acc.ptv += protein;
+                    acc.ltv += lipid;
+                }
 
-    console.log(dataRation)
+                acc.gluxit += carb;
+                let nl: number = carb * 4 + protein * 4 + lipid * 9;
+                acc.energy += nl;
+
+                return acc;
+            },
+            { pdv: 0, ptv: 0, ldv: 0, ltv: 0, gluxit: 0, energy: 0 }
+        );
+    }, [dataRation]);
+
+    // Tính demand chỉ khi energyMain thay đổi
+    const demand = useMemo(() => {
+        return {
+            pdv: ((energyMain * 0.17) / 4) / 2,
+            ptv: (energyMain * 0.17 / 4) - (energyMain * 0.17 / 4) / 2,
+            ldv: (energyMain * 0.18 / 9) / 2,
+            ltv: (energyMain * 0.18 / 9) - (energyMain * 0.18 / 9) / 2,
+            gluxit: (energyMain * 65 / 100) / 4,
+            energy: energyMain
+        };
+    }, [energyMain]);
+
+    const f = (num: number | undefined | null): string => {
+        if (num == null) return "-";
+        return Number(num).toFixed(2);
+    };
     return (
         <div className="min-h-screen w-full bg-gradient-to-r from-green-200 to-blue-300 flex flex-col items-center">
 
@@ -196,100 +211,123 @@ export default function BuildFood() {
                     </div>
                 </div>
 
-                <div className="bg-white mt-10 p-6 rounded-lg overflow-auto">
-                    <h2 className="text-xl font-bold text-gray-800 mb-4 print-only">Bảng Xây dựng định lượng khẩu phần ăn</h2>
-                    <table className="min-w-full bg-white border border-gray-200 rounded-lg">
-                        <thead>
-                            <tr className="bg-gray-100 text-gray-600 uppercase text-xs sm:text-sm leading-normal">
-                                <th rowSpan={2} className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">TT</th>
-                                <th rowSpan={2} className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Tên LTTP</th>
-                                <th rowSpan={2} className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Số lượng</th>
-                                <th rowSpan={2} className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Đơn vị</th>
+                {loading && (
+                    <div className='bg-white mt-10 p-6 rounded-lg overflow-auto'>
+                        <div className=" mt-4 space-y-2">
+                            <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+                            <div className="h-4 bg-gray-200 rounded animate-pulse w-5/6"></div>
+                            <div className="h-4 bg-gray-200 rounded animate-pulse w-4/6"></div>
+                        </div>
+                    </div>
+                )}
+                {!loading && dataRation.length > 0 && (
+                    <div className="bg-white mt-10 p-6 rounded-lg overflow-auto">
 
-                                <th colSpan={2} className="py-3 px-4 sm:px-6 text-center border-gray-300">Protein</th>
+                        <div>
+                            <h2 className="text-xl font-bold text-gray-800 mb-4 print-only">Bảng Xây dựng định lượng khẩu phần ăn</h2>
+                            <table className="min-w-full bg-white border border-gray-200 rounded-lg">
+                                <thead>
+                                    <tr className="bg-gray-100 text-gray-600 uppercase text-xs sm:text-sm leading-normal">
+                                        <th rowSpan={2} className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">TT</th>
+                                        <th rowSpan={2} className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Tên LTTP</th>
+                                        <th rowSpan={2} className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Số lượng</th>
+                                        <th rowSpan={2} className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Đơn vị</th>
 
-                                <th colSpan={2} className="py-3 px-4 sm:px-6 text-center border-gray-300">Lipid</th>
+                                        <th colSpan={2} className="py-3 px-4 sm:px-6 text-center border-gray-300">Protein</th>
 
-                                <th rowSpan={2} className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Gluxit</th>
-                                <th rowSpan={2} className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300 no-print">Năng lượng</th>
-                            </tr>
-                            <tr className="bg-gray-100 text-gray-600 text-xs sm:text-sm leading-normal">
-                                <th className="py-2 px-4 text-center border-b-2 border-r-2 border-gray-300">P(đv)</th>
-                                <th className="py-2 px-4 text-center border-b-2 border-gray-300">P(tv)</th>
-                                <th className="py-2 px-4 text-center border-b-2 border-r-2 border-gray-300">L(đv)</th>
-                                <th className="py-2 px-4 text-center border-b-2 border-gray-300">L(tv)</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {dataRation.length > 0 &&
-                                dataRation.map((item, index) => {
-                                    let type = handleTypeFood(item);
-                                    let protein = (item.food.protein * item.value / 100).toFixed(2);
-                                    let lipid = (item.food.lipid * item.value / 100).toFixed(2);
-                                    let nl: number = item.food.carbohydrate * 4 + parseFloat(protein) * 4 + parseFloat(lipid) * 9;
+                                        <th colSpan={2} className="py-3 px-4 sm:px-6 text-center border-gray-300">Lipid</th>
 
-                                    return (
-                                        (
-                                            <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
-                                                <td className="py-3 px-4 sm:px-6 text-center">{index + 1}</td>
-                                                <td className="py-3 px-4 sm:px-6">{item.food.name}</td>
-                                                <td className="py-3 px-4 sm:px-6 text-center">{item.value.toFixed(2)}</td>
-                                                <td className="py-3 px-4 sm:px-6 text-center">g</td>
-                                                <td className="py-3 px-4 sm:px-6 text-center">{type && protein}</td>
-                                                <td className="py-3 px-4 sm:px-6 text-center">{!type && protein}</td>
-                                                <td className="py-3 px-4 sm:px-6 text-center">{type && lipid}</td>
-                                                <td className="py-3 px-4 sm:px-6 text-center">{!type && lipid}</td>
-                                                <td className="py-3 px-4 sm:px-6 text-center">{item.food.carbohydrate}</td>
-                                                <td className="py-3 px-4 sm:px-6 text-center">{nl}</td>
-                                            </tr>
+                                        <th rowSpan={2} className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Gluxit</th>
+                                        <th rowSpan={2} className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300 no-print">Năng lượng (KCal)</th>
+                                    </tr>
+                                    <tr className="bg-gray-100 text-gray-600 text-xs sm:text-sm leading-normal">
+                                        <th className="py-2 px-4 text-center border-b-2 border-r-2 border-gray-300">P(đv)</th>
+                                        <th className="py-2 px-4 text-center border-b-2 border-gray-300">P(tv)</th>
+                                        <th className="py-2 px-4 text-center border-b-2 border-r-2 border-gray-300">L(đv)</th>
+                                        <th className="py-2 px-4 text-center border-b-2 border-gray-300">L(tv)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {dataRation.length > 0 &&
+                                        dataRation.map((item, index) => {
+                                            let type = handleTypeFood(item);
+                                            let protein = (item.food.protein * item.value / 100).toFixed(2);
+                                            let lipid = (item.food.lipid * item.value / 100).toFixed(2);
+                                            let nl: number = item.food.carbohydrate * 4 + parseFloat(protein) * 4 + parseFloat(lipid) * 9;
 
-                                        )
-                                    )
-                                })
+                                            return (
+                                                (
+                                                    <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
+                                                        <td className="py-3 px-4 sm:px-6 text-center">{index + 1}</td>
+                                                        <td className="py-3 px-4 sm:px-6">{item.food.name}</td>
+                                                        <td className="py-3 px-4 sm:px-6 text-center">{item.value.toFixed(2)}</td>
+                                                        <td className="py-3 px-4 sm:px-6 text-center">g</td>
+                                                        <td className="py-3 px-4 sm:px-6 text-center">{type && protein}</td>
+                                                        <td className="py-3 px-4 sm:px-6 text-center">{!type && protein}</td>
+                                                        <td className="py-3 px-4 sm:px-6 text-center">{type && lipid}</td>
+                                                        <td className="py-3 px-4 sm:px-6 text-center">{!type && lipid}</td>
+                                                        <td className="py-3 px-4 sm:px-6 text-center">{item.food.carbohydrate}</td>
+                                                        <td className="py-3 px-4 sm:px-6 text-center">{nl.toFixed(2)}</td>
+                                                    </tr>
 
-                            }
-                        </tbody>
-                        <tfoot>
-                            <tr className="border-b border-gray-200 hover:bg-gray-50 font-bold">
-                                <td className="py-3 px-4 sm:px-6 text-center">{dataRation.length + 1}</td>
-                                <td className="py-3 px-4 sm:px-6">Cộng</td>
-                                <td className="py-3 px-4 sm:px-6 text-center"></td>
-                                <td className="py-3 px-4 sm:px-6 text-center"></td>
-                                <td className="py-3 px-4 sm:px-6 text-center">{totalPL.pdv}</td>
-                                <td className="py-3 px-4 sm:px-6 text-center">{totalPL.ptv}</td>
-                                <td className="py-3 px-4 sm:px-6 text-center">{totalPL.ldv}</td>
-                                <td className="py-3 px-4 sm:px-6 text-center">{totalPL.ltv}</td>
-                                <td className="py-3 px-4 sm:px-6 text-center">{totalPL.gluxit}</td>
-                                <td className="py-3 px-4 sm:px-6 text-center">{totalPL.energy.toFixed(2)}</td>
-                            </tr>
-                            <tr className="border-b border-gray-200 hover:bg-gray-50 font-bold">
-                                <td className="py-3 px-4 sm:px-6 text-center">{dataRation.length + 2}</td>
-                                <td className="py-3 px-4 sm:px-6">Nhu cầu</td>
-                                <td className="py-3 px-4 sm:px-6 text-center"></td>
-                                <td className="py-3 px-4 sm:px-6 text-center"></td>
-                                <td className="py-3 px-4 sm:px-6 text-center"></td>
-                                <td className="py-3 px-4 sm:px-6 text-center"></td>
-                                <td className="py-3 px-4 sm:px-6 text-center"></td>
-                                <td className="py-3 px-4 sm:px-6 text-center"></td>
-                                <td className="py-3 px-4 sm:px-6 text-center"></td>
-                                <td className="py-3 px-4 sm:px-6 text-center"></td>
-                            </tr>
-                            <tr className="border-b border-gray-200 hover:bg-gray-50 font-bold">
-                                <td className="py-3 px-4 sm:px-6 text-center">{dataRation.length + 3}</td>
-                                <td className="py-3 px-4 sm:px-6">Sai số</td>
-                                <td className="py-3 px-4 sm:px-6 text-center"></td>
-                                <td className="py-3 px-4 sm:px-6 text-center"></td>
-                                <td className="py-3 px-4 sm:px-6 text-center"></td>
-                                <td className="py-3 px-4 sm:px-6 text-center"></td>
-                                <td className="py-3 px-4 sm:px-6 text-center"></td>
-                                <td className="py-3 px-4 sm:px-6 text-center"></td>
-                                <td className="py-3 px-4 sm:px-6 text-center"></td>
-                                <td className="py-3 px-4 sm:px-6 text-center"></td>
-                            </tr>
-                        </tfoot>
+                                                )
+                                            )
+                                        })
 
-                    </table>
-                </div>
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    {/* Dòng Cộng */}
+                                    <tr className="border-b border-gray-200 hover:bg-gray-50 font-bold">
+                                        <td className="py-3 px-4 sm:px-6 text-center">{dataRation.length + 1}</td>
+                                        <td className="py-3 px-4 sm:px-6">Cộng</td>
+                                        <td className="py-3 px-4 sm:px-6 text-center"></td>
+                                        <td className="py-3 px-4 sm:px-6 text-center"></td>
+                                        <td className="py-3 px-4 sm:px-6 text-center">{f(totalPL.pdv)}</td>
+                                        <td className="py-3 px-4 sm:px-6 text-center">{f(totalPL.ptv)}</td>
+                                        <td className="py-3 px-4 sm:px-6 text-center">{f(totalPL.ldv)}</td>
+                                        <td className="py-3 px-4 sm:px-6 text-center">{f(totalPL.ltv)}</td>
+                                        <td className="py-3 px-4 sm:px-6 text-center">{f(totalPL.gluxit)}</td>
+                                        <td className="py-3 px-4 sm:px-6 text-center">{f(totalPL.energy)}</td>
+                                    </tr>
+
+                                    {/* Dòng Nhu cầu */}
+                                    <tr className="border-b border-gray-200 hover:bg-gray-50 font-bold">
+                                        <td className="py-3 px-4 sm:px-6 text-center">{dataRation.length + 2}</td>
+                                        <td className="py-3 px-4 sm:px-6">Nhu cầu</td>
+                                        <td className="py-3 px-4 sm:px-6 text-center"></td>
+                                        <td className="py-3 px-4 sm:px-6 text-center"></td>
+                                        <td className="py-3 px-4 sm:px-6 text-center">{f(demand.pdv)}</td>
+                                        <td className="py-3 px-4 sm:px-6 text-center">{f(demand.ptv)}</td>
+                                        <td className="py-3 px-4 sm:px-6 text-center">{f(demand.ldv)}</td>
+                                        <td className="py-3 px-4 sm:px-6 text-center">{f(demand.ltv)}</td>
+                                        <td className="py-3 px-4 sm:px-6 text-center">{f(demand.gluxit)}</td>
+                                        <td className="py-3 px-4 sm:px-6 text-center">{f(demand.energy)}</td>
+                                    </tr>
+
+                                    {/* Dòng Sai số */}
+                                    <tr className="border-b border-gray-200 hover:bg-gray-50 font-bold">
+                                        <td className="py-3 px-4 sm:px-6 text-center">{dataRation.length + 3}</td>
+                                        <td className="py-3 px-4 sm:px-6">Sai số</td>
+                                        <td className="py-3 px-4 sm:px-6 text-center"></td>
+                                        <td className="py-3 px-4 sm:px-6 text-center"></td>
+                                        <td className="py-3 px-4 sm:px-6 text-center">{f(totalPL.pdv - demand.pdv)}</td>
+                                        <td className="py-3 px-4 sm:px-6 text-center">{f(totalPL.ptv - demand.ptv)}</td>
+                                        <td className="py-3 px-4 sm:px-6 text-center">{f(totalPL.ldv - demand.ldv)}</td>
+                                        <td className="py-3 px-4 sm:px-6 text-center">{f(totalPL.ltv - demand.ltv)}</td>
+                                        <td className="py-3 px-4 sm:px-6 text-center">{f(totalPL.gluxit - demand.gluxit)}</td>
+                                        <td className="py-3 px-4 sm:px-6 text-center">{f(totalPL.energy - demand.energy)}</td>
+                                    </tr>
+                                </tfoot>
+
+                            </table>
+                        </div>
+
+
+                    </div>
+
+                )}
+
 
 
             </section>
