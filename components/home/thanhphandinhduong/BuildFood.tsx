@@ -9,6 +9,7 @@ type FoodWithValue = {
     value: number;
 };
 
+
 const dataTest1: FoodWithValue[] = [
     {
         food: {
@@ -49,8 +50,73 @@ const dataTest1: FoodWithValue[] = [
         },
         value: 50.0,
     },
+    // ---- dữ liệu giả bổ sung ----
+    {
+        food: {
+            id: 501,
+            name: "Gạo tẻ",
+            ordinalNumbers: 120,
+            group: "grain",
+            protein: 7.5,
+            lipid: 0.6,
+            carbohydrate: 77.0,
+            image: null,
+        },
+        value: 200.0,
+    },
+    {
+        food: {
+            id: 502,
+            name: "Khoai lang",
+            ordinalNumbers: 145,
+            group: "vegetable",
+            protein: 1.2,
+            lipid: 0.3,
+            carbohydrate: 27.5,
+            image: null,
+        },
+        value: 100.0,
+    },
+    {
+        food: {
+            id: 503,
+            name: "Táo đỏ",
+            ordinalNumbers: 178,
+            group: "fruit",
+            protein: 0.4,
+            lipid: 0.2,
+            carbohydrate: 14.0,
+            image: null,
+        },
+        value: 80.0,
+    },
+    {
+        food: {
+            id: 504,
+            name: "Sữa bò tươi",
+            ordinalNumbers: 210,
+            group: "dairy",
+            protein: 3.2,
+            lipid: 3.6,
+            carbohydrate: 4.8,
+            image: null,
+        },
+        value: 250.0,
+    },
+    {
+        food: {
+            id: 505,
+            name: "Cá basa phi lê",
+            ordinalNumbers: 275,
+            group: "fish",
+            protein: 18.0,
+            lipid: 5.0,
+            carbohydrate: 0.0,
+            image: null,
+        },
+        value: 150.0,
+    },
 ];
-
 
 export default function BuildFood() {
     const [dataRation, setDataRation] = useState<FoodWithValue[]>([]);
@@ -84,10 +150,14 @@ export default function BuildFood() {
         setLoading(true);
         if (energyTemp >= 2500 && energyTemp <= 4860) {
             try {
-                const data = await getRation(energyTemp);
+                const data: FoodWithValue[] = await getRation(energyTemp);
                 console.log("sss", data);
                 if (data) {
-                    setDataRation(data);
+                    const filteredData = data.filter(item =>
+                        typeof item.value === "number" && item.value !== 0
+                    ); /// loại các trường hợp =0 và infinity
+
+                    setDataRation(filteredData);
                 }
                 setError('');
             } catch (err) {
@@ -101,12 +171,16 @@ export default function BuildFood() {
 
     const handleTypeFood = (food: FoodWithValue): boolean => {
         let allowedGroups = ["meat", "seafood", "egg", "milk"]
-        if (allowedGroups.includes(food.food.group) || food.food.name === "mỡ lợn nước" || food.food.name === "nước mắm cá loại 1") {
+        if (
+            allowedGroups.includes(food.food.group) ||
+            food.food.name.toLowerCase() === "mỡ lợn nước" ||
+            food.food.name.toLowerCase().includes("nước mắm cá")
+        ) {
             return true;
+        } else {
+            return false;
         }
-        else {
-            return false
-        }
+
     }
     const energyMain = useMemo(() => {
         return (energyTemp + energyTemp) * 0.1;
@@ -138,6 +212,8 @@ export default function BuildFood() {
             { pdv: 0, ptv: 0, ldv: 0, ltv: 0, gluxit: 0, energy: 0 }
         );
     }, [dataRation]);
+
+
 
     // Tính demand chỉ khi energyMain thay đổi
     const demand = useMemo(() => {
@@ -253,7 +329,8 @@ export default function BuildFood() {
                                             let type = handleTypeFood(item);
                                             let protein = (item.food.protein * item.value / 100).toFixed(2);
                                             let lipid = (item.food.lipid * item.value / 100).toFixed(2);
-                                            let nl: number = item.food.carbohydrate * 4 + parseFloat(protein) * 4 + parseFloat(lipid) * 9;
+                                            let carb = parseFloat((item.food.carbohydrate * item.value / 100).toFixed(2));
+                                            let nl: number = carb * 4 + parseFloat(protein) * 4 + parseFloat(lipid) * 9;
 
                                             return (
                                                 (
@@ -266,7 +343,7 @@ export default function BuildFood() {
                                                         <td className="py-3 px-4 sm:px-6 text-center">{!type && protein}</td>
                                                         <td className="py-3 px-4 sm:px-6 text-center">{type && lipid}</td>
                                                         <td className="py-3 px-4 sm:px-6 text-center">{!type && lipid}</td>
-                                                        <td className="py-3 px-4 sm:px-6 text-center">{item.food.carbohydrate}</td>
+                                                        <td className="py-3 px-4 sm:px-6 text-center">{carb}</td>
                                                         <td className="py-3 px-4 sm:px-6 text-center">{nl.toFixed(2)}</td>
                                                     </tr>
 
