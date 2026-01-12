@@ -37,7 +37,7 @@ export default function TongQuan() {
                             <div className='flex-1 text-gray-700 leading-relaxed space-y-4 animate-fade-in-right delay-100'>
                                 <p>
                                     Là một trong những Khoa được thành lập sớm nhất của Học viện Hậu cần,
-                                    Khoa Quân nhu với 68 năm xây dựng chiến đấu và trưởng thành,
+                                    Khoa Quân nhu với 70 năm xây dựng chiến đấu và trưởng thành,
                                     trong thời kì kháng chiến chống Mỹ, chiến tranh bảo vệ biến giới
                                     phía Bắc và biên giới Tây Nam: Đây chính là một trong những cái nôi
                                     đào tạo ra lớp lớp thế hệ cán bộ, giảng viên, học viên ngành Quân nhu

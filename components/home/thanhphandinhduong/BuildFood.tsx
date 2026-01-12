@@ -1,13 +1,14 @@
 "use client";
 import React, { useEffect, useMemo, useRef, useState } from 'react'; // Đảm bảo đường dẫn đúng
-import { Search } from 'lucide-react';
+import { PlusCircle, Search, Trash } from 'lucide-react';
 import Image from 'next/image';
 import { Food } from '@/type/food';
-import { getRation } from '@/lib/api';
+import { getRation, searchFood } from '@/lib/api';
 import { useReactToPrint } from 'react-to-print';
 type FoodWithValue = {
     food: Food;
     value: number;
+    price?: number;
 };
 
 
@@ -121,9 +122,8 @@ const dataTest1: FoodWithValue[] = [
 
 export default function BuildFood() {
     const componentRef = useRef<HTMLDivElement>(null);
-    const [dataRation, setDataRation] = useState<FoodWithValue[]>([]);
+    const [dataRation, setDataRation] = useState<FoodWithValue[]>(dataTest1);
     const [energyTemp, setEnergyTemp] = useState<number>(0);
-    const [energy, setEnergy] = useState<number>(0);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const handleChange = (e: any) => {
@@ -153,7 +153,7 @@ export default function BuildFood() {
         if (energyTemp >= 2500 && energyTemp <= 4860) {
             try {
                 const data: FoodWithValue[] = await getRation(energyTemp);
-                console.log("sss", data);
+                // console.log("sss", data);
                 if (data) {
                     const filteredData = data.filter(item =>
                         typeof item.value === "number" && item.value !== 0
@@ -204,27 +204,37 @@ export default function BuildFood() {
                     acc.ptv += protein;
                     acc.ltv += lipid;
                 }
-
+                acc.price += (item.price ?? 0) * item.value / 1000;
                 acc.gluxit += carb;
                 let nl: number = carb * 4 + protein * 4 + lipid * 9;
                 acc.energy += nl;
 
                 return acc;
             },
-            { pdv: 0, ptv: 0, ldv: 0, ltv: 0, gluxit: 0, energy: 0 }
+            { pdv: 0, ptv: 0, ldv: 0, ltv: 0, gluxit: 0, energy: 0, price: 0 }
         );
     }, [dataRation]);
 
 
 
     // Tính demand chỉ khi energyMain thay đổi
+    // const demand = useMemo(() => {
+    //     return {
+    //         pdv: ((energyMain * 0.17) / 4) / 2,
+    //         ptv: (energyMain * 0.17 / 4) - (energyMain * 0.17 / 4) / 2,
+    //         ldv: (energyMain * 0.18 / 9) / 2,
+    //         ltv: (energyMain * 0.18 / 9) - (energyMain * 0.18 / 9) / 2,
+    //         gluxit: (energyMain * 65 / 100) / 4,
+    //         energy: energyMain
+    //     };
+    // }, [energyMain]);
     const demand = useMemo(() => {
         return {
             pdv: ((energyMain * 0.17) / 4) / 2,
             ptv: (energyMain * 0.17 / 4) - (energyMain * 0.17 / 4) / 2,
-            ldv: (energyMain * 0.18 / 9) / 2,
-            ltv: (energyMain * 0.18 / 9) - (energyMain * 0.18 / 9) / 2,
-            gluxit: (energyMain * 65 / 100) / 4,
+            ldv: (energyMain * 0.23 / 9) / 2,
+            ltv: (energyMain * 0.23 / 9) - (energyMain * 0.23 / 9) / 2,
+            gluxit: (energyMain * 60 / 100) / 4,
             energy: energyMain
         };
     }, [energyMain]);
@@ -251,6 +261,80 @@ export default function BuildFood() {
         onBeforePrint: async () => { console.log('Preparing to print...'); },
         onAfterPrint: () => console.log('Print completed.'),
     });
+    const [editingIndex, setEditingIndex] = useState<number | null>(null);
+    const onChangePrice = (index: number, rawInput: string) => {
+        let numericValue = rawInput.replace(/\D/g, '');
+        const finalValue = numericValue === '' ? 0 : parseInt(numericValue);
+        const updatedData = [...dataRation];
+        updatedData[index].price = finalValue * 1000;
+        setDataRation(updatedData);
+    };
+    const onChangeValue = (index: number, newValue: number) => {
+        const newData = [...dataRation];
+        newData[index].value = newValue;
+
+        // Thêm logic tính toán nhanh các cột Protein, Lipid... tại đây
+        // Ví dụ: newData[index].protein = (newData[index].food.protein * newValue) / 100;
+
+        setDataRation(newData);
+    };
+    const handleDelete = (index: number) => {
+        // Tạo mảng mới loại bỏ phần tử tại index
+        const updatedData = dataRation.filter((_, i) => i !== index);
+
+        // Cập nhật lại state   
+        setDataRation(updatedData);
+    };
+
+
+    const [showResults, setShowResults] = useState(false);
+    const [foodSuggestions, setFoodSuggestions] = useState<Food[]>([]);
+    const [loadingSearch, setLoadingSearch] = useState(false);
+    const [displayTerm, setDisplayTerm] = useState("");
+
+    const [debouncedSearch, setDebouncedSearch] = useState("");
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearch(displayTerm);
+        }, 300); // 300ms là đủ để cảm thấy mượt mà
+        return () => clearTimeout(timer);
+    }, [displayTerm]);
+
+    useEffect(() => {
+        if (!debouncedSearch.trim()) {
+            setFoodSuggestions([]);
+            setShowResults(false);
+            return;
+        }
+
+        const fetchData = async () => {
+            setLoadingSearch(true);
+            try {
+                const results = await searchFood(debouncedSearch);
+                setFoodSuggestions(results);
+                setShowResults(true);
+            } catch (err) {
+                console.error("Search error:", err);
+            } finally {
+                setLoadingSearch(false);
+            }
+        };
+
+        fetchData();
+    }, [debouncedSearch]);
+
+    const handleAddItem = (item: Food) => {
+        let tempItem: FoodWithValue = { food: item, value: 0 };
+        setDataRation([...dataRation, tempItem]);
+    }
+    // Giả sử đây là danh sách thực phẩm mẫu để tìm kiếm
+    // const foodSuggestions: Food[] = [
+    //     { id: 1, name: "Thịt bò loại 1", group: "Thịt", protein: 21, lipid: 3.8, carbohydrate: 0, image: "🥩", ordinalNumbers: 1 },
+    //     { id: 2, name: "Cá thu tươi", group: "Thủy sản", protein: 18.2, lipid: 10.3, carbohydrate: 0, image: "🐟", ordinalNumbers: 2 },
+    //     { id: 3, name: "Trứng gà ta", group: "Trứng", protein: 14.8, lipid: 11.6, carbohydrate: 0.5, image: "🥚", ordinalNumbers: 3 },
+    //     { id: 4, name: "Bông cải xanh", group: "Rau", protein: 2.8, lipid: 0.4, carbohydrate: 7, image: "🥦", ordinalNumbers: 4 },
+    // ];
     return (
         <div className="min-h-screen w-full bg-gradient-to-r from-green-200 to-blue-300 flex flex-col items-center">
 
@@ -322,6 +406,24 @@ export default function BuildFood() {
 
                         <div className="flex justify-between items-center mb-4">
                             <h2 className="text-xl font-bold text-gray-800 mb-4 print-only">Bảng Xây dựng định lượng khẩu phần ăn</h2>
+                            {/* THANH SEARCH NẰM GIỮA */}
+                            <div className="relative flex-1 max-w-md mx-4">
+                                <div className="relative group">
+                                    <input
+                                        type="text"
+                                        placeholder="Tìm kiếm thực phẩm..."
+                                        className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-full focus:ring-2 focus:ring-green-400 focus:bg-white outline-none transition-all duration-300 shadow-sm"
+                                        // Gán state hiển thị tức thì ở đây
+                                        value={displayTerm}
+                                        onChange={(e) => {
+                                            setDisplayTerm(e.target.value);
+                                            if (e.target.value.length === 0) setShowResults(false);
+                                        }}
+                                    />
+                                    <Search className="absolute left-3 top-2.5 text-gray-400 group-focus-within:text-green-500 transition-colors" size={18} />
+                                </div>
+                            </div>
+
                             <button
                                 onClick={handlePrint}
                                 className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors duration-200"
@@ -329,20 +431,80 @@ export default function BuildFood() {
                                 Hiển Thị PDF
                             </button>
                         </div>
+
+
+                        {/* Vùng kết quả Search - Animation Đẩy Bảng xuống */}
+                        <div
+                            className={`py-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 transition-all duration-500 ease-in-out overflow-hidden
+      ${showResults ? 'max-h-[300px] opacity-100' : 'max-h-0 opacity-0 invisible'}`}
+                        >
+                            {loadingSearch ? (
+                                [1, 2, 3, 4].map((i) => (
+                                    <div key={i} className="animate-pulse flex items-center gap-3 p-3 bg-gray-100 rounded-xl h-[74px]">
+                                        <div className="w-12 h-12 bg-gray-200 rounded-lg"></div>
+                                        <div className="flex-1 space-y-2">
+                                            <div className="h-3 bg-gray-200 rounded w-3/4"></div>
+                                            <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                                        </div>
+                                    </div>
+                                ))
+                            ) :
+                                (
+                                    foodSuggestions.map((food) => (
+                                        <div
+                                            key={food.id}
+                                            onClick={() => {
+                                                // Thêm logic thêm food vào bảng ở đây
+                                                setShowResults(false);
+                                                handleAddItem(food);
+                                            }}
+                                            className="group relative flex items-center gap-3 p-3 bg-white border border-gray-100 rounded-xl shadow-sm 
+                   hover:border-blue-400 hover:shadow-md cursor-pointer transition-all hover:-translate-y-1 overflow-hidden"
+                                        >
+                                            <div className="w-12 h-12 flex items-center justify-center bg-gray-50 rounded-lg text-2xl group-hover:bg-blue-50 transition-colors">
+                                                {food.image ? (
+                                                    <Image
+                                                        src={food.image}
+                                                        alt={food.name}
+                                                        height={500}
+                                                        width={500}
+                                                        loading='lazy'
+                                                        className=""
+                                                    />
+                                                ) : "🍱"}
+                                            </div>
+                                            <div className="flex flex-col overflow-hidden">
+                                                <span className="text-sm font-bold text-gray-800 truncate">{food.name}</span>
+                                                <span className="text-xs text-gray-500 capitalize">{food.group}</span>
+                                                <div className="flex gap-2 mt-1">
+                                                    <span className="text-[10px] bg-blue-100 text-blue-700 px-1.5 rounded">P: {food.protein}</span>
+                                                    <span className="text-[10px] bg-red-100 text-red-700 px-1.5 rounded">L: {food.lipid}</span>
+                                                </div>
+                                            </div>
+                                            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <PlusCircle size={16} className="text-blue-500" />
+                                            </div>
+                                        </div>
+                                    ))
+                                )}
+                        </div>
                         <table className="print-table min-w-full bg-white border border-gray-200 rounded-lg">
                             <thead>
-                                <tr className="bg-gray-100 text-gray-600 uppercase text-xs sm:text-sm leading-normal">
+                                <tr className="bg-gray-100 text-gray-600 text-xs sm:text-sm leading-normal">
                                     <th rowSpan={2} className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">TT</th>
                                     <th rowSpan={2} className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Tên LTTP</th>
                                     <th rowSpan={2} className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Số lượng</th>
                                     <th rowSpan={2} className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Đơn vị</th>
+                                    <th rowSpan={2} className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Đơn giá <br /> (vnd/kg)</th>
 
                                     <th colSpan={2} className="py-3 px-4 sm:px-6 text-center border-gray-300">Protein</th>
 
                                     <th colSpan={2} className="py-3 px-4 sm:px-6 text-center border-gray-300">Lipid</th>
 
                                     <th rowSpan={2} className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Gluxit</th>
-                                    <th rowSpan={2} className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300 no-print">Năng lượng (KCal)</th>
+                                    <th rowSpan={2} className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300 no-print">Năng lượng <br /> (KCal)</th>
+                                    <th rowSpan={2} className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Thành tiền <br /> (vnd)</th>
+                                    <th rowSpan={2} className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300"></th>
                                 </tr>
                                 <tr className="bg-gray-100 text-gray-600 text-xs sm:text-sm leading-normal">
                                     <th className="py-2 px-4 text-center border-b-2 border-r-2 border-gray-300">P(đv)</th>
@@ -359,20 +521,72 @@ export default function BuildFood() {
                                         let lipid = (item.food.lipid * item.value / 100).toFixed(2);
                                         let carb = parseFloat((item.food.carbohydrate * item.value / 100).toFixed(2));
                                         let nl: number = carb * 4 + parseFloat(protein) * 4 + parseFloat(lipid) * 9;
-
+                                        let tempPrice: number = item.price ? item.price / 1000 : 0;
+                                        let sumPrice = ((item.price ?? 0) * item.value) / 1000;
                                         return (
                                             (
                                                 <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
                                                     <td className="py-3 px-4 sm:px-6 text-center">{index + 1}</td>
                                                     <td className="py-3 px-4 sm:px-6">{item.food.name}</td>
-                                                    <td className="py-3 px-4 sm:px-6 text-center">{item.value.toFixed(2)}</td>
+                                                    <td className="py-3 px-4 sm:px-6 text-center">
+                                                        <input
+                                                            key={`${index}-${item.value}`}
+                                                            type="number"
+                                                            step="any"
+                                                            inputMode="decimal"
+                                                            className="w-24 text-center bg-transparent border-b border-gray-300 focus:border-blue-500 focus:outline-none py-1 px-1 font-medium"
+                                                            defaultValue={item.value || "0"}
+                                                            onBlur={(e) => {
+                                                                const val = parseFloat(e.target.value);
+                                                                onChangeValue(index, isNaN(val) ? 0 : val);
+                                                            }}
+                                                            onKeyDown={(e) => {
+                                                                if (e.key === 'Enter') e.currentTarget.blur();
+                                                            }}
+                                                        />
+
+                                                    </td>
                                                     <td className="py-3 px-4 sm:px-6 text-center">g</td>
+                                                    <td className="py-3 px-4 sm:px-6 text-center">
+                                                        <input
+                                                            type="text"
+                                                            inputMode="numeric"
+                                                            className="w-24 text-center bg-transparent border-b border-gray-300 focus:border-blue-500 focus:outline-none py-1 px-1 font-medium"
+                                                            value={
+                                                                editingIndex === index
+                                                                    ? (tempPrice ? tempPrice : "")
+                                                                    : (tempPrice ? `${tempPrice.toLocaleString('vi-VN')}.000` : "0")
+                                                            }
+                                                            onChange={(e) => onChangePrice(index, e.target.value)}
+                                                            onFocus={() => setEditingIndex(index)}
+                                                            onBlur={() => setEditingIndex(null)}
+                                                            onKeyDown={(e) => {
+                                                                if (e.key === 'Enter') (e.target as HTMLInputElement).blur();
+                                                            }}
+                                                        />
+                                                    </td>
                                                     <td className="py-3 px-4 sm:px-6 text-center">{type && protein}</td>
                                                     <td className="py-3 px-4 sm:px-6 text-center">{!type && protein}</td>
                                                     <td className="py-3 px-4 sm:px-6 text-center">{type && lipid}</td>
                                                     <td className="py-3 px-4 sm:px-6 text-center">{!type && lipid}</td>
                                                     <td className="py-3 px-4 sm:px-6 text-center">{carb}</td>
                                                     <td className="py-3 px-4 sm:px-6 text-center">{nl.toFixed(2)}</td>
+                                                    <td className="py-3 px-4 sm:px-6 text-center truncate max-w-32">{sumPrice.toLocaleString('vi-VN', {
+                                                        maximumFractionDigits: 0 // Làm tròn thành số nguyên (ví dụ: 1.234)
+                                                    })}</td>
+                                                    <td className="py-3 px-4 sm:px-6 text-center w-20">
+                                                        <button
+                                                            className="p-4 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-all duration-200 active:scale-90"
+                                                            title="Xóa dòng này"
+                                                            onClick={() => {
+                                                                if (window.confirm("Bạn có chắc chắn muốn xóa thực phẩm này?")) {
+                                                                    handleDelete(index);
+                                                                }
+                                                            }}
+                                                        >
+                                                            <Trash size={18} />
+                                                        </button>
+                                                    </td>
                                                 </tr>
 
                                             )
@@ -388,18 +602,25 @@ export default function BuildFood() {
                                     <td className="py-3 px-4 sm:px-6">Cộng</td>
                                     <td className="py-3 px-4 sm:px-6 text-center"></td>
                                     <td className="py-3 px-4 sm:px-6 text-center"></td>
+                                    <td className="py-3 px-4 sm:px-6 text-center"></td>
                                     <td className="py-3 px-4 sm:px-6 text-center">{f(totalPL.pdv)}</td>
                                     <td className="py-3 px-4 sm:px-6 text-center">{f(totalPL.ptv)}</td>
                                     <td className="py-3 px-4 sm:px-6 text-center">{f(totalPL.ldv)}</td>
                                     <td className="py-3 px-4 sm:px-6 text-center">{f(totalPL.ltv)}</td>
                                     <td className="py-3 px-4 sm:px-6 text-center">{f(totalPL.gluxit)}</td>
                                     <td className="py-3 px-4 sm:px-6 text-center">{f(totalPL.energy)}</td>
+                                    <td className="py-3 px-4 sm:px-6 text-center">
+                                        {totalPL.price.toLocaleString('vi-VN', {
+                                            maximumFractionDigits: 0 // Làm tròn thành số nguyên (ví dụ: 1.234)
+                                        })}
+                                    </td>
                                 </tr>
 
                                 {/* Dòng Nhu cầu */}
                                 <tr className="border-b border-gray-200 hover:bg-gray-50 font-bold">
                                     <td className="py-3 px-4 sm:px-6 text-center">{dataRation.length + 2}</td>
                                     <td className="py-3 px-4 sm:px-6">Nhu cầu</td>
+                                    <td className="py-3 px-4 sm:px-6 text-center"></td>
                                     <td className="py-3 px-4 sm:px-6 text-center"></td>
                                     <td className="py-3 px-4 sm:px-6 text-center"></td>
                                     <td className="py-3 px-4 sm:px-6 text-center">{f(demand.pdv)}</td>
@@ -414,6 +635,7 @@ export default function BuildFood() {
                                 <tr className="border-b border-gray-200 hover:bg-gray-50 font-bold">
                                     <td className="py-3 px-4 sm:px-6 text-center">{dataRation.length + 3}</td>
                                     <td className="py-3 px-4 sm:px-6">Sai số</td>
+                                    <td className="py-3 px-4 sm:px-6 text-center"></td>
                                     <td className="py-3 px-4 sm:px-6 text-center"></td>
                                     <td className="py-3 px-4 sm:px-6 text-center"></td>
                                     <td className="py-3 px-4 sm:px-6 text-center">{f(totalPL.pdv - demand.pdv)}</td>
