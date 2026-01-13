@@ -107,16 +107,42 @@ const dataTest1: FoodWithValue[] = [
     },
     {
         food: {
-            id: 505,
-            name: "Cá basa phi lê",
-            ordinalNumbers: 275,
-            group: "fish",
-            protein: 18.0,
-            lipid: 5.0,
-            carbohydrate: 0.0,
+            id: 501,
+            name: "Gạo tẻ",
+            ordinalNumbers: 120,
+            group: "grain",
+            protein: 7.5,
+            lipid: 0.6,
+            carbohydrate: 77.0,
             image: null,
         },
-        value: 150.0,
+        value: 200.0,
+    },
+    {
+        food: {
+            id: 501,
+            name: "Gạo tẻ",
+            ordinalNumbers: 120,
+            group: "grain",
+            protein: 7.5,
+            lipid: 0.6,
+            carbohydrate: 77.0,
+            image: null,
+        },
+        value: 200.0,
+    },
+    {
+        food: {
+            id: 501,
+            name: "Gạo tẻ",
+            ordinalNumbers: 120,
+            group: "grain",
+            protein: 7.5,
+            lipid: 0.6,
+            carbohydrate: 77.0,
+            image: null,
+        },
+        value: 200.0,
     },
 ];
 
@@ -204,7 +230,7 @@ export default function BuildFood() {
                     acc.ptv += protein;
                     acc.ltv += lipid;
                 }
-                acc.price += (item.price ?? 0) * item.value / 1000;
+                acc.price += (item.price ?? 0) * item.value / 1000000;
                 acc.gluxit += carb;
                 let nl: number = carb * 4 + protein * 4 + lipid * 9;
                 acc.energy += nl;
@@ -245,19 +271,34 @@ export default function BuildFood() {
     };
 
     const handlePrint = useReactToPrint({
-        contentRef: componentRef, // Use contentRef instead of content
+        contentRef: componentRef,
         documentTitle: 'Nutrition_Table',
         pageStyle: `
-                @media print {
-                    body { margin: 0; }
-                    .print-table { width: 100%; font-size: 12px; }
-                    .print-table th, .print-table td { padding: 8px; border: 1px solid #ddd; }
-                    .print-table thead { background-color: #f4f4f4; }
-                    .print-table input { display: none; }
-                    .print-only { display: inline; }
-                    .no-print { display: none; }
-                }
-            `,
+        @media print {
+            @page { size: auto; margin: 20mm; }
+            body { margin: 0; -webkit-print-color-adjust: exact; }
+            /* Quan trọng: Bỏ các thanh scrollbar và container cố định */
+            .overflow-auto { overflow: visible !important; height: auto !important; }
+            
+            .print-table { 
+                width: 100%; 
+                border-collapse: collapse; 
+                table-layout: auto;
+            }
+            .print-table th, .print-table td { 
+                padding: 8px; 
+                border: 1px solid #000 !important; /* Đậm hơn để dễ nhìn khi in */
+            }
+            /* Xử lý ngắt trang */
+            tr { page-break-inside: avoid !important; }
+            thead { display: table-header-group; } /* Lặp lại tiêu đề ở mỗi trang */
+            tfoot { display: table-footer-group; } /* Giữ footer ở cuối */
+            
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            input { border: none !important; background: transparent !important; appearance: none; }
+        }
+    `,
         onBeforePrint: async () => { console.log('Preparing to print...'); },
         onAfterPrint: () => console.log('Print completed.'),
     });
@@ -402,16 +443,17 @@ export default function BuildFood() {
                 )}
                 {!loading && dataRation.length > 0 && (
                     <div ref={componentRef} className="bg-white mt-10 p-6 rounded-lg overflow-auto">
-
-
+                        <div className='text-gray-400 text-sm mb-10 no-print'>
+                            Ghi chú: Trong quá trình tính toán, năng lượng khẩu phần cần phải thêm khoảng 10% so với mức năng lượng tiêu hao thực tế. Việc tính toán này để bù trừ hao hụt về lương thực, thực phẩm trong quá trình chế biến nấu nướng, để cơ thể sinh trưởng và phát triển, sự tiêu hóa hấp thụ có hạn ở từng cơ thể, sự sai lệch trong tính toán và những ảnh hưởng khác.
+                        </div>
                         <div className="flex justify-between items-center mb-4">
                             <h2 className="text-xl font-bold text-gray-800 mb-4 print-only">Bảng Xây dựng định lượng khẩu phần ăn</h2>
                             {/* THANH SEARCH NẰM GIỮA */}
-                            <div className="relative flex-1 max-w-md mx-4">
+                            <div className="relative flex-1 max-w-md mx-4 no-print">
                                 <div className="relative group">
                                     <input
                                         type="text"
-                                        placeholder="Tìm kiếm thực phẩm..."
+                                        placeholder="Tìm kiếm thực phẩm để tùy chỉnh bảng..."
                                         className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-full focus:ring-2 focus:ring-green-400 focus:bg-white outline-none transition-all duration-300 shadow-sm"
                                         // Gán state hiển thị tức thì ở đây
                                         value={displayTerm}
@@ -426,7 +468,7 @@ export default function BuildFood() {
 
                             <button
                                 onClick={handlePrint}
-                                className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors duration-200"
+                                className="no-print bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors duration-200"
                             >
                                 Hiển Thị PDF
                             </button>
@@ -502,9 +544,9 @@ export default function BuildFood() {
                                     <th colSpan={2} className="py-3 px-4 sm:px-6 text-center border-gray-300">Lipid</th>
 
                                     <th rowSpan={2} className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Gluxit</th>
-                                    <th rowSpan={2} className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300 no-print">Năng lượng <br /> (KCal)</th>
-                                    <th rowSpan={2} className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Thành tiền <br /> (vnd)</th>
-                                    <th rowSpan={2} className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300"></th>
+                                    <th rowSpan={2} className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Năng lượng <br /> (KCal)</th>
+                                    <th rowSpan={2} className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Thành tiền <br /> (kvnd)</th>
+                                    <th rowSpan={2} className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300 no-print"></th>
                                 </tr>
                                 <tr className="bg-gray-100 text-gray-600 text-xs sm:text-sm leading-normal">
                                     <th className="py-2 px-4 text-center border-b-2 border-r-2 border-gray-300">P(đv)</th>
@@ -522,7 +564,7 @@ export default function BuildFood() {
                                         let carb = parseFloat((item.food.carbohydrate * item.value / 100).toFixed(2));
                                         let nl: number = carb * 4 + parseFloat(protein) * 4 + parseFloat(lipid) * 9;
                                         let tempPrice: number = item.price ? item.price / 1000 : 0;
-                                        let sumPrice = ((item.price ?? 0) * item.value) / 1000;
+                                        let sumPrice = ((item.price ?? 0) * item.value) / 1000000;
                                         return (
                                             (
                                                 <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
@@ -571,10 +613,8 @@ export default function BuildFood() {
                                                     <td className="py-3 px-4 sm:px-6 text-center">{!type && lipid}</td>
                                                     <td className="py-3 px-4 sm:px-6 text-center">{carb}</td>
                                                     <td className="py-3 px-4 sm:px-6 text-center">{nl.toFixed(2)}</td>
-                                                    <td className="py-3 px-4 sm:px-6 text-center truncate max-w-32">{sumPrice.toLocaleString('vi-VN', {
-                                                        maximumFractionDigits: 0 // Làm tròn thành số nguyên (ví dụ: 1.234)
-                                                    })}</td>
-                                                    <td className="py-3 px-4 sm:px-6 text-center w-20">
+                                                    <td className="py-3 px-4 sm:px-6 text-center truncate max-w-32">{sumPrice.toFixed(0)}</td>
+                                                    <td className="py-3 px-4 sm:px-6 text-center w-20 no-print">
                                                         <button
                                                             className="p-4 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-all duration-200 active:scale-90"
                                                             title="Xóa dòng này"
@@ -594,8 +634,6 @@ export default function BuildFood() {
                                     })
 
                                 }
-                            </tbody>
-                            <tfoot>
                                 {/* Dòng Cộng */}
                                 <tr className="border-b border-gray-200 hover:bg-gray-50 font-bold">
                                     <td className="py-3 px-4 sm:px-6 text-center">{dataRation.length + 1}</td>
@@ -610,10 +648,9 @@ export default function BuildFood() {
                                     <td className="py-3 px-4 sm:px-6 text-center">{f(totalPL.gluxit)}</td>
                                     <td className="py-3 px-4 sm:px-6 text-center">{f(totalPL.energy)}</td>
                                     <td className="py-3 px-4 sm:px-6 text-center">
-                                        {totalPL.price.toLocaleString('vi-VN', {
-                                            maximumFractionDigits: 0 // Làm tròn thành số nguyên (ví dụ: 1.234)
-                                        })}
+                                        {totalPL.price.toFixed(0)}
                                     </td>
+                                    <td className="py-3 px-4 sm:px-6 text-center no-print"></td>
                                 </tr>
 
                                 {/* Dòng Nhu cầu */}
@@ -629,6 +666,8 @@ export default function BuildFood() {
                                     <td className="py-3 px-4 sm:px-6 text-center">{f(demand.ltv)}</td>
                                     <td className="py-3 px-4 sm:px-6 text-center">{f(demand.gluxit)}</td>
                                     <td className="py-3 px-4 sm:px-6 text-center">{f(demand.energy)}</td>
+                                    <td className="py-3 px-4 sm:px-6 text-center"></td>
+                                    <td className="py-3 px-4 sm:px-6 text-center no-print"></td>
                                 </tr>
 
                                 {/* Dòng Sai số */}
@@ -644,9 +683,10 @@ export default function BuildFood() {
                                     <td className="py-3 px-4 sm:px-6 text-center">{f(totalPL.ltv - demand.ltv)}</td>
                                     <td className="py-3 px-4 sm:px-6 text-center">{f(totalPL.gluxit - demand.gluxit)}</td>
                                     <td className="py-3 px-4 sm:px-6 text-center">{f(totalPL.energy - demand.energy)}</td>
+                                    <td className="py-3 px-4 sm:px-6 text-center"></td>
+                                    <td className="py-3 px-4 sm:px-6 text-center no-print"></td>
                                 </tr>
-                            </tfoot>
-
+                            </tbody>
                         </table>
 
 
