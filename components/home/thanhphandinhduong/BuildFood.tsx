@@ -307,7 +307,7 @@ export default function BuildFood() {
         let numericValue = rawInput.replace(/\D/g, '');
         const finalValue = numericValue === '' ? 0 : parseInt(numericValue);
         const updatedData = [...dataRation];
-        updatedData[index].price = finalValue * 1000;
+        updatedData[index].price = finalValue;
         setDataRation(updatedData);
     };
     const onChangeValue = (index: number, newValue: number) => {
@@ -537,7 +537,7 @@ export default function BuildFood() {
                                     <th rowSpan={2} className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Tên LTTP</th>
                                     <th rowSpan={2} className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Số lượng</th>
                                     <th rowSpan={2} className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Đơn vị</th>
-                                    <th rowSpan={2} className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Đơn giá <br /> (vnd/kg)</th>
+                                    <th rowSpan={2} className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Đơn giá <br /> (kvnd/kg)</th>
 
                                     <th colSpan={2} className="py-3 px-4 sm:px-6 text-center border-gray-300">Protein</th>
 
@@ -563,8 +563,8 @@ export default function BuildFood() {
                                         let lipid = (item.food.lipid * item.value / 100).toFixed(2);
                                         let carb = parseFloat((item.food.carbohydrate * item.value / 100).toFixed(2));
                                         let nl: number = carb * 4 + parseFloat(protein) * 4 + parseFloat(lipid) * 9;
-                                        let tempPrice: number = item.price ? item.price / 1000 : 0;
-                                        let sumPrice = ((item.price ?? 0) * item.value) / 1000000;
+                                        let tempPrice = (item.price ?? 0);
+                                        let sumPrice = (tempPrice*1000 * item.value*1000) / 1000000;
                                         return (
                                             (
                                                 <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
@@ -590,21 +590,13 @@ export default function BuildFood() {
                                                     </td>
                                                     <td className="py-3 px-4 sm:px-6 text-center">g</td>
                                                     <td className="py-3 px-4 sm:px-6 text-center">
+
                                                         <input
-                                                            type="text"
-                                                            inputMode="numeric"
+                                                            type="number"
                                                             className="w-24 text-center bg-transparent border-b border-gray-300 focus:border-blue-500 focus:outline-none py-1 px-1 font-medium"
-                                                            value={
-                                                                editingIndex === index
-                                                                    ? (tempPrice ? tempPrice : "")
-                                                                    : (tempPrice ? `${tempPrice.toLocaleString('vi-VN')}.000` : "0")
-                                                            }
+                                                            value={item.price === 0 ? "" : (item.price ?? "")}
                                                             onChange={(e) => onChangePrice(index, e.target.value)}
-                                                            onFocus={() => setEditingIndex(index)}
-                                                            onBlur={() => setEditingIndex(null)}
-                                                            onKeyDown={(e) => {
-                                                                if (e.key === 'Enter') (e.target as HTMLInputElement).blur();
-                                                            }}
+                                                            
                                                         />
                                                     </td>
                                                     <td className="py-3 px-4 sm:px-6 text-center">{type && protein}</td>
