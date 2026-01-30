@@ -10,6 +10,11 @@ type FoodWithValue = {
     value: number;
     price?: number;
 };
+type defaultFoodValue = {
+    name:string;
+    price: number;
+};
+
 
 
 const dataTest1: FoodWithValue[] = [
@@ -146,12 +151,16 @@ const dataTest1: FoodWithValue[] = [
     },
 ];
 
+
 export default function BuildFood() {
     const componentRef = useRef<HTMLDivElement>(null);
-    const [dataRation, setDataRation] = useState<FoodWithValue[]>([]);
+    const [dataRation, setDataRation] = useState<FoodWithValue[]>(dataTest1);
     const [energyTemp, setEnergyTemp] = useState<number>(0);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [defaultData, setDefaultData] = useState<defaultFoodValue[]>([
+        {name: 'Chất đốt', price: 0},{name: 'Vệ sinh dụng cụ', price: 0}
+    ]);
     const handleChange = (e: any) => {
         const val = e.target.value.trim();
 
@@ -230,7 +239,7 @@ export default function BuildFood() {
                     acc.ptv += protein;
                     acc.ltv += lipid;
                 }
-                acc.price += (item.price ?? 0) * item.value / 1000000;
+                acc.price += (item.price ?? 0) * item.value ;
                 acc.gluxit += carb;
                 let nl: number = carb * 4 + protein * 4 + lipid * 9;
                 acc.energy += nl;
@@ -240,20 +249,6 @@ export default function BuildFood() {
             { pdv: 0, ptv: 0, ldv: 0, ltv: 0, gluxit: 0, energy: 0, price: 0 }
         );
     }, [dataRation]);
-
-
-
-    // Tính demand chỉ khi energyMain thay đổi
-    // const demand = useMemo(() => {
-    //     return {
-    //         pdv: ((energyMain * 0.17) / 4) / 2,
-    //         ptv: (energyMain * 0.17 / 4) - (energyMain * 0.17 / 4) / 2,
-    //         ldv: (energyMain * 0.18 / 9) / 2,
-    //         ltv: (energyMain * 0.18 / 9) - (energyMain * 0.18 / 9) / 2,
-    //         gluxit: (energyMain * 65 / 100) / 4,
-    //         energy: energyMain
-    //     };
-    // }, [energyMain]);
     const demand = useMemo(() => {
         return {
             pdv: ((energyMain * 0.17) / 4) / 2,
@@ -564,7 +559,7 @@ export default function BuildFood() {
                                         let carb = parseFloat((item.food.carbohydrate * item.value / 100).toFixed(2));
                                         let nl: number = carb * 4 + parseFloat(protein) * 4 + parseFloat(lipid) * 9;
                                         let tempPrice = (item.price ?? 0);
-                                        let sumPrice = (tempPrice*1000 * item.value*1000) / 1000000;
+                                        let sumPrice = (tempPrice * 1000 * item.value * 1000) / 1000000;
                                         return (
                                             (
                                                 <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
@@ -596,7 +591,7 @@ export default function BuildFood() {
                                                             className="w-24 text-center bg-transparent border-b border-gray-300 focus:border-blue-500 focus:outline-none py-1 px-1 font-medium"
                                                             value={item.price === 0 ? "" : (item.price ?? "")}
                                                             onChange={(e) => onChangePrice(index, e.target.value)}
-                                                            
+
                                                         />
                                                     </td>
                                                     <td className="py-3 px-4 sm:px-6 text-center">{type && protein}</td>
@@ -626,6 +621,70 @@ export default function BuildFood() {
                                     })
 
                                 }
+
+                                <tr className="border-b border-gray-200 hover:bg-gray-50">
+                                    <td className="py-3 px-4 sm:px-6 text-center">{dataRation.length + 1}</td>
+                                    <td className="py-3 px-4 sm:px-6">Chất đốt</td>
+                                    <td className="py-3 px-4 sm:px-6 text-center"></td>
+                                    <td className="py-3 px-4 sm:px-6 text-center"></td>
+                                    <td className="py-3 px-4 sm:px-6 text-center">
+                                        <input
+                                            type="number"
+                                            className="w-24 text-center bg-transparent border-b border-gray-300 focus:border-blue-500 focus:outline-none py-1 px-1 font-medium"
+                                            value={Number(defaultData[0]?.price || 0).toString()}
+                                            onChange={(e) => {
+                                                const value = parseFloat(e.target.value) || 0;
+                                                const newData = [...defaultData];
+                                                newData[0].price = value;
+                                                setDefaultData(newData);
+                                            }}
+
+                                        />
+
+                                    </td>
+                                    <td className="py-3 px-4 sm:px-6 text-center"></td>
+                                    <td className="py-3 px-4 sm:px-6 text-center"></td>
+                                    <td className="py-3 px-4 sm:px-6 text-center"></td>
+                                    <td className="py-3 px-4 sm:px-6 text-center"></td>
+                                    <td className="py-3 px-4 sm:px-6 text-center"></td>
+                                    <td className="py-3 px-4 sm:px-6 text-center"></td>
+                                    <td className="py-3 px-4 sm:px-6 text-center">
+                                        {defaultData[0]?.price.toFixed(0)}
+                                    </td>
+                                    <td className="py-3 px-4 sm:px-6 text-center no-print"></td>
+                                </tr>
+
+                                <tr className="border-b border-gray-200 hover:bg-gray-50">
+                                    <td className="py-3 px-4 sm:px-6 text-center">{dataRation.length + 2}</td>
+                                    <td className="py-3 px-4 sm:px-6">Vệ sinh dụng cụ</td>
+                                    <td className="py-3 px-4 sm:px-6 text-center"></td>
+                                    <td className="py-3 px-4 sm:px-6 text-center"></td>
+                                    <td className="py-3 px-4 sm:px-6 text-center">
+                                        <input
+                                            type="number"
+                                            className="w-24 text-center bg-transparent border-b border-gray-300 focus:border-blue-500 focus:outline-none py-1 px-1 font-medium"
+                                            value={Number(defaultData[1]?.price || 0).toString()}
+                                            onChange={(e) => {
+                                                const value = parseFloat(e.target.value) || 0;
+                                                const newData = [...defaultData];
+                                                newData[1].price = value;
+                                                setDefaultData(newData);
+                                            }}
+
+                                        />
+                                    </td>
+                                    <td className="py-3 px-4 sm:px-6 text-center">
+                                    </td>
+                                    <td className="py-3 px-4 sm:px-6 text-center"></td>
+                                    <td className="py-3 px-4 sm:px-6 text-center"></td>
+                                    <td className="py-3 px-4 sm:px-6 text-center"></td>
+                                    <td className="py-3 px-4 sm:px-6 text-center"></td>
+                                    <td className="py-3 px-4 sm:px-6 text-center"></td>
+                                    <td className="py-3 px-4 sm:px-6 text-center">
+                                        {defaultData[1]?.price.toFixed(0)}
+                                    </td>
+                                    <td className="py-3 px-4 sm:px-6 text-center no-print"></td>
+                                </tr>
                                 {/* Dòng Cộng */}
                                 <tr className="border-b border-gray-200 hover:bg-gray-50 font-bold">
                                     <td className="py-3 px-4 sm:px-6 text-center">{dataRation.length + 1}</td>
@@ -640,7 +699,7 @@ export default function BuildFood() {
                                     <td className="py-3 px-4 sm:px-6 text-center">{f(totalPL.gluxit)}</td>
                                     <td className="py-3 px-4 sm:px-6 text-center">{f(totalPL.energy)}</td>
                                     <td className="py-3 px-4 sm:px-6 text-center">
-                                        {totalPL.price.toFixed(0)}
+                                        {(totalPL.price + defaultData[0].price + defaultData[1].price).toFixed(0)}
                                     </td>
                                     <td className="py-3 px-4 sm:px-6 text-center no-print"></td>
                                 </tr>

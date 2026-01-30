@@ -4,7 +4,7 @@ import React from 'react'
 import './TongQuan.css'
 export default function TongQuan() {
     return (
-        <div className='flex flex-col py-10'>
+        <div className='flex flex-col'>
             <div className="w-full h-[550px]">
                 <Image
                     src="/images/hvhc/anh1.png"
@@ -20,7 +20,7 @@ export default function TongQuan() {
                 {/* Section 1: Introduction (Updated) */}
                 <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20 overflow-hidden">
                     <h1 className='text-center font-bold text-4xl md:text-5xl text-green-800 mb-16 animate-fade-in-down'>
-                        TỔNG QUAN
+                        TỔNG QUANs
                     </h1>
                     <div className='flex flex-col lg:flex-row items-center justify-between gap-4'>
                         {/* Logo and Department Info - Adjusted width and centering */}

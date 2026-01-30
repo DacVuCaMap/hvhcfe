@@ -97,7 +97,7 @@ export default function FoodSearch() {
         <div className="w-full text-center mb-10 md:mb-12 relative z-10">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-4">
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 via-teal-400 to-sky-400">
-              Tra Cứu Dinh Dưỡng
+              Tra Cứu Thành Phần Thực Phẩm
             </span>
           </h1>
           <p className="text-base sm:text-lg text-gray-500 mb-8 max-w-2xl mx-auto">

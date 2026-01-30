@@ -1,6 +1,6 @@
 'use client';
 
-import { ChevronDown, Home, Info, LogIn, Menu, Utensils, Zap } from 'lucide-react';
+import { Beef, ChevronDown, Home, Info, LogIn, Menu, Utensils, Zap } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -16,14 +16,16 @@ interface NavItem {
   path: string;
   icon?: React.ReactNode;
   items?: SubNavItem[];
+  show: boolean;
 }
 
 const navItems: NavItem[] = [
-  { name: 'Tra cứu thành phần thực phẩm', path: '/', icon: <Home size={16} /> },
-  { name: 'Tra cứu cơ cấu năng lượng', path: '/cocaunangluong', icon: <Zap size={16} /> },
-  { name: 'Xây dựng định lượng khẩu phần ăn', path: '/xaydungdinhduong', icon: <Utensils size={16} /> },
-  { name: 'Giới thiệu', path: '/gioithieu', icon: <Info size={16} /> },
-  { name: 'Đăng nhập', path: '/signin', icon: <LogIn size={16} /> },
+  { name: 'Trang chủ', path: '/', icon: <Info size={16} />, show: true },
+  { name: 'Tra cứu thành phần thực phẩm', path: '/tracuuthanhphanthucpham', icon: <Home size={16} />, show: true },
+  { name: 'Tra cứu năng lượng thực phẩm', path: '/cocaunangluong', icon: <Zap size={16} />, show: true },
+  { name: 'Xây dựng định lượng khẩu phần ăn', path: '/xaydungdinhduong', icon: <Utensils size={16} />, show: true },
+  { name: 'Tra cứu năng lượng khẩu phần ăn', path: '/tracuunangluongkhauphan', icon: <Beef size={16} />, show: true },
+  { name: 'Đăng nhập', path: '/signin', icon: <LogIn size={16} />, show: false },
 ];
 
 export default function ElegantHeader() {
@@ -38,9 +40,9 @@ export default function ElegantHeader() {
     <>
       {/* Static Header */}
       <header className="bg-gradient-to-r z-30 from-green-800 via-green-700 to-green-900 shadow-lg lg:block lg:top-auto top-0 sticky">
-        <div className="mx-auto md:px-16 px-8">
+        <div className="mx-auto md:px-16 px-8 relative">
           {/* Top Section */}
-          <div className="flex items-center justify-between py-4">
+          <div className="flex items-center justify-between py-4 ">
             {/* Logo + Title */}
             <Link href="/" className="">
               <div className="flex items-center gap-4">
@@ -56,9 +58,20 @@ export default function ElegantHeader() {
               </div>
             </Link>
             {/* Slogan */}
-            <div className="hidden md:block text-center text-white font-semibold text-sm max-w-md">
-              TRANG WEB ĐIỆN TỬ TRA CỨU THÀNH PHẦN CƠ CẤU, ĐỊNH LƯỢNG CỦA KHẨU PHẦN ĂN
+            <div className="hidden md:flex md:flex-row text-center text-white font-semibold text-sm space-x-4">
+              <p className='max-w-md'>
+                TRANG WEB ĐIỆN TỬ TRA CỨU THÀNH PHẦN CƠ CẤU, ĐỊNH LƯỢNG CỦA KHẨU PHẦN ĂN
+              </p>
+              <div className="hidden md:block bg-amber-300 hover:bg-green-950 transition-colors hover:text-amber-300 rounded-xl text-green-800 ">
+                <Link
+                  href="/signin"
+                  className="font-bold px-4 py-2 rounded-lg flex flex-row items-center space-x-1"
+                >
+                  <LogIn size={16} /> <div>Đăng nhập</div>
+                </Link>
+              </div>
             </div>
+
             {/* Mobile Menu Button */}
             <button
               onClick={toggleMenu}
@@ -66,7 +79,9 @@ export default function ElegantHeader() {
             >
               <Menu size={24} />
             </button>
+
           </div>
+
         </div>
       </header>
 
@@ -78,7 +93,7 @@ export default function ElegantHeader() {
               <li
                 key={item.name}
                 className={`relative group w-full md:w-auto px-4 py-2 rounded-md transition-all duration-300 ${firstSegment === item.path ? 'bg-green-950' : 'hover:bg-green-800'
-                  }`}
+                  } ${item.show ? 'block' : 'md:hidden'}`}
               >
                 <Link
                   href={item.path}
@@ -97,14 +112,14 @@ export default function ElegantHeader() {
 
                 {/* Dropdown */}
                 {item.items && (
-                  <ul className="md:absolute md:left-0 md:mt-2 md:w-48 md:bg-green-900 md:rounded-md md:shadow-lg md:opacity-0 md:group-hover:opacity-100 md:invisible md:group-hover:visible md:transition-all md:duration-300 bg-green-800 md:bg-green-900">
+                  <ul className="md:absolute md:left-0 md:mt-2 md:w-48 md:rounded-md md:shadow-lg md:opacity-0 md:group-hover:opacity-100 md:invisible md:group-hover:visible md:transition-all md:duration-300 bg-green-800 md:bg-green-900">
                     {item.items.map((subItem) => (
                       <li key={subItem.name}>
                         <Link
                           href={subItem.path}
                           className={`block px-4 py-2 text-sm text-white hover:bg-green-700 hover:text-yellow-300 w-full ${secondSegment === (subItem.path.split('/')[2] || '')
-                              ? 'text-yellow-300 font-semibold'
-                              : ''
+                            ? 'text-yellow-300 font-semibold'
+                            : ''
                             }`}
                           onClick={() => setIsOpen(false)}
                         >

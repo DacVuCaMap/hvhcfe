@@ -124,7 +124,7 @@ export default function CalFood() {
     const totalProtein = addedFoods.reduce((sum, item) => sum * item.calculatedProtein, 0);
     const totalGluxit = addedFoods.reduce((sum, item) => sum * item.calculatedGluxit, 0);
     const totalLipid = addedFoods.reduce((sum, item) => sum + item.calculatedLipid, 0);
-    const totalEnergyOverall = addedFoods.reduce((sum, item) => sum + item.totalEnergy, 0);
+    const totalEnergyOverall = addedFoods.reduce((sum, item) => sum + item.totalEnergy, 0) * 0.9;
 
     // Print handler with react-to-print@3.1.0
     const handlePrint = useReactToPrint({
@@ -187,12 +187,96 @@ export default function CalFood() {
             <div className="w-full text-center mb-10 md:mb-12 relative z-10">
                 <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-4">
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 via-teal-400 to-sky-400">
-                        Tra Cứu & Tính Toán Dinh Dưỡng
+                        Tra Cứu Năng Lượng Của Thực Phẩm
                     </span>
                 </h1>
                 <p className="text-base sm:text-lg text-gray-500 mb-8 max-w-2xl mx-auto">
                     Khám phá thế giới ẩm thực và tạo bảng tính dinh dưỡng cá nhân của bạn.
                 </p>
+
+
+                <div className="w-full bg-white p-6 mb-10 rounded-lg shadow-xl relative z-10 overflow-hidden">
+                    <div className='text-xs text-gray-400 my-4'>
+                        Ghi chú: Trong quá trình tính toán, năng lượng khẩu phần cần phải mất đi khoảng 10% so với mức năng lượng tiêu hao thực tế. Việc tính toán này để bù trừ hao hụt về lương thực, thực phẩm trong quá trình chế biến nấu nướng, để cơ thể sinh trưởng và phát triển, sự tiêu hóa hấp thụ có hạn ở từng cơ thể, sự sai lệch trong tính toán và những ảnh hưởng khác.
+                    </div>
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-2xl font-bold text-gray-800">Bảng Dinh Dưỡng Chi Tiết</h2>
+                        <button
+                            onClick={handlePrint}
+                            className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors duration-200"
+                            disabled={addedFoods.length === 0}
+                        >
+                            Hiển Thị PDF
+                        </button>
+                    </div>
+                    <div ref={componentRef} className="print-table">
+                        <h2 className="text-xl font-bold text-gray-800 mb-4 print-only">Bảng Dinh Dưỡng Chi Tiết</h2>
+                        <table className="min-w-full bg-white border border-gray-200 rounded-lg">
+                            <thead>
+                                <tr className="bg-gray-100 text-gray-600 uppercase text-xs sm:text-sm leading-normal">
+                                    <th className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Tên</th>
+                                    <th className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Khối lượng (g/ml)</th>
+                                    <th className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Protein (g)</th>
+                                    <th className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Gluxit (g)</th>
+                                    <th className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Lipid (g)</th>
+                                    <th className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Năng lượng (kcal)</th>
+                                    <th className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300 no-print">Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody className="text-gray-700 text-sm font-light">
+                                {addedFoods.map((item, index) => (
+                                    <tr key={`${item.food.id}-${index}`} className="border-b border-gray-200 hover:bg-gray-50 transition-colors duration-150">
+                                        <td className="py-3 px-4 sm:px-6 text-center whitespace-nowrap">{item.food.name}</td>
+                                        <td className="py-3 px-4 sm:px-6 text-center no-print">
+                                            <input
+                                                type="number"
+                                                value={item.input === 0 ? '' : item.input} // Hiển thị rỗng nếu giá trị là 0 để người dùng dễ nhập
+                                                onChange={(e) => handleUpdateFoodQuantity(index, Number(e.target.value))}
+                                                onBlur={(e) => { // Khi blur, nếu rỗng hoặc NaN thì đặt lại về 0
+                                                    if (e.target.value === '' || isNaN(Number(e.target.value))) {
+                                                        handleUpdateFoodQuantity(index, 0);
+                                                    }
+                                                }}
+                                                min="0"
+                                                className="w-20 p-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-400 text-center"
+                                            />
+                                        </td>
+                                        <td className="py-3 px-4 sm:px-6 text-center print-only">{item.input === 0 ? '' : item.input}</td>
+                                        <td className="py-3 px-4 sm:px-6 text-center">{item.calculatedProtein.toFixed(2)}</td>
+                                        <td className="py-3 px-4 sm:px-6 text-center">{item.calculatedGluxit.toFixed(2)}</td>
+                                        <td className="py-3 px-4 sm:px-6 text-center">{item.calculatedLipid.toFixed(2)}</td>
+                                        <td className="py-3 px-4 sm:px-6 text-center">{item.totalEnergy.toFixed(2)}</td>
+                                        <td className="py-3 px-4 sm:px-6 text-center no-print">
+                                            <button
+                                                onClick={() => handleRemoveFood(index)}
+                                                className="text-red-500 hover:text-red-700 transition-colors duration-200"
+                                                title="Xóa món ăn này"
+                                            >
+                                                <Trash2 size={20} />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                                {addedFoods.length === 0 && (
+                                    <tr>
+                                        <td colSpan={7} className="py-6 text-center text-gray-500 italic">
+                                            Chưa có món ăn nào được thêm vào bảng. Hãy tìm kiếm và chọn món ăn từ danh sách trên!
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                            <tfoot>
+                                <tr className="bg-gray-100 text-gray-800 font-semibold text-sm sm:text-base leading-normal border-t-2 border-gray-400">
+                                    <td className="py-3 px-4 sm:px-6 text-left" colSpan={5}>Tổng cộng</td>
+                                    <td className="py-3 px-4 sm:px-6 text-center">{totalEnergyOverall.toFixed(2)}</td>
+                                    <td className="py-3 px-4 sm:px-6 text-left no-print"></td>{/* Cột hành động không tính tổng */}
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+
                 <div className="relative md:w-3/4 lg:w-[800px] mx-auto">
                     <Search className="absolute left-4 sm:left-6 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
                     <input
@@ -230,83 +314,7 @@ export default function CalFood() {
                 </div>
             )}
 
-            <div className="w-full max-w-7xl bg-white p-6 rounded-lg shadow-xl relative z-10">
-                <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-2xl font-bold text-gray-800">Bảng Dinh Dưỡng Chi Tiết</h2>
-                    <button
-                        onClick={handlePrint}
-                        className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors duration-200"
-                        disabled={addedFoods.length === 0}
-                    >
-                        Hiển Thị PDF
-                    </button>
-                </div>
-                <div ref={componentRef} className="print-table">
-                    <h2 className="text-xl font-bold text-gray-800 mb-4 print-only">Bảng Dinh Dưỡng Chi Tiết</h2>
-                    <table className="min-w-full bg-white border border-gray-200 rounded-lg">
-                        <thead>
-                            <tr className="bg-gray-100 text-gray-600 uppercase text-xs sm:text-sm leading-normal">
-                                <th className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Tên</th>
-                                <th className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Khối lượng (g/ml)</th>
-                                <th className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Protein (g)</th>
-                                <th className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Gluxit (g)</th>
-                                <th className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Lipid (g)</th>
-                                <th className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Năng lượng (kcal)</th>
-                                <th className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300 no-print">Hành động</th>
-                            </tr>
-                        </thead>
-                        <tbody className="text-gray-700 text-sm font-light">
-                            {addedFoods.map((item, index) => (
-                                <tr key={`${item.food.id}-${index}`} className="border-b border-gray-200 hover:bg-gray-50 transition-colors duration-150">
-                                    <td className="py-3 px-4 sm:px-6 text-center whitespace-nowrap">{item.food.name}</td>
-                                    <td className="py-3 px-4 sm:px-6 text-center no-print">
-                                        <input
-                                            type="number"
-                                            value={item.input === 0 ? '' : item.input} // Hiển thị rỗng nếu giá trị là 0 để người dùng dễ nhập
-                                            onChange={(e) => handleUpdateFoodQuantity(index, Number(e.target.value))}
-                                            onBlur={(e) => { // Khi blur, nếu rỗng hoặc NaN thì đặt lại về 0
-                                                if (e.target.value === '' || isNaN(Number(e.target.value))) {
-                                                    handleUpdateFoodQuantity(index, 0);
-                                                }
-                                            }}
-                                            min="0"
-                                            className="w-20 p-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-400 text-center"
-                                        />
-                                    </td>
-                                    <td className="py-3 px-4 sm:px-6 text-center print-only">{item.input === 0 ? '' : item.input}</td>
-                                    <td className="py-3 px-4 sm:px-6 text-center">{item.calculatedProtein.toFixed(2)}</td>
-                                    <td className="py-3 px-4 sm:px-6 text-center">{item.calculatedGluxit.toFixed(2)}</td>
-                                    <td className="py-3 px-4 sm:px-6 text-center">{item.calculatedLipid.toFixed(2)}</td>
-                                    <td className="py-3 px-4 sm:px-6 text-center">{item.totalEnergy.toFixed(2)}</td>
-                                    <td className="py-3 px-4 sm:px-6 text-center no-print">
-                                        <button
-                                            onClick={() => handleRemoveFood(index)}
-                                            className="text-red-500 hover:text-red-700 transition-colors duration-200"
-                                            title="Xóa món ăn này"
-                                        >
-                                            <Trash2 size={20} />
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                            {addedFoods.length === 0 && (
-                                <tr>
-                                    <td colSpan={7} className="py-6 text-center text-gray-500 italic">
-                                        Chưa có món ăn nào được thêm vào bảng. Hãy tìm kiếm và chọn món ăn từ danh sách trên!
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                        <tfoot>
-                            <tr className="bg-gray-100 text-gray-800 font-semibold text-sm sm:text-base leading-normal border-t-2 border-gray-400">
-                                <td className="py-3 px-4 sm:px-6 text-left" colSpan={5}>Tổng cộng</td>
-                                <td className="py-3 px-4 sm:px-6 text-center">{totalEnergyOverall.toFixed(2)}</td>
-                                <td className="py-3 px-4 sm:px-6 text-left no-print"></td>{/* Cột hành động không tính tổng */}
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
-            </div>
+
         </div>
     );
 }
