@@ -154,7 +154,7 @@ const dataTest1: FoodWithValue[] = [
 
 export default function BuildFood() {
     const componentRef = useRef<HTMLDivElement>(null);
-    const [dataRation, setDataRation] = useState<FoodWithValue[]>(dataTest1);
+    const [dataRation, setDataRation] = useState<FoodWithValue[]>([]);
     const [energyTemp, setEnergyTemp] = useState<number>(0);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
