@@ -103,7 +103,7 @@ export default function ElegantHeader() {
                 >
                   <div className="flex items-center gap-2">
                     {item.icon}
-                    <span className="md:inline block lg:text-base text-xs">{item.name}</span>
+                    <span className="md:inline block lg:text-sm text-xs">{item.name}</span>
                   </div>
                   {item.items && (
                     <ChevronDown className="transition-transform group-hover:rotate-180 md:ml-auto" size={16} />
