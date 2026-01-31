@@ -2,19 +2,16 @@ import { useDroppable } from '@dnd-kit/core';
 import React from 'react'
 import DraggableFoodItem from './DragableFoodItem';
 import { ClipboardList, Trash2 } from 'lucide-react';
+import { FoodInstance } from '@/types/FoodCard';
 
 
-interface Food {
-  id: string;
-  name: string;
-  kcal: number;
-}
-
-interface FoodInstance extends Food {
-  instanceId: string;
-}
-
-export default function DroppableCell({ day, mealId, foods, onRemove }: any) {
+export default function DroppableCell({ day, mealId, foods, onRemove, onUpdateVolume }: {
+  day: string;
+  mealId: string;
+  foods: FoodInstance[];
+  onRemove: (day: string, mealId: string, instId: string) => void;
+  onUpdateVolume: (day: string, mealId: string, instId: string, val: number) => void;
+}) {
     const { setNodeRef, isOver } = useDroppable({
         id: `${day}-${mealId}`,
     });
@@ -31,7 +28,7 @@ export default function DroppableCell({ day, mealId, foods, onRemove }: any) {
 
                 {foods.map((f: FoodInstance) => (
                     <div key={f.instanceId} className="relative group">
-                        <DraggableFoodItem food={f} instanceId={f.instanceId} />
+                        <DraggableFoodItem day={day} mealId={mealId} food={f} instanceId={f.instanceId} onUpdateVolume={onUpdateVolume} />
                         <button
                             onClick={() => onRemove(day, mealId, f.instanceId)}
                             className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity z-30 shadow-sm"

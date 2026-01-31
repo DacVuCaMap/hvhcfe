@@ -110,6 +110,7 @@
 
 import axios from "axios";
 import { Food, FoodRequestDto } from "@/type/food";
+import { FoodCardChild } from "@/types/FoodCard";
 
 const api = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_API_URL}/api/khoaquannhu/foods`,
@@ -194,5 +195,25 @@ export const getRation = async (energy: number) => {
   } catch (error) {
     handleError(error, "Get ration");
     return null;
+  }
+};
+
+export const fetchFoodCardChild = async (): Promise<FoodCardChild[]> => {
+  try {
+    const { data } = await axios.get<any[]>(`/api/khoaquannhu/dishes/all`, {
+      headers: { "ngrok-skip-browser-warning": "true" }
+    });
+
+    return data.map((item): FoodCardChild => ({
+      id: item.id,
+      name: item.name,
+      protein: Number(item.protein),
+      lipid: Number(item.lipid),
+      glucide: Number(item.glucide),
+      volumeSuggest: Number(item.volumeSuggest || item.volume_suggest)
+    }));
+  } catch (error) {
+    handleError(error, "Get food card child");
+    return [];
   }
 };
