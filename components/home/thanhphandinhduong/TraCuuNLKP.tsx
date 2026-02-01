@@ -267,7 +267,7 @@ export default function DietPlanner() {
           <div className="overflow-x-auto flex-1">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-slate-50">
+                <tr className="bg-slate-50 border-b border-slate-300">
                   <th className="p-2 font-bold text-slate-400 text-[11px] uppercase tracking-wider sticky left-0 bg-slate-50 z-20 border-b w-24">Bữa ăn</th>
                   {days.map(day => (
                     <th key={day} className="p-2 font-bold text-slate-700 text-center border-b">{day}</th>
@@ -276,8 +276,8 @@ export default function DietPlanner() {
               </thead>
               <tbody>
                 {meals.map((meal) => (
-                  <tr key={meal.id} className="group">
-                    <td className="p-2 border-b border-r border-slate-50 text-center sticky left-0 bg-white z-10 group-hover:bg-slate-50 transition-colors">
+                  <tr key={meal.id} className="group border-b border-slate-300 hover:bg-slate-50 transition-colors">
+                    <td className="p-2 border-r border-slate-50 text-center sticky left-0 bg-white z-10 group-hover:bg-slate-50 transition-colors">
                       <div className="text-2xl mb-1">{meal.icon}</div>
                       <div className="text-[10px] font-black uppercase text-slate-500 tracking-tighter">{meal.label}</div>
                     </td>
