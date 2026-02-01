@@ -6,18 +6,22 @@ import { FoodInstance } from '@/types/FoodCard';
 
 
 export default function DroppableCell({ day, mealId, foods, onRemove, onUpdateVolume }: {
-  day: string;
-  mealId: string;
-  foods: FoodInstance[];
-  onRemove: (day: string, mealId: string, instId: string) => void;
-  onUpdateVolume: (day: string, mealId: string, instId: string, val: number) => void;
+    day: string;
+    mealId: string;
+    foods: FoodInstance[];
+    onRemove: (day: string, mealId: string, instId: string) => void;
+    onUpdateVolume: (day: string, mealId: string, instId: string, val: number) => void;
 }) {
     const { setNodeRef, isOver } = useDroppable({
         id: `${day}-${mealId}`,
     });
 
-    const totalKcal = foods.reduce((sum: number, f: any) => sum + f.kcal, 0);
-
+    // const totalKcal = foods.reduce((sum: number, f: any) => sum + f.kcal, 0);
+    const totalKcal = foods.reduce((sum, f) => {
+        const ratio = f.volumeSuggest / 100;
+        const kcal = (f.protein * 4 + f.lipid * 9 + f.glucide * 4) * ratio;
+        return sum + kcal;
+    }, 0);
     return (
         <td
             ref={setNodeRef}
@@ -49,7 +53,7 @@ export default function DroppableCell({ day, mealId, foods, onRemove, onUpdateVo
             <div className={`mt-2 flex items-center justify-between px-2 py-1 rounded-lg text-[10px] font-bold 
         ${totalKcal > 0 ? 'bg-yellow-100 text-yellow-700 border border-yellow-200' : 'bg-gray-50 text-gray-400'}`}>
                 <span>TỔNG:</span>
-                <span>{totalKcal} Kcal</span>
+                <span>{totalKcal.toFixed(2)} Kcal</span>
             </div>
         </td>
     );

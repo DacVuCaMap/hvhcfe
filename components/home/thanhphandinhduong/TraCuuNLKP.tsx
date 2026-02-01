@@ -13,11 +13,12 @@ import {
   DragOverlay,
   defaultDropAnimationSideEffects
 } from '@dnd-kit/core';
-import { Apple, ClipboardList, Trash2, Calendar } from 'lucide-react';
+import { Apple, Calendar } from 'lucide-react';
 import FoodDragCard from './dropanddrag/FoodDragCard';
 import DraggableFoodItem from './dropanddrag/DragableFoodItem';
 import DroppableCell from './dropanddrag/DropablleCell';
 import { FoodCardChild, FoodInstance } from '@/types/FoodCard';
+import { fetchFoodCardChild } from '@/lib/api';
 
 interface PlacedFoods {
   [key: string]: FoodInstance[];
@@ -42,13 +43,32 @@ export default function DietPlanner() {
   const [mounted, setMounted] = useState(false);
   const [placedFoods, setPlacedFoods] = useState<PlacedFoods>({});
   const [activeItem, setActiveItem] = useState<any>(null);
-  const [menuItems, setMenuItems] = useState<FoodCardChild[]>(foodLibrary);
+  const [menuItems, setMenuItems] = useState<FoodCardChild[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const sensors = useSensors(useSensor(PointerSensor, {
     activationConstraint: { distance: 5 }
   }));
 
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    setMounted(true);
 
+    if (menuItems.length == 0) {
+      const loadFoodData = async () => {
+        setIsLoading(true);
+        try {
+          const data = await fetchFoodCardChild();
+          setMenuItems(data);
+        } catch (error) {
+          console.error("Lỗi khi load thực đơn:", error);
+        } finally {
+          setIsLoading(false);
+        }
+      };
+
+      loadFoodData();
+    }
+
+  }, []);
 
 
   const handleDragStart = (event: DragStartEvent) => {
@@ -115,11 +135,24 @@ export default function DietPlanner() {
               <div className="p-2 bg-green-100 rounded-lg"><Apple className="text-green-600" size={20} /></div>
               Thực đơn
             </h2>
+
+            {/* 3. Hiển thị trạng thái loading hoặc danh sách món ăn */}
             <div className="space-y-1 max-h-[470px] overflow-y-auto pr-1">
-              {menuItems.map(food => (
-                <DraggableFoodItem  key={food.id} food={food} isSidebar={true} />
-              ))}
+              {isLoading ? (
+                <div className="flex justify-center py-10">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500"></div>
+                </div>
+              ) : (
+                menuItems.map(food => (
+                  <DraggableFoodItem key={food.id} food={food} isSidebar={true} />
+                ))
+              )}
+
+              {!isLoading && menuItems.length === 0 && (
+                <p className="text-center text-gray-400 text-xs">Không có dữ liệu món ăn.</p>
+              )}
             </div>
+
             <div className="mt-8 p-4 bg-blue-50 rounded-2xl border border-blue-100">
               <p className="text-[11px] text-blue-600 font-medium">Mẹo: Kéo thả các món ăn vào ô lịch trình để tính toán năng lượng.</p>
             </div>
@@ -169,7 +202,7 @@ export default function DietPlanner() {
           </div>
         </main>
       </div>
-      <button onClick={() => console.log(placedFoods)}> in ra</button>
+
 
       <DragOverlay dropAnimation={{
         sideEffects: defaultDropAnimationSideEffects({

@@ -1,6 +1,6 @@
 import { FoodCardChild } from '@/types/FoodCard';
 import React from 'react'
-// --- ĐỊNH NGHĨA KIỂU DỮ LIỆU ---
+
 
 export default function FoodCard({
     food,
@@ -35,7 +35,6 @@ export default function FoodCard({
                      bg-white focus:border-green-500 focus:ring-2 focus:ring-green-100 
                      outline-none transition-all appearance-none text-gray-700"
                         value={food.volumeSuggest}
-                        // QUAN TRỌNG: Ngăn chặn drag khi tương tác với input
                         onPointerDown={(e) => e.stopPropagation()}
                         onChange={(e) => onVolumeChange?.(Number(e.target.value))}
                     />
