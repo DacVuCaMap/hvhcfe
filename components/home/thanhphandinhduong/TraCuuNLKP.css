@@ -1,0 +1,23 @@
+@page {
+  size: A4 landscape;
+}
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 10mm;
+  }
+
+  body {
+    zoom: 0.88;
+  }
+
+  .print-table th,
+  .print-table td {
+    padding: 6px;
+    font-size: 12px;
+  }
+
+  tr {
+    page-break-inside: avoid;
+  }
+}

@@ -16,7 +16,6 @@ export default function DroppableCell({ day, mealId, foods, onRemove, onUpdateVo
         id: `${day}-${mealId}`,
     });
 
-    // const totalKcal = foods.reduce((sum: number, f: any) => sum + f.kcal, 0);
     const totalKcal = foods.reduce((sum, f) => {
         const ratio = f.volumeSuggest / 100;
         const kcal = (f.protein * 4 + f.lipid * 9 + f.glucide * 4) * ratio;

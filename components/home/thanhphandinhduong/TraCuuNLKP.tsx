@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   DndContext,
   useDraggable,
@@ -13,12 +13,14 @@ import {
   DragOverlay,
   defaultDropAnimationSideEffects
 } from '@dnd-kit/core';
-import { Apple, Calendar } from 'lucide-react';
+import { Apple, Calendar, Search, X } from 'lucide-react';
 import FoodDragCard from './dropanddrag/FoodDragCard';
 import DraggableFoodItem from './dropanddrag/DragableFoodItem';
 import DroppableCell from './dropanddrag/DropablleCell';
 import { FoodCardChild, FoodInstance } from '@/types/FoodCard';
 import { fetchFoodCardChild } from '@/lib/api';
+import { useReactToPrint } from 'react-to-print';
+import './TraCuuNLKP.css';
 
 interface PlacedFoods {
   [key: string]: FoodInstance[];
@@ -40,14 +42,51 @@ const foodLibrary: FoodCardChild[] = [
 
 // --- MAIN PAGE ---
 export default function DietPlanner() {
+  const componentRef = useRef<HTMLDivElement>(null);
   const [mounted, setMounted] = useState(false);
   const [placedFoods, setPlacedFoods] = useState<PlacedFoods>({});
   const [activeItem, setActiveItem] = useState<any>(null);
   const [menuItems, setMenuItems] = useState<FoodCardChild[]>([]);
+  const [search, setSearch] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const sensors = useSensors(useSensor(PointerSensor, {
     activationConstraint: { distance: 5 }
   }));
+
+  const handlePrint = useReactToPrint({
+    contentRef: componentRef,
+    documentTitle: 'Nutrition_Table',
+    pageStyle: `
+        @media print {
+            @page { size: auto; margin: 20mm; }
+            body { margin: 0; -webkit-print-color-adjust: exact; }
+            /* Quan trọng: Bỏ các thanh scrollbar và container cố định */
+            .overflow-auto { overflow: visible !important; height: auto !important; }
+            
+            .print-table { 
+                width: 100%; 
+                border-collapse: collapse; 
+                table-layout: auto;
+            }
+            .print-table th, .print-table td { 
+                padding: 8px; 
+                border: 1px solid #000 !important; /* Đậm hơn để dễ nhìn khi in */
+            }
+            /* Xử lý ngắt trang */
+            tr { page-break-inside: avoid !important; }
+            thead { display: table-header-group; } /* Lặp lại tiêu đề ở mỗi trang */
+            tfoot { display: table-footer-group; } /* Giữ footer ở cuối */
+            
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            input { border: none !important; background: transparent !important; appearance: none; }
+        }
+    `,
+    onBeforePrint: async () => { console.log('Preparing to print...'); },
+    onAfterPrint: () => console.log('Print completed.'),
+  });
+
+
 
   useEffect(() => {
     setMounted(true);
@@ -123,6 +162,12 @@ export default function DietPlanner() {
       )
     }));
   };
+  const filteredMenuItems = menuItems.filter(food =>
+    food.name.toLowerCase().includes(search.toLowerCase())
+  );
+
+
+
   return (
     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
 
@@ -135,6 +180,49 @@ export default function DietPlanner() {
               <div className="p-2 bg-green-100 rounded-lg"><Apple className="text-green-600" size={20} /></div>
               Thực đơn
             </h2>
+            {/* 2. Thanh tìm kiếm món ăn */}
+            <div className="mb-4">
+              <div className="relative">
+                {/* Icon search */}
+                <Search
+                  size={16}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                />
+
+                <input
+                  type="text"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Tìm món ăn..."
+                  className="
+                    w-full
+                    pl-9 pr-8 py-2
+                    text-sm font-medium
+                    rounded-xl
+                    border border-gray-200
+                    bg-slate-50
+                    text-gray-700
+                    placeholder:text-gray-400
+                    focus:bg-white
+                    focus:border-green-500
+                    focus:ring-2 focus:ring-green-100
+                    outline-none
+                    transition-all
+                  "
+                />
+
+                {/* Nút clear */}
+                {search && (
+                  <button
+                    onClick={() => setSearch("")}
+                    className="absolute right-2 top-1/2 -translate-y-1/2
+                   p-1 rounded-md hover:bg-gray-100"
+                  >
+                    <X size={14} className="text-gray-400" />
+                  </button>
+                )}
+              </div>
+            </div>
 
             {/* 3. Hiển thị trạng thái loading hoặc danh sách món ăn */}
             <div className="space-y-1 max-h-[470px] overflow-y-auto pr-1">
@@ -143,7 +231,7 @@ export default function DietPlanner() {
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green-500"></div>
                 </div>
               ) : (
-                menuItems.map(food => (
+                filteredMenuItems.map(food => (
                   <DraggableFoodItem key={food.id} food={food} isSidebar={true} />
                 ))
               )}
@@ -160,12 +248,20 @@ export default function DietPlanner() {
         </aside>
 
         {/* Main Board */}
-        <main className="flex-1 min-w-0 bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
+        <main ref={componentRef} className="flex-1 min-w-0 bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
           <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-green-600">
             <h1 className="text-xl font-bold text-yellow-300 flex items-center gap-2">
               <div className="p-2 bg-green-100 rounded-lg"><Calendar className="text-green-600" size={20} /></div>
-              Lịch trình dinh dưỡng tuần
+              Thực đơn tuần
             </h1>
+            <div>
+              <button
+                onClick={handlePrint}
+                className="no-print bg-green-500 text-white px-4 py-2 rounded-lg  transition-colors duration-200"
+              >
+                Hiển Thị PDF
+              </button>
+            </div>
           </div>
 
           <div className="overflow-x-auto flex-1">
@@ -197,12 +293,49 @@ export default function DietPlanner() {
                     ))}
                   </tr>
                 ))}
+                <tr>
+                  <td className='text-center'>
+                    <div className='text-[10px] font-black uppercase text-slate-500 tracking-tighter'>
+                      Tổng năng lượng
+                    </div>
+                  </td>
+                  {days.map((day) => {
+
+                    const foodsSang = placedFoods[`${day}-sang`] || [];
+                    const foodsTrua = placedFoods[`${day}-trua`] || [];
+                    const foodsToi = placedFoods[`${day}-toi`] || [];
+                    const totalKcalSang = foodsSang.reduce((sum, f) => {
+                      const ratio = f.volumeSuggest / 100;
+                      const kcal = (f.protein * 4 + f.lipid * 9 + f.glucide * 4) * ratio;
+                      return sum + kcal;
+                    }, 0);
+                    const totalKcalTrua = foodsTrua.reduce((sum, f) => {
+                      const ratio = f.volumeSuggest / 100;
+                      const kcal = (f.protein * 4 + f.lipid * 9 + f.glucide * 4) * ratio;
+                      return sum + kcal;
+                    }, 0);
+                    const totalKcalToi = foodsToi.reduce((sum, f) => {
+                      const ratio = f.volumeSuggest / 100;
+                      const kcal = (f.protein * 4 + f.lipid * 9 + f.glucide * 4) * ratio;
+                      return sum + kcal;
+                    }, 0);
+                    const tot = totalKcalSang + totalKcalTrua + totalKcalToi;
+                    return (
+                      <td key={day} className="p-4 text-center text-gray-400 text-xs">
+                        <div className='bg-gray-50 text-gray-400 px-2 py-1 rounded-lg'>
+                          {tot.toFixed(2)} Kcal
+                        </div>
+                      </td>
+                    )
+                  })}
+
+                </tr>
               </tbody>
             </table>
           </div>
         </main>
       </div>
-
+      <button onClick={() => { console.log(placedFoods) }}>in ra</button>
 
       <DragOverlay dropAnimation={{
         sideEffects: defaultDropAnimationSideEffects({

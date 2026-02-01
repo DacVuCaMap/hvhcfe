@@ -48,7 +48,7 @@ export default function FoodCard({
             )
                 : (
 
-                    <div className="text-[10px] text-gray-500 mt-1">Protein: {food.protein}g <br/> Lipid: {food.lipid}g <br/> Glucide: {food.glucide}g</div>
+                    <div className="text-[10px] text-gray-500 mt-1"></div>
                 )}
         </div>
     );

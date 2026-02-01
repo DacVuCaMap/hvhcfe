@@ -2,6 +2,7 @@
 import Image from 'next/image'
 import React from 'react'
 import './TongQuan.css'
+import FeedbackCard from './FeedbackCard'
 export default function TongQuan() {
     return (
         <div className='flex flex-col'>
@@ -20,7 +21,7 @@ export default function TongQuan() {
                 {/* Section 1: Introduction (Updated) */}
                 <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20 overflow-hidden">
                     <h1 className='text-center font-bold text-4xl md:text-5xl text-green-800 mb-16 animate-fade-in-down'>
-                        TỔNG QUANs
+                        TỔNG QUAN
                     </h1>
                     <div className='flex flex-col lg:flex-row items-center justify-between gap-4'>
                         {/* Logo and Department Info - Adjusted width and centering */}
@@ -189,7 +190,10 @@ export default function TongQuan() {
                         </div>
                     </div>
                 </section>
-
+                {/* Section 6: feedback */}
+                <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20">
+                    <FeedbackCard />
+                </section>
             </div>
         </div>
     )
