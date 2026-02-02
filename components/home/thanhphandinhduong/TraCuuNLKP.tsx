@@ -178,7 +178,7 @@ export default function DietPlanner() {
           <div className="bg-white rounded-3xl p-4 shadow-sm border border-slate-200 sticky top-6">
             <h2 className="text-xl font-black text-slate-800 mb-6 flex items-center gap-3">
               <div className="p-2 bg-green-100 rounded-lg"><Apple className="text-green-600" size={20} /></div>
-              Thực đơn
+              Món ăn
             </h2>
             {/* 2. Thanh tìm kiếm món ăn */}
             <div className="mb-4">
@@ -335,7 +335,6 @@ export default function DietPlanner() {
           </div>
         </main>
       </div>
-      <button onClick={() => { console.log(placedFoods) }}>in ra</button>
 
       <DragOverlay dropAnimation={{
         sideEffects: defaultDropAnimationSideEffects({
