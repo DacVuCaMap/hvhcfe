@@ -271,6 +271,26 @@ export default function CalFood() {
                                     <td className="py-3 px-4 sm:px-6 text-center">{totalEnergyOverall.toFixed(2)}</td>
                                     <td className="py-3 px-4 sm:px-6 text-left no-print"></td>{/* Cột hành động không tính tổng */}
                                 </tr>
+                                <tr className="bg-gray-100 text-gray-800 font-semibold text-sm sm:text-base leading-normal border-t-2 border-gray-400">
+                                    <td className="py-3 px-4 sm:px-6 text-left" colSpan={5}>Quân số</td>
+                                    <td className="py-3 px-4 sm:px-6 text-center">
+                                        <input
+                                            type="number"
+                                            value={0} // Hiển thị rỗng nếu giá trị là 0 để người dùng dễ nhập
+                                            min="0"
+                                            className="w-20 p-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-400 text-center"
+                                        />
+
+                                    </td>
+                                    <td className="py-3 px-4 sm:px-6 text-left no-print"></td>{/* Cột hành động không tính tổng */}
+                                </tr>
+                                <tr className="bg-gray-100 text-gray-800 font-semibold text-sm sm:text-base leading-normal border-t-2 border-gray-400">
+                                    <td className="py-3 px-4 sm:px-6 text-left" colSpan={5}>Bình Quân</td>
+                                    <td className="py-3 px-4 sm:px-6 text-center">
+                                        Tổng/quân só
+                                    </td>
+                                    <td className="py-3 px-4 sm:px-6 text-left no-print"></td>{/* Cột {totalEnergyOverall.toFixed(2)}hành động không tính tổng */}
+                                </tr>
                             </tfoot>
                         </table>
                     </div>

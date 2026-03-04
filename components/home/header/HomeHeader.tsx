@@ -20,14 +20,20 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { name: 'Trang chủ', path: '/', icon: <Info size={16} />, show: true },
+  { name: 'Giới thiệu', path: '/', icon: <Info size={16} />, show: true },
   { name: 'Tra cứu thành phần thực phẩm', path: '/tracuuthanhphanthucpham', icon: <Home size={16} />, show: true },
-  { name: 'Tra cứu năng lượng thực phẩm', path: '/cocaunangluong', icon: <Zap size={16} />, show: true },
+  { name: 'Tra cứu năng lượng khẩu phần ăn', path: '/cocaunangluong', icon: <Zap size={16} />, show: true },
   { name: 'Xây dựng định lượng khẩu phần ăn', path: '/xaydungdinhduong', icon: <Utensils size={16} />, show: true },
-  { name: 'Tra cứu năng lượng khẩu phần ăn', path: '/tracuunangluongkhauphan', icon: <Beef size={16} />, show: true },
   { name: 'Đăng nhập', path: '/signin', icon: <LogIn size={16} />, show: false },
 ];
-
+// const navItems: NavItem[] = [
+//   { name: 'Giới thiệu', path: '/', icon: <Info size={16} />, show: true },
+//   { name: 'Tra cứu thành phần thực phẩm', path: '/tracuuthanhphanthucpham', icon: <Home size={16} />, show: true },
+//   { name: 'Tra cứu năng lượng khẩu phần ăn', path: '/cocaunangluong', icon: <Zap size={16} />, show: true },
+//   { name: 'Xây dựng định lượng khẩu phần ăn', path: '/xaydungdinhduong', icon: <Utensils size={16} />, show: true },
+//   { name: 'Tra cứu năng lượng khẩu phần ăn', path: '/tracuunangluongkhauphan', icon: <Beef size={16} />, show: true },
+//   { name: 'Đăng nhập', path: '/signin', icon: <LogIn size={16} />, show: false },
+// ];
 export default function ElegantHeader() {
   const pathname = usePathname();
   const firstSegment = `/${pathname.split('/')[1]}`;
@@ -53,14 +59,14 @@ export default function ElegantHeader() {
                   <h1 className="text-lg md:text-xl font-bold text-yellow-300">
                     Khoa Quân Nhu - Học Viện Hậu Cần
                   </h1>
-                  <p className="text-xs text-white">Department of Quartermaster Service</p>
+                  <p className="text-xs text-white">Faculty of Ordnance</p>
                 </div>
               </div>
             </Link>
             {/* Slogan */}
             <div className="hidden md:flex md:flex-row text-center text-white font-semibold text-sm space-x-4">
               <p className='max-w-md'>
-                TRANG WEB ĐIỆN TỬ TRA CỨU THÀNH PHẦN CƠ CẤU, ĐỊNH LƯỢNG CỦA KHẨU PHẦN ĂN
+                SỔ TAY ĐIỆN TỬ TRA CỨU THÀNH PHẦN CƠ CẤU, ĐỊNH LƯỢNG CỦA KHẨU PHẦN ĂN
               </p>
               <div className="hidden md:block bg-amber-300 hover:bg-green-950 transition-colors hover:text-amber-300 rounded-xl text-green-800 ">
                 <Link
