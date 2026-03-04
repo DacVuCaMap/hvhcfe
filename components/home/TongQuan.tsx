@@ -10,7 +10,7 @@ export default function TongQuan() {
       <section className="bg-white py-20">
         <div className="max-w-5xl mx-auto px-6 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
-            Sổ tay điện tử khẩu phần ăn bộ binh
+            SỔ TAY ĐIỆN TỬ TRA CỨU THÀNH PHẦN CƠ CẤU, ĐỊNH LƯỢNG CỦA KHẨU PHẦN ĂN
           </h1>
           <p className="text-lg md:text-xl text-gray-600 mb-8">
             Công cụ hỗ trợ tra cứu thành phần thực phẩm, xây dựng định lượng
