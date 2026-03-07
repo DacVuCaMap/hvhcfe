@@ -141,7 +141,7 @@ export default function TongQuan() {
             ].map((user, i) => (
               <div key={i} className="flex flex-col items-center group cursor-pointer">
                 <div className="mb-6 w-20 h-20 bg-[#f1f5f1] border-2 border-[#4B5320] flex items-center justify-center text-[#4B5320] group-hover:bg-[#4B5320] group-hover:text-white transition-all transform group-hover:rotate-6">
-                  {React.cloneElement(user.icon as React.ReactElement, { size: 36 })}
+                  {React.cloneElement(user.icon as React.ReactElement)}
                 </div>
                 <span className="font-black uppercase text-sm tracking-tighter text-[#1B3022] group-hover:text-[#D4AF37] transition-colors">
                   {user.name}

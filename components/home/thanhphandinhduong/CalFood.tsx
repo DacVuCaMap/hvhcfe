@@ -3,7 +3,6 @@ import { Food } from '@/type/food'; // Đảm bảo đường dẫn đúng
 import { AddedFoodItem } from '@/type/food'; // Import interface AddedFoodItem
 import React, { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import { Search, AlertTriangle, Trash2, Plus } from 'lucide-react'; // Thêm Trash2 cho nút xóa
-import TpddCard from './TpddCard'; // Đảm bảo đường dẫn đúng
 import './CalFood.css'; // Giữ nguyên CSS của bạn
 import { getRandomFoods, searchFood } from '@/lib/api'; // Đảm bảo đường dẫn đúng
 import { useReactToPrint } from 'react-to-print';
