@@ -28,11 +28,11 @@ export default function TongQuan() {
             <ShieldCheck className="text-[#D4AF37] w-12 h-12" />
           </div>
           <span className="inline-block px-4 py-1 mb-6 text-sm font-bold tracking-[0.2em] text-[#D4AF37] uppercase border-l-2 border-r-2 border-[#D4AF37]">
-            Tổng cục Hậu cần - Hệ thống số hóa
+            Hệ thống số hóa
           </span>
           <h1 className="text-4xl md:text-6xl font-black text-white mb-8 leading-tight uppercase tracking-tighter">
             SỔ TAY ĐIỆN TỬ <br/>
-            <span className="text-[#D4AF37]">TRA CỨU CƠ CẤU KHẨU PHẦN</span>
+            <span className="text-[#D4AF37]">TRA CỨU THÀNH PHẦN CƠ CẤU, ĐỊNH LƯỢNG CỦA KHẨU PHẦN ĂN</span>
           </h1>
           <p className="max-w-3xl mx-auto text-lg md:text-xl text-gray-300 mb-12 leading-relaxed font-medium">
             Phần mềm chuyên dụng hỗ trợ cán bộ tra cứu định mức, xây dựng thực đơn 
