@@ -283,7 +283,7 @@ export default function CalFood() {
                             <button
                                 onClick={handlePrint}
                                 className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors duration-200"
-                                disabled={addedFoods.length === 0}
+                                disabled={addedFoods.length === 1}
                             >
                                 Hiển Thị PDF
                             </button>
@@ -353,23 +353,30 @@ export default function CalFood() {
                                     <tr className="bg-gray-100 text-gray-800 font-semibold text-sm sm:text-base leading-normal border-t-2 border-gray-400">
                                         <td className="py-3 px-4 sm:px-6 text-left" colSpan={5}>Quân số</td>
                                         <td className="py-3 px-4 sm:px-6 text-center">
-                                            <input
-                                                type="number"
-                                                value={quanso}
-                                                onChange={(e) => setQuanso(parseInt(e.target.value) || 0)}
-                                                min="0"
-                                                className="w-20 p-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-400 text-center"
-                                            />
+                                            {/* LỚP NÀY CHỈ HIỆN TRÊN WEB (INPUT) */}
+                                            <div className="no-print">
+                                                <input
+                                                    type="number"
+                                                    value={quanso === 0 ? '' : quanso}
+                                                    onChange={(e) => setQuanso(parseInt(e.target.value) || 0)}
+                                                    min="0"
+                                                    className="w-20 p-1 border border-gray-300 rounded focus:outline-none focus:ring-1 focus:ring-blue-400 text-center"
+                                                />
+                                            </div>
 
+                                            {/* LỚP NÀY CHỈ HIỆN KHI BẤM IN/XUẤT PDF (TEXT THUẦN) */}
+                                            <div className="hidden print:block font-bold">
+                                                {quanso}
+                                            </div>
                                         </td>
-                                        <td className="py-3 px-4 sm:px-6 text-left no-print"></td>{/* Cột hành động không tính tổng */}
+                                        <td className="py-3 px-4 sm:px-6 text-left no-print"></td>
                                     </tr>
                                     <tr className="bg-gray-100 text-gray-800 font-semibold text-sm sm:text-base leading-normal border-t-2 border-gray-400">
                                         <td className="py-3 px-4 sm:px-6 text-left" colSpan={5}>Bình Quân</td>
                                         <td className="py-3 px-4 sm:px-6 text-center">
                                             {quanso > 0 ? (totalEnergyOverall / quanso).toFixed(2) : '0.00'}
                                         </td>
-                                        <td className="py-3 px-4 sm:px-6 text-left no-print"></td>{/* Cột {totalEnergyOverall.toFixed(2)}hành động không tính tổng */}
+                                        <td className="py-3 px-4 sm:px-6 text-left no-print"></td>
                                     </tr>
                                 </tfoot>
                             </table>
