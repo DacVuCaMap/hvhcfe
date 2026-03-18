@@ -239,7 +239,7 @@ export default function BuildFood() {
                     acc.ptv += protein;
                     acc.ltv += lipid;
                 }
-                acc.price += (item.price ?? 0) * item.value ;
+                acc.price += (item.price ?? 0) * item.value/1000 ;
                 acc.gluxit += carb;
                 let nl: number = carb * 4 + protein * 4 + lipid * 9;
                 acc.energy += nl;
@@ -562,7 +562,7 @@ export default function BuildFood() {
                                         let carb = parseFloat((item.food.carbohydrate * item.value / 100).toFixed(2));
                                         let nl: number = carb * 4 + parseFloat(protein) * 4 + parseFloat(lipid) * 9;
                                         let tempPrice = (item.price ?? 0);
-                                        let sumPrice = (tempPrice * 1000 * item.value * 1000) / 1000000;
+                                        let sumPrice = (tempPrice * 1000 * item.value) / 1000000;
                                         return (
                                             (
                                                 <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
