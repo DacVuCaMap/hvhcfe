@@ -333,7 +333,7 @@ export default function BuildFood() {
     useEffect(() => {
         const timer = setTimeout(() => {
             setDebouncedSearch(displayTerm);
-        }, 300); // 300ms là đủ để cảm thấy mượt mà
+        }, 300); 
         return () => clearTimeout(timer);
     }, [displayTerm]);
 
@@ -397,7 +397,7 @@ export default function BuildFood() {
                             Xin mời bạn nhập mức năng lượng cần cung cấp cho khẩu phần ăn.Hệ thống cho phép khống chế năng lượng trong khoảng từ 2.500 đến 4.860
                         </p>
                         <span className="text-xl font-bold text-gray-700">
-                            Tra Cứu Dinh Dưỡng
+                                Nhập Năng lượng cần cung cấp cho khẩu phần ăn (kcal/người/ngày)
                         </span>
                         <div className="w-full mx-auto flex items-center space-x-4">
 
@@ -438,8 +438,11 @@ export default function BuildFood() {
                 )}
                 {!loading && dataRation.length > 0 && (
                     <div ref={componentRef} className="bg-white mt-10 p-6 rounded-lg overflow-auto">
-                        <div className='text-gray-400 text-sm mb-10 no-print'>
-                            Ghi chú: Trong quá trình tính toán, năng lượng khẩu phần cần phải thêm khoảng 10% so với mức năng lượng tiêu hao thực tế. Việc tính toán này để bù trừ hao hụt về lương thực, thực phẩm trong quá trình chế biến nấu nướng, để cơ thể sinh trưởng và phát triển, sự tiêu hóa hấp thụ có hạn ở từng cơ thể, sự sai lệch trong tính toán và những ảnh hưởng khác.
+                        <div className='text-red-500 font-bold text-sm mb-10 no-print'>
+                            Ghi chú: Trong quá trình tính toán, năng lượng khẩu phần cần phải thêm khoảng 10% so với mức năng lượng tiêu hao thực tế. Việc tính toán này để bù trừ hao hụt về lương thực
+                            , thực phẩm trong quá trình chế biến nấu nướng, để cơ thể sinh trưởng và phát triển, 
+                            sự tiêu hóa hấp thụ có hạn ở từng cơ thể, sự sai lệch trong tính toán và những ảnh hưởng khác.
+                             Tỷ lệ chất dinh dưỡng được cung cấp theo tỷ lệ P:L:C = 17%:23%:60%. 
                         </div>
                         <div className="flex justify-between items-center mb-4">
                             <h2 className="text-xl font-bold text-gray-800 mb-4 print-only">Bảng Xây dựng định lượng khẩu phần ăn</h2>

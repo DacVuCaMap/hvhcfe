@@ -66,7 +66,7 @@ export default function ElegantHeader() {
             {/* Slogan */}
             <div className="hidden md:flex md:flex-row text-center text-white font-semibold text-sm space-x-4">
               <p className='max-w-md'>
-                SỔ TAY ĐIỆN TỬ TRA CỨU THÀNH PHẦN CƠ CẤU, ĐỊNH LƯỢNG CỦA KHẨU PHẦN ĂN
+                SỔ TAY ĐIỆN TỬ TRA CỨU CƠ CẤU THÀNH PHẦN, ĐỊNH LƯỢNG, NĂNG LƯỢNG CỦA KHẨU PHẦN ĂN
               </p>
               <div className="hidden md:block bg-amber-300 hover:bg-green-950 transition-colors hover:text-amber-300 rounded-xl text-green-800 ">
                 <Link

@@ -248,15 +248,15 @@ export default function CalFood() {
                                             <div className="flex items-center gap-3">
                                                 <div className="flex items-center gap-1.5">
                                                     <span className="w-1.5 h-1.5 rounded-full bg-red-400"></span>
-                                                    <span className="text-xs text-slate-500"><b className="text-slate-700">{item.protein}g</b> Đạm</span>
+                                                    <span className="text-xs text-slate-500"><b className="text-slate-700">{item.protein}%</b> Đạm</span>
                                                 </div>
                                                 <div className="flex items-center gap-1.5">
                                                     <span className="w-1.5 h-1.5 rounded-full bg-yellow-400"></span>
-                                                    <span className="text-xs text-slate-500"><b className="text-slate-700">{item.lipid}g</b> Béo</span>
+                                                    <span className="text-xs text-slate-500"><b className="text-slate-700">{item.lipid}%</b> Béo</span>
                                                 </div>
                                                 <div className="flex items-center gap-1.5">
                                                     <span className="w-1.5 h-1.5 rounded-full bg-green-400"></span>
-                                                    <span className="text-xs text-slate-500"><b className="text-slate-700">{item.carbohydrate}g</b> Carb</span>
+                                                    <span className="text-xs text-slate-500"><b className="text-slate-700">{item.carbohydrate}%</b> Carb</span>
                                                 </div>
                                             </div>
                                         </button>
@@ -274,7 +274,7 @@ export default function CalFood() {
                         </div>
                     </aside>
                     <div className="w-full bg-white p-6 rounded-lg shadow-xl relative z-10 overflow-hidden">
-                        <div className='text-xs text-gray-400 my-4'>
+                        <div className='text-xs text-red-500 font-bold my-4 text-left'>
                             Ghi chú: Trong quá trình tính toán, năng lượng khẩu phần cần phải mất đi khoảng 10% so với mức năng lượng tiêu hao thực tế. Việc tính toán này để bù trừ hao hụt về lương thực, thực phẩm trong quá trình chế biến nấu nướng, để cơ thể sinh trưởng và phát triển, sự tiêu hóa hấp thụ có hạn ở từng cơ thể, sự sai lệch trong tính toán và những ảnh hưởng khác.
                         </div>
                         <div className="flex justify-between items-center mb-4">
@@ -293,7 +293,7 @@ export default function CalFood() {
                                 <thead>
                                     <tr className="bg-gray-100 text-gray-600 uppercase text-xs sm:text-sm leading-normal">
                                         <th className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Tên</th>
-                                        <th className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Khối lượng (g/ml)</th>
+                                        <th className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Khối lượng (g hoặc ml)</th>
                                         <th className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Protein (g)</th>
                                         <th className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Gluxit (g)</th>
                                         <th className="py-3 px-4 sm:px-6 text-center border-b-2 border-gray-300">Lipid (g)</th>
