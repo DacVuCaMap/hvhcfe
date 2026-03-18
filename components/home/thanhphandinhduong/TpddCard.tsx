@@ -76,9 +76,9 @@ const TpddCard: React.FC<FoodCardProps> = ({ food, style, onClick }) => {
                 </h3>
 
                 <div className="space-y-2.5">
-                    <NutrientDisplay icon={<Zap size={16} className="text-yellow-500" />} label="Protein" value={food.protein} unit="g" colorClass="bg-yellow-50" />
-                    <NutrientDisplay icon={<Droplet size={16} className="text-blue-500" />} label="Lipid" value={food.lipid} unit="g" colorClass="bg-blue-50" />
-                    <NutrientDisplay icon={<Flame size={16} className="text-red-500" />} label="Carbs" value={food.carbohydrate} unit="g" colorClass="bg-red-50" />
+                    <NutrientDisplay icon={<Zap size={16} className="text-yellow-500" />} label="Protein" value={food.protein} unit="%" colorClass="bg-yellow-50" />
+                    <NutrientDisplay icon={<Droplet size={16} className="text-blue-500" />} label="Lipid" value={food.lipid} unit="%" colorClass="bg-blue-50" />
+                    <NutrientDisplay icon={<Flame size={16} className="text-red-500" />} label="Carbs" value={food.carbohydrate} unit="%" colorClass="bg-red-50" />
                 </div>
 
                 <div className="flex items-center justify-between pt-2 mt-2 border-t border-gray-200 border-opacity-50">
