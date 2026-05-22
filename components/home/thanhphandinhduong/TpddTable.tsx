@@ -99,8 +99,39 @@ export default function FoodSearch() {
 
           <div className='text-gray-600 leading-relaxed space-y-4 animate-fade-in-right delay-100 text-sm lg:w-[2000px]'>
             <p>
-              Bảng thành phần thực phẩm (Food Composition Table) là một trong những đầu ra nghiên cứu quan trọng trong lĩnh vực
-              Khoa học về thực phẩm (Food science)... [Đoạn văn bản giới thiệu của bạn]
+               Bảng thành phần thực phẩm (Food Composition Table) là một trong những đầu ra nghiên cứu quan trọng trong lĩnh vực
+
+              Khoa học về thực phẩm (Food science). Bảng thành phần thực phẩm là một công cụ không thể thiếu trong nghiên cứu
+
+              về dinh dưỡng, đặc biệt là các nghiên cứu về khẩu phần ăn uống, dịch tễ học dinh dưỡng và chế độ dinh dưỡng-tiết
+
+              chế trong lâm sàng và ăn điều trị cho bệnh nhân. Ngày nay, Bảng thành phần thực phẩm còn được sử dụng rộng rãi
+
+              trong lĩnh vực xây dựng chính sách, lập kế hoạch về dinh dưỡng, đảm bảo an ninh thực phẩm cấp quốc gia và gia đình
+
+              nhằm đáp ứng nhu cầu dinh dưỡng, từ đó có kế hoạch phát triển sản xuất thực phẩm phù hợp. Đây cũng là tài liệu gốc
+
+              phục vụ giảng dạy, nghiên cứu và triển khai công tác giáo dục dinh dưỡng cho cộng đồng, cho người tiêu dùng trong
+
+              việc lựa chọn thực phẩm phù hợp với tình hình sức khoẻ. Trong điều kiện hội nhập hiện nay với một thị trường thực
+
+              phẩm Việt nam ngày càng đa dạng, nhiều đòi hỏi thông tin không chỉ là các chất dinh dưỡng và phi dinh dưỡng trong
+
+              thực phẩm mà cần có thông tin về các chất chống oxy hóa, các hợp chất có hoạt tính sinh học đóng vai trò quan
+
+              trọng bảo vệ, nâng cao sức khoẻ và phòng chống bệnh tật. Mặt khác, do sự giao lưu trên thị trường thực phẩm nhập
+
+              khẩu đang diễn ra mạnh mẽ đòi hỏi các thông tin cập nhật và chi tiết hơn. Chính vì vậy, Viện Dinh dưỡng đã tiến
+
+              hành nghiên cứu trong nhiều năm về phân tích thành phần thực phẩm Việt nam, cập nhật, bổ sung và xuất bản Bảng
+
+              thành phần thực phẩm Việt nam. Đây cũng là công trình kế thừa, tiếp thu và nâng cao hoàn thiện từ các công trình
+
+              “Bảng thành phần hoá học thức ăn Việt Nam xuất bản năm 1972, và tiếp theo là “Bảng thành phần dinh dưỡng thực phẩm
+
+              Việt Nam xuất bản năm 2000”. Lần biên soạn này, đã cập nhật rất nhiều về thành phần các chất sinh năng lượng, các acid amin, acid béo, acid folic, các loại đường, hàm lượng khoáng, chất xơ, vi khoáng, vitamin và đặc biệt là thành phần hợp chất hoá thực vật trong thực phẩm hiện có trên thị trường Việt Nam.
+
+
             </p>
           </div>
         </div>
