@@ -25,6 +25,7 @@ const navItems: NavItem[] = [
   { name: 'Tra cứu năng lượng khẩu phần ăn', path: '/cocaunangluong', icon: <Zap size={16} />, show: true },
   { name: 'Xây dựng định lượng khẩu phần ăn', path: '/xaydungdinhduong', icon: <Utensils size={16} />, show: true },
   { name: 'Đăng nhập', path: '/signin', icon: <LogIn size={16} />, show: false },
+  { name: 'Thực đơn tuần', path: '/tracuunangluongkhauphan', icon: <Beef size={16} />, show: true },
 ];
 // const navItems: NavItem[] = [
 //   { name: 'Giới thiệu', path: '/', icon: <Info size={16} />, show: true },

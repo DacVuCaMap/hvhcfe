@@ -1,17 +1,14 @@
-// src/components/FoodCard.tsx
+// src/components/TpddCard.tsx
 "use client";
 import { Food } from '@/type/food';
 import React from 'react';
-// Sử dụng icons chung cho dinh dưỡng từ lucide-react
-// npm install lucide-react (nếu chưa có)
-import { Flame, Droplet, Zap, Info, Tag, Image as ImageIcon, PlusCircle } from 'lucide-react';
-import { apiShowPdf } from '@/lib/api';
-import Image from 'next/image';
+import { Flame, Droplet, Zap, Info, PlusCircle } from 'lucide-react';
 
 interface FoodCardProps {
     food: Food;
-    style?: React.CSSProperties; // Cho phép truyền style để làm animation delay
+    style?: React.CSSProperties;
     onClick?: (food: Food) => void;
+    onViewDetail?: (food: Food) => void; // 👉 Thêm prop này để truyền sự kiện lên cha
 }
 
 const NutrientDisplay: React.FC<{ icon: React.ReactNode, label: string, value: number, unit: string, colorClass: string }> = ({ icon, label, value, unit, colorClass }) => (
@@ -24,52 +21,20 @@ const NutrientDisplay: React.FC<{ icon: React.ReactNode, label: string, value: n
     </div>
 );
 
-const TpddCard: React.FC<FoodCardProps> = ({ food, style, onClick }) => {
-    const handleShowPdf = async () => {
-        const response: any = await apiShowPdf(food.ordinalNumbers, food.group);
-        console.log(response)
-        if (!response) {
-            console.error("Không nhận được dữ liệu PDF");
-            return;
-        }
-
-        const pdfBlob = new Blob([response], { type: 'application/pdf' });
-        const pdfUrl = URL.createObjectURL(pdfBlob);
-
-        window.open(pdfUrl, '_blank');
-    };
+const TpddCard: React.FC<FoodCardProps> = ({ food, style, onClick, onViewDetail }) => {
+    
     const handleAddClick = (e: React.MouseEvent) => {
-        e.stopPropagation(); // Ngăn chặn sự kiện click lan truyền lên div cha (card)
+        e.stopPropagation(); // Ngăn chặn sự kiện click lan truyền lên div cha
         if (onClick) {
             onClick(food);
         }
     };
+
     return (
         <div
+            style={style}
             className="group relative bg-green-200 min-w-72 bg-opacity-70 shadow-lg rounded-2xl overflow-hidden transition-all duration-500 ease-in-out transform hover:-translate-y-2 border border-transparent hover:border-green-300"
         >
-            <div className="relative h-56 w-full overflow-hidden">
-                {food.image ? (
-                    <Image
-                        src={food.image}
-                        alt={food.name}
-                        height={500}
-                        width={500}
-                        loading='lazy'
-                        className="w-full h-full object-cover group-hover:scale-110 duration-700 ease-out"
-                    />
-                ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300">
-                        <ImageIcon className="w-20 h-20 text-gray-400" />
-                    </div>
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <span className="absolute top-3 right-3 bg-green-500 bg-opacity-80 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-md flex items-center space-x-1 backdrop-filter backdrop-blur-sm">
-                    <Tag size={14} />
-                    <span>{food.group}</span>
-                </span>
-            </div>
-
             <div className="p-5 space-y-3">
                 <h3 className="text-xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-teal-500 truncate group-hover:text-green-500 transition-colors duration-300" title={food.name}>
                     {food.name}
@@ -88,7 +53,7 @@ const TpddCard: React.FC<FoodCardProps> = ({ food, style, onClick }) => {
                     </p>
                     {onClick ? (
                         <button
-                            onClick={handleAddClick} // Sử dụng handleAddClick
+                            onClick={handleAddClick}
                             className="px-4 py-2 text-xs font-semibold text-white bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg shadow-md hover:from-blue-600 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 transform hover:scale-105 transition-all duration-300 flex items-center space-x-1"
                         >
                             <PlusCircle size={14} />
@@ -96,7 +61,7 @@ const TpddCard: React.FC<FoodCardProps> = ({ food, style, onClick }) => {
                         </button>
                     ) : (
                         <button
-                            onClick={handleShowPdf} // Sử dụng handleShowPdf
+                            onClick={() => onViewDetail && onViewDetail(food)} // 👉 Gọi callback lên component cha
                             className="px-4 py-2 text-xs font-semibold text-white bg-gradient-to-r from-green-500 to-teal-600 rounded-lg shadow-md hover:from-green-600 hover:to-teal-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75 transform hover:scale-105 transition-all duration-300"
                         >
                             Xem chi tiết
@@ -104,6 +69,7 @@ const TpddCard: React.FC<FoodCardProps> = ({ food, style, onClick }) => {
                     )}
                 </div>
             </div>
+            
             {/* Hiệu ứng "shine" khi hover */}
             <div className="absolute top-0 left-0 w-full h-full overflow-hidden rounded-2xl pointer-events-none">
                 <div className="absolute top-0 left-0 w-20 h-full bg-white opacity-0 group-hover:opacity-20 transform -skew-x-12 group-hover:animate-shine"></div>
