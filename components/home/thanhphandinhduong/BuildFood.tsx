@@ -11,7 +11,7 @@ type FoodWithValue = {
     price?: number;
 };
 type defaultFoodValue = {
-    name:string;
+    name: string;
     price: number;
 };
 
@@ -154,12 +154,12 @@ const dataTest1: FoodWithValue[] = [
 
 export default function BuildFood() {
     const componentRef = useRef<HTMLDivElement>(null);
-    const [dataRation, setDataRation] = useState<FoodWithValue[]>([]);
+    const [dataRation, setDataRation] = useState<FoodWithValue[]>(dataTest1);
     const [energyTemp, setEnergyTemp] = useState<number>(0);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [defaultData, setDefaultData] = useState<defaultFoodValue[]>([
-        {name: 'Chất đốt', price: 0},{name: 'Vệ sinh dụng cụ', price: 0}
+        { name: 'Chất đốt', price: 0 }, { name: 'Vệ sinh dụng cụ', price: 0 }
     ]);
     const handleChange = (e: any) => {
         const val = e.target.value.trim();
@@ -239,7 +239,7 @@ export default function BuildFood() {
                     acc.ptv += protein;
                     acc.ltv += lipid;
                 }
-                acc.price += (item.price ?? 0) * item.value/1000 ;
+                acc.price += (item.price ?? 0) * item.value / 1000;
                 acc.gluxit += carb;
                 let nl: number = carb * 4 + protein * 4 + lipid * 9;
                 acc.energy += nl;
@@ -333,7 +333,7 @@ export default function BuildFood() {
     useEffect(() => {
         const timer = setTimeout(() => {
             setDebouncedSearch(displayTerm);
-        }, 300); 
+        }, 300);
         return () => clearTimeout(timer);
     }, [displayTerm]);
 
@@ -397,7 +397,7 @@ export default function BuildFood() {
                             Xin mời bạn nhập mức năng lượng cần cung cấp cho khẩu phần ăn.Hệ thống cho phép khống chế năng lượng trong khoảng từ 2.500 đến 4.860
                         </p>
                         <span className="text-xl font-bold text-gray-700">
-                                Nhập Năng lượng cần cung cấp cho khẩu phần ăn (kcal/người/ngày)
+                            Nhập Năng lượng cần cung cấp cho khẩu phần ăn (kcal/người/ngày)
                         </span>
                         <div className="w-full mx-auto flex items-center space-x-4">
 
@@ -440,9 +440,9 @@ export default function BuildFood() {
                     <div ref={componentRef} className="bg-white mt-10 p-6 rounded-lg overflow-auto">
                         <div className='text-red-500 font-bold text-sm mb-10 no-print'>
                             Ghi chú: Trong quá trình tính toán, năng lượng khẩu phần cần phải thêm khoảng 10% so với mức năng lượng tiêu hao thực tế. Việc tính toán này để bù trừ hao hụt về lương thực
-                            , thực phẩm trong quá trình chế biến nấu nướng, để cơ thể sinh trưởng và phát triển, 
+                            , thực phẩm trong quá trình chế biến nấu nướng, để cơ thể sinh trưởng và phát triển,
                             sự tiêu hóa hấp thụ có hạn ở từng cơ thể, sự sai lệch trong tính toán và những ảnh hưởng khác.
-                             Tỷ lệ chất dinh dưỡng được cung cấp theo tỷ lệ P:L:C = 17%:23%:60%. 
+                            Tỷ lệ chất dinh dưỡng được cung cấp theo tỷ lệ P:L:C = 17%:23%:60%.
                         </div>
                         <div className="flex justify-between items-center mb-4">
                             <h2 className="text-xl font-bold text-gray-800 mb-4 print-only">Bảng Xây dựng định lượng khẩu phần ăn</h2>
@@ -569,29 +569,28 @@ export default function BuildFood() {
                                                     <td className="py-3 px-4 sm:px-6 text-center">{index + 1}</td>
                                                     <td className="py-3 px-4 sm:px-6">{item.food.name}</td>
                                                     <td className="py-3 px-4 sm:px-6 text-center">
+                                                        <span className="print-only hidden font-medium">{item.value || 0}</span>
+
+                                                        {/* hien thi tren web */}
                                                         <input
-                                                            key={`${index}-${item.value}`}
                                                             type="number"
                                                             step="any"
                                                             inputMode="decimal"
-                                                            className="w-24 text-center bg-transparent border-b border-gray-300 focus:border-blue-500 focus:outline-none py-1 px-1 font-medium"
-                                                            defaultValue={item.value || "0"}
-                                                            onBlur={(e) => {
+                                                            className="w-24 text-center bg-transparent border-b border-gray-300 focus:border-blue-500 focus:outline-none py-1 px-1 font-medium no-print"
+                                                            value={item.value || 0}
+                                                            onChange={(e) => {
                                                                 const val = parseFloat(e.target.value);
                                                                 onChangeValue(index, isNaN(val) ? 0 : val);
-                                                            }}
-                                                            onKeyDown={(e) => {
-                                                                if (e.key === 'Enter') e.currentTarget.blur();
                                                             }}
                                                         />
 
                                                     </td>
                                                     <td className="py-3 px-4 sm:px-6 text-center">g</td>
                                                     <td className="py-3 px-4 sm:px-6 text-center">
-
+                                                        <span className="print-only hidden font-medium">{item.price || 0}</span>
                                                         <input
                                                             type="number"
-                                                            className="w-24 text-center bg-transparent border-b border-gray-300 focus:border-blue-500 focus:outline-none py-1 px-1 font-medium"
+                                                            className="no-print w-24 text-center bg-transparent border-b border-gray-300 focus:border-blue-500 focus:outline-none py-1 px-1 font-medium"
                                                             value={item.price === 0 ? "" : (item.price ?? "")}
                                                             onChange={(e) => onChangePrice(index, e.target.value)}
 

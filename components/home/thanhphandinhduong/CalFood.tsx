@@ -282,7 +282,7 @@ export default function CalFood() {
                             <button
                                 onClick={handlePrint}
                                 className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors duration-200"
-                                disabled={addedFoods.length === 1}
+                                disabled={addedFoods.length === 0}
                             >
                                 Hiển Thị PDF
                             </button>
