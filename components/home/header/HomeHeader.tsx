@@ -21,7 +21,7 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { name: 'Giới thiệu', path: '/', icon: <Info size={16} />, show: true },
-  { name: 'Tra cứu thành phần thực phẩm', path: '/tracuuthanhphanthucpham', icon: <Home size={16} />, show: true },
+  { name: 'Tra cứu thành phần dinh dưỡng của thực phẩm ', path: '/tracuuthanhphanthucpham', icon: <Home size={16} />, show: true },
   { name: 'Tra cứu năng lượng khẩu phần ăn', path: '/cocaunangluong', icon: <Zap size={16} />, show: true },
   { name: 'Xây dựng định lượng khẩu phần ăn', path: '/xaydungdinhduong', icon: <Utensils size={16} />, show: true },
   { name: 'Đăng nhập', path: '/signin', icon: <LogIn size={16} />, show: false },
@@ -66,8 +66,8 @@ export default function ElegantHeader() {
             </Link>
             {/* Slogan */}
             <div className="hidden md:flex md:flex-row text-center text-white font-semibold text-sm space-x-4">
-              <p className='max-w-md'>
-                SỔ TAY ĐIỆN TỬ TRA CỨU CƠ CẤU THÀNH PHẦN, ĐỊNH LƯỢNG, NĂNG LƯỢNG CỦA KHẨU PHẦN ĂN
+              <p className='max-w-md uppercase'>
+                SỔ TAY ĐIỆN TỬ tra cứu cơ cấu dinh dưỡng, định lượng, năng lượng khẩu phần ăn của bộ đội
               </p>
               <div className="hidden md:block bg-amber-300 hover:bg-green-950 transition-colors hover:text-amber-300 rounded-xl text-green-800 ">
                 <Link

@@ -33,7 +33,7 @@ export default function TongQuan() {
           </span>
           <h1 className="text-4xl md:text-6xl font-black text-white mb-8 leading-tight uppercase tracking-tighter">
             SỔ TAY ĐIỆN TỬ <br />
-            <span className="text-[#D4AF37]">TRA CỨU CƠ CẤU THÀNH PHẦN, ĐỊNH LƯỢNG, NĂNG LƯỢNG CỦA KHẨU PHẦN ĂN</span>
+            <span className="text-[#D4AF37]">tra cứu cơ cấu dinh dưỡng, định lượng, năng lượng khẩu phần ăn của bộ đội</span>
           </h1>
           <p className="max-w-3xl mx-auto text-lg md:text-xl text-gray-300 mb-12 leading-relaxed font-medium">
             Phần mềm chuyên dụng hỗ trợ cán bộ tra cứu thành phần thực phẩm, kiểm tra năng lượng khẩu phần ăn và xây dựng định lượng 
